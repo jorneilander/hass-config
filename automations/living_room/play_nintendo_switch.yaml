@@ -1,0 +1,26 @@
+---
+alias: Living Room - Play Nintendo Switch
+id: living_room_play_switch
+mode: restart
+trigger:
+  - entity_id:
+      - sensor.0x00158d000428e63f_click
+    platform: state
+    to: left_double
+action:
+  - service: switch.turn_on
+    entity_id:
+      - switch.living_room_smart_plug_tv
+  - delay: 00:00:05
+  - service: switch.turn_on
+    entity_id:
+      - switch.living_room_receiver
+      - switch.living_room_tv
+  - service: media_player.turn_off
+    entity_id:
+      - media_player.nvidia_shield
+  - delay: 00:00:02
+  - service: mqtt.publish
+    data_template:
+      topic: "cmnd/Living_room_-_IR_send/irsend"
+      payload: '{"Protocol":"NEC","Bits":32,"Data":0x4BB6B04F}'

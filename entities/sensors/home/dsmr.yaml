@@ -1,0 +1,5 @@
+---
+platform: dsmr
+host: !env_var SECRET_SENSOR_HOME_DSMR_HOST
+port: !env_var SECRET_SENSOR_HOME_DSMR_PORT
+dsmr_version: 5

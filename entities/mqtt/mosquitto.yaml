@@ -1,0 +1,3 @@
+---
+broker: mosquitto.mosquitto.svc.cluster.local
+discovery: true

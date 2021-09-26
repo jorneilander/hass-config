@@ -1,0 +1,21 @@
+---
+platform: mqtt
+name: "Living Room - Ceiling Fan"
+command_topic: "cmnd/Living_room_-_IR_send/irsend"
+# speed_command_topic: "cmnd/Living_room_-_IR_send/irsend"
+qos: 0
+preset_mode_command_topic: "cmnd/Living_room_-_IR_send/irsend"
+payload_on: '{ "Protocol": "SYMPHONY", "Bits": 12, "Data": "0xC04" }'
+payload_off: '{ "Protocol": "SYMPHONY", "Bits": 12, "Data": "0xC10" }'
+preset_mode_command_template: >-
+  {%- if value == "low" -%}
+    { "Protocol": "SYMPHONY", "Bits": 12, "Data": "0xC43" }
+  {%- elif value == "medium" -%}
+    { "Protocol": "SYMPHONY", "Bits": 12, "Data": "0xC04" }
+  {%- elif value == "high" -%}
+    { "Protocol": "SYMPHONY", "Bits": 12, "Data": "0xC01" }
+  {%- endif -%}
+preset_modes:
+  - "low"
+  - "medium"
+  - "high"

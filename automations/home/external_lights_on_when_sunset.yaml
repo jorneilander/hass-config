@@ -1,0 +1,13 @@
+alias: External lights - On when sunset
+id: "external_lights_on_when_sunset"
+description: ""
+trigger:
+  - event: sunset
+    platform: sun
+condition: []
+action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 25
+    entity_id: light.outside_lights
+mode: single

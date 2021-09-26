@@ -1,0 +1,19 @@
+---
+alias: Attick Light - On on motion
+id: "attick_light_on_when_motion"
+description: ""
+trigger:
+  - type: motion
+    platform: device
+    device_id: 13cf06e2634444f8928efbeba2617041
+    entity_id: binary_sensor.attick_landing_motion_occupancy
+    domain: binary_sensor
+condition: []
+action:
+  - type: turn_on
+    device_id: b91e14dd0a4f48f2b1126aa9b28c45c4
+    entity_id: light.attick_landing_light
+    domain: light
+    flash: short
+    brightness_pct: 25
+mode: restart

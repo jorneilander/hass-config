@@ -1,0 +1,4 @@
+---
+use_x_forwarded_for: true
+trusted_proxies:
+  - !env_var SECRET_HTTP_TRUSTED_PROXIES_1

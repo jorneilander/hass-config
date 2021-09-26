@@ -1,0 +1,21 @@
+alias: Living Room - Turn Off Media Corner
+id: living_room_media_corner_turn_off
+trigger:
+  - platform: event
+    event_type: telegram_callback
+    event_data:
+      command: /living_room_turn_off_media
+action:
+  - service: telegram_bot.send_message
+    data:
+      title: 🚫 Turning off Media Center 🚫
+      message:
+        "Turning off {{ state_attr('switch.living_room_receiver', 'friendly_name') }} and {{ state_attr('switch.living_room_tv', 'friendly_name') }}"
+  - entity_id:
+      - switch.living_room_receiver
+      - switch.living_room_tv
+    service: switch.turn_off
+  - entity_id:
+      - media_player.nvidia_shield
+    service: media_player.turn_off
+mode: restart

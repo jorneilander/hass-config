@@ -1,0 +1,9 @@
+---
+name: "Living Room - Receiver"
+platform: mqtt
+command_topic: "cmnd/Living_room_-_IR_send/irsend"
+optimistic: true
+payload_on: >
+  {"Protocol":"NEC","Bits":32,"Data":0x4bb620df,"repeat": 3}
+payload_off: >
+  {"Protocol":"NEC","Bits":32,"Data":0x4b36e21d,"repeat": 3}

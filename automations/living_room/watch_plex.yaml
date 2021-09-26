@@ -1,0 +1,30 @@
+alias: Living Room - Watch Plex
+id: living_room_watch_plex
+mode: restart
+trigger:
+  - entity_id:
+      - sensor.0x00158d000428e63f_click
+    platform: state
+    to: left
+condition: []
+action:
+  - service: switch.turn_on
+    entity_id:
+      - switch.living_room_smart_plug_tv
+  - delay: 00:00:05
+  - service: switch.turn_on
+    entity_id:
+      - switch.living_room_receiver
+      - switch.living_room_tv
+  - service: media_player.turn_on
+    entity_id:
+      - media_player.nvidia_shield
+  - delay: 00:00:02
+  - service: media_player.select_source
+    data_template:
+      entity_id: media_player.nvidia_shield
+      source: com.plexapp.android
+  - service: mqtt.publish
+    data_template:
+      topic: "cmnd/Living_room_-_IR_send/irsend"
+      payload_template: '{"Protocol":"NEC","Bits":32,"Data":0x4B3631CE}'

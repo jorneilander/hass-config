@@ -1,0 +1,24 @@
+alias: Downstairs - Turn Off Everything
+id: ground_floor_turn_everything_off
+trigger:
+  - entity_id:
+      - sensor.0x00158d000428e63f_click
+    platform: state
+    to: both_long
+condition: []
+action:
+  - entity_id:
+      - light.downstairs_inside_lights
+    service: light.turn_off
+  - entity_id:
+      - switch.living_room_receiver
+      - switch.living_room_tv
+    service: switch.turn_off
+  - entity_id:
+      - media_player.nvidia_shield
+    service: media_player.turn_off
+  - delay: 00:00:10
+  - entity_id:
+      - switch.living_room_smart_plug_tv
+    service: switch.turn_off
+mode: restart

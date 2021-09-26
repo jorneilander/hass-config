@@ -1,0 +1,15 @@
+---
+alias: Shed - Light on on door open
+id: "shed_light_on_when_door_opens"
+description: ""
+trigger:
+  - platform: state
+    entity_id: binary_sensor.shed_door_sensor_contact
+    to: "on"
+condition: []
+action:
+  - service: light.turn_on
+    entity_id: light.shed_light
+    data:
+      brightness_pct: 100
+mode: single

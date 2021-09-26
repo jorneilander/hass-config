@@ -1,0 +1,21 @@
+---
+alias: Sync Tasmota states
+id: Sync Tasmota states
+trigger:
+  - platform: homeassistant
+    event: start
+action:
+  - service: mqtt.publish
+    data:
+      topic: cmnd/tasmotas/state
+      payload: ""
+  - service: mqtt.publish
+    data:
+      topic: tasmotas/cmnd/state
+      payload: ""
+  - service: mqtt.publish
+    data:
+      topic: cmnd/tasmotas/SetOption19
+      payload: "0"
+initial_state: true
+mode: single

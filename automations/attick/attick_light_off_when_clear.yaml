@@ -1,0 +1,16 @@
+alias: Attick Light - Off on clear
+id: "attick_light_off_when_clear"
+description: ""
+trigger:
+  - type: no_motion
+    platform: device
+    device_id: 13cf06e2634444f8928efbeba2617041
+    entity_id: binary_sensor.attick_landing_motion_occupancy
+    domain: binary_sensor
+condition: []
+action:
+  - type: turn_off
+    device_id: b91e14dd0a4f48f2b1126aa9b28c45c4
+    entity_id: light.attick_landing_light
+    domain: light
+mode: single

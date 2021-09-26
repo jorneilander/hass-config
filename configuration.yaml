@@ -11,8 +11,8 @@ homeassistant:
   unit_system: metric
   currency: EUR
 
-  external_url: !env_var SECRET_EXTERNAL_URL
-  internal_url: !env_var SECRET_INTERNAL_URL
+  external_url: !env_var SECRET_HASS_EXTERNAL_URL
+  internal_url: !env_var SECRET_HASS_INTERNAL_URL
 
   # Load packages
   packages: !include_dir_named packages
@@ -35,9 +35,3 @@ utility_meter: !include ./entities/utility_meter.yaml
 sensor: !include_dir_list ./entities/sensors/
 fan: !include_dir_list ./entities/fans/
 switch: !include_dir_list ./entities/switches/
-
-
-
-
-
-  # allowlist_external_dirs: !include whitelist_external_dirs.yaml

@@ -1,0 +1,23 @@
+path: living-room
+title: Living Room
+badges: []
+cards:
+  - entities:
+      - entity: switch.living_room_tv
+      - entity: switch.living_room_receiver
+      - entity: fan.living_room_ceiling_fan
+      - entity: light.living_room_lights
+      - entity: switch.living_room_smart_plug_tv
+    show_header_toggle: false
+    title: TV & Receiver
+    type: entities
+  - entities:
+      - input_number.volume_change
+      - script.receiver_change_volume
+    type: entities
+  - entity: media_player.nvidia_shield
+    hide:
+      volume: true
+    type: custom:mini-media-player
+  - entity: media_player.nvidia_shield
+    type: entity

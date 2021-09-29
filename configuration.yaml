@@ -1,4 +1,7 @@
 ---
+default_config:
+mobile_app:
+
 homeassistant:
   name: Home
   legacy_templates: false
@@ -9,6 +12,7 @@ homeassistant:
   elevation: !env_var SECRET_HOME_ELEVATION
 
   unit_system: metric
+  temperature_unit: C
   currency: EUR
 
   external_url: !env_var SECRET_HASS_EXTERNAL_URL
@@ -20,18 +24,34 @@ homeassistant:
   media_dirs:
     local: /media
 
+  allowlist_external_dirs: /
 
 # Integrations
 http: !include ./integrations/http.yaml
 recorder: !include ./integrations/recorder.yaml
 influxdb: !include ./integrations/influxdb.yaml
-prometheus: !include ./integrations/prometheus/
+prometheus: !include ./integrations/prometheus.yaml
 device_tracker: !include_dir_list ./integrations/device_tracker/
 telegram_bot: !include ./integrations/telegram_bot.yaml
 spotify: !include ./integrations/spotify.yaml
 utility_meter: !include ./entities/utility_meter.yaml
+lovelace: !include ./integrations/lovelace.yaml
+script: !include_dir_merge_named ./scripts/
+
+# webhook: !include integrations/webhooks.yaml
 
 # Entities
 sensor: !include_dir_list ./entities/sensors/
 fan: !include_dir_list ./entities/fans/
 switch: !include_dir_list ./entities/switches/
+input_number: !include_dir_merge_named ./entities/input_numbers/
+media_player: !include_dir_list ./entities/media_players/
+
+webhook:
+zigbee2mqtt_networkmap:
+
+panel_iframe:
+  networkmap:
+    title: 'Zigbee Map'
+    url: '/local/community/zigbee2mqtt_networkmap/map.html'
+    icon: 'mdi:graphql'

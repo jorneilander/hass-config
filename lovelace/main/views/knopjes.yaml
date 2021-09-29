@@ -1,0 +1,125 @@
+---
+path: knopjes
+title: Knopjes
+badges: []
+cards:
+  - cards:
+      - cards:
+          - entity: sensor.living_room_smart_plug_tv_energy_power
+            icon: mdi:power
+            name: |
+              [[[
+                if (entity.state > 150) return 'TV & Amplifier';
+                if (entity.state >= 90 && entity.state < 150) return 'TV';
+                if (entity.state >= 70 && entity.state < 90) return 'Amplifier';
+              ]]]
+            show_icon: true
+            show_name: true
+            show_state: false
+            styles:
+              icon:
+                - color: |
+                    [[[
+                      if (entity.state > 15) return 'lime';
+                      else return 'red';
+                    ]]]
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_media_corner_turn_off
+            template:
+              - small_button
+            type: custom:button-card
+          - color: rgb(152, 152, 152)
+            entity: automation.living_room_play_nintendo_switch
+            hold_action:
+              action: more-info
+            icon: mdi:nintendo-switch
+            name: Switch
+            show_icon: true
+            show_name: true
+            show_state: false
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_play_nintendo_switch
+            template:
+              - small_button
+            type: custom:button-card
+        type: horizontal-stack
+      - cards:
+          - color: rgb(229,9,20)
+            entity: automation.living_room_watch_netflix
+            hold_action:
+              action: more-info
+            icon: mdi:netflix
+            name: Netflix
+            show_icon: true
+            show_name: true
+            show_state: false
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_watch_netflix
+            template:
+              - small_button
+            type: custom:button-card
+          - color: rgb(30,215,96)
+            entity: automation.living_room_listen_to_spotify
+            hold_action:
+              action: more-info
+            icon: mdi:spotify
+            name: Spotify
+            show_icon: true
+            show_name: true
+            show_state: false
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_listen_to_spotify
+            template:
+              - small_button
+            type: custom:button-card
+        type: horizontal-stack
+      - cards:
+          - color: rgb(229, 160, 13)
+            entity: automation.living_room_watch_plex
+            hold_action:
+              action: more-info
+            icon: mdi:plex
+            name: Plex
+            show_icon: true
+            show_name: true
+            show_state: false
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_watch_plex
+            template:
+              - small_button
+            type: custom:button-card
+          - color: white
+            entity: automation.living_room_watch_disney
+            entity_picture: /local/poison_apple.svg
+            hold_action:
+              action: more-info
+            name: Disney+
+            show_entity_picture: true
+            show_icon: true
+            show_name: true
+            show_state: false
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_watch_disney
+            template:
+              - small_button
+            type: custom:button-card
+        type: horizontal-stack
+    type: vertical-stack

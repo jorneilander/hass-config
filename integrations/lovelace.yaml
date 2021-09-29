@@ -1,0 +1,18 @@
+---
+mode: yaml
+resources: !include ../lovelace/resources.yaml
+dashboards:
+  zigbee2mqtt-db:
+    mode: yaml
+    filename: lovelace/main/dashboards/zigbee2mqtt.yaml
+    title: zigbee2mqtt
+    icon: mdi:numeric-1-box-multiple-outline
+    show_in_sidebar: true
+    require_admin: false
+  floor-plan:
+    mode: yaml
+    filename: lovelace/main/dashboards/floor_plan.yaml
+    title: Floor Plan
+    icon: mdi:numeric-1-box-multiple-outline
+    show_in_sidebar: true
+    require_admin: false

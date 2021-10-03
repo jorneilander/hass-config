@@ -41,6 +41,7 @@ telegram_bot: !include ./integrations/telegram_bot.yaml
 utility_meter: !include ./entities/utility_meter.yaml
 webhook:
 zigbee2mqtt_networkmap:
+notify: !include_dir_list ./integrations/notify/
 
 # webhook: !include integrations/webhooks.yaml
 

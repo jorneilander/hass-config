@@ -1,0 +1,30 @@
+---
+id: "home_person_moving"
+alias: Home - Person moving
+description: ""
+mode: single
+trigger:
+  - platform: zone
+    entity_id:
+      - person.jorn_eilander
+      - person.maeike_eilander
+    zone: zone.home
+    event: enter
+  - platform: zone
+    entity_id:
+      - person.jorn_eilander
+      - person.maeike_eilander
+    zone: zone.home
+    event: leave
+action:
+  - service: notify.all_devices
+    data:
+      message: |
+        {% if trigger.event == "leave" %}
+          {{ trigger.from_state.attributes.friendly_name }} left {{ trigger.zone.attributes.friendly_name }}
+        {% else %}
+          {{ trigger.from_state.attributes.friendly_name }} entered {{ trigger.zone.attributes.friendly_name }}
+        {% endif %}
+      data:
+        sticky: true
+    mode: queued

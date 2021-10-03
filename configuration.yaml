@@ -50,6 +50,7 @@ input_number: !include_dir_merge_named ./entities/input_numbers/
 # media_player: !include_dir_list ./entities/media_players/
 sensor: !include_dir_list ./entities/sensors/
 switch: !include_dir_list ./entities/switches/
+zones: !include_dir_list ./entities/switches/zones/
 
 panel_iframe:
   networkmap:

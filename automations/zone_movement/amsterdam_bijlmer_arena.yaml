@@ -1,0 +1,28 @@
+---
+id: "amsterdam_bijlmer_arena_zone_movement"
+alias: Amsterdam Bijlmer ArenA - Zone movement
+description: ""
+trigger:
+  - platform: zone
+    entity_id:
+      - person.jorn_eilander
+      - person.maeike_eilander
+    zone: zone.amsterdam_bijlmer_arena
+    event: enter
+  - platform: zone
+    entity_id:
+      - person.jorn_eilander
+      - person.maeike_eilander
+    zone: zone.amsterdam_bijlmer_arena
+    event: leave
+action:
+  - service: notify.all_devices
+    data:
+      message: |
+        {% if trigger.event == "leave" %}
+          {{ trigger.from_state.attributes.friendly_name }} left zone: {{ trigger.zone.attributes.friendly_name }}
+        {% else %}
+          {{ trigger.from_state.attributes.friendly_name }} entered zone: {{ trigger.zone.attributes.friendly_name }}
+        {% endif %}
+      data:
+        sticky: true

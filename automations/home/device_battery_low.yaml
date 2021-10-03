@@ -8,4 +8,12 @@ use_blueprint:
     actions:
     - service: telegram_bot.send_message
       data:
-        message: "The following sensors are running low on battery: \n{{sensors}}\n"
+        message: |
+          The following sensors are running low on battery:
+          {{sensors}}
+    - service: notify.mobile_app_geironul
+      data:
+        message: |
+          The following sensors are running low on battery:
+          {{sensors}}
+

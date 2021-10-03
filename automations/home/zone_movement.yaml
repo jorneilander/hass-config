@@ -2,7 +2,6 @@
 id: "home_person_moving"
 alias: Home - Person moving
 description: ""
-mode: single
 trigger:
   - platform: zone
     entity_id:

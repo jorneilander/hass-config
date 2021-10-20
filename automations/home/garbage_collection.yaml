@@ -1,0 +1,22 @@
+---
+alias: Garbage alert
+id: "garbage_collection_alert"
+mode: restart
+trigger:
+  - platform: event
+    event_type: state_changed
+condition:
+  - condition: template
+    value_template: "{{ trigger.event.data.new_state.attributes.is_collection_date_today }}"
+action:
+  - service: telegram_bot.send_message
+    data:
+      message:
+        🚮 "{{ trigger.event.data.new_state.attributes.friendly_name }} 🚮
+
+        Today is garbage day!
+
+        Upcoming garbage collections
+        PMD     {{ state('sensor.afvalinfo_home_pbd') }} - {{ state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') }} day(s)
+        GFT     {{ state('sensor.afvalinfo_home_gft') }} - {{ state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') }} day(s)
+        Paper   {{ state('sensor.afvalinfo_home_papier') }} - {{ state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') }} day(s)

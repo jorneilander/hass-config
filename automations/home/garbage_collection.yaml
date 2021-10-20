@@ -17,6 +17,6 @@ action:
         Today is garbage day!
 
         Upcoming garbage collections
-        PMD     {{ state('sensor.afvalinfo_home_pbd') }} - {{ state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') }} day(s)
-        GFT     {{ state('sensor.afvalinfo_home_gft') }} - {{ state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') }} day(s)
-        Paper   {{ state('sensor.afvalinfo_home_papier') }} - {{ state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') }} day(s)
+        PMD     {{ states('sensor.afvalinfo_home_pbd') }} - {{ state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') }} day(s)
+        GFT     {{ states('sensor.afvalinfo_home_gft') }} - {{ state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') }} day(s)
+        Paper   {{ states('sensor.afvalinfo_home_papier') }} - {{ state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') }} day(s)

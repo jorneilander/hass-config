@@ -12,11 +12,11 @@ action:
   - service: telegram_bot.send_message
     data:
       message: |
-        🚮 {{ trigger.event.data.new_state.attributes.friendly_name }} 🚮\n
-        \n
-        Today is garbage day!\n
-        \n
-        Upcoming garbage collections\n
-        PMD\t\t\t     {{ states('sensor.afvalinfo_home_pbd') }} - {{ state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') }} day(s)\n
-        GFT\t\t\t     {{ states('sensor.afvalinfo_home_gft') }} - {{ state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') }} day(s)\n
-        Paper\t\t     {{ states('sensor.afvalinfo_home_papier') }} - {{ state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') }} day(s)\n
+        🚮 {{ trigger.event.data.new_state.attributes.friendly_name }} 🚮
+
+        Today is garbage day!
+
+        Upcoming garbage collections
+        PMD     {{ states('sensor.afvalinfo_home_pbd') }} - {{ state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') }} day(s)
+        GFT     {{ states('sensor.afvalinfo_home_gft') }} - {{ state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') }} day(s)
+        Paper   {{ states('sensor.afvalinfo_home_papier') }} - {{ state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') }} day(s)

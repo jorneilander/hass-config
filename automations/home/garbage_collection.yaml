@@ -7,7 +7,7 @@ trigger:
     event_type: state_changed
 condition:
   - condition: template
-    value_template: "{{ trigger.event.data.new_state.attributes.is_collection_date_today }}"
+    value_template: "{{ (((((trigger.event).data).new_state).attributes).is_collection_date_today) }}"
 action:
   - service: telegram_bot.send_message
     data:

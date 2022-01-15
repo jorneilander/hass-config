@@ -42,6 +42,7 @@ utility_meter: !include ./entities/utility_meter.yaml
 webhook:
 zigbee2mqtt_networkmap:
 notify: !include_dir_list ./integrations/notify/
+rest_command: !include_dir_merge_named ./integrations/rest_commands/
 
 # webhook: !include integrations/webhooks.yaml
 

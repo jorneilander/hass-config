@@ -22,3 +22,12 @@ action:
 
         {{ trigger.event.data.new_state.attributes.friendly_name | replace(''_'',''\_'') }}
         has changed state to: {{ trigger.event.data.new_state.state }}'
+  - service: notify.all_devices
+    data:
+      message: |
+        🔥 Smoke Alarm 🔥
+
+        {{ trigger.event.data.new_state.attributes.friendly_name | replace(''_'',''\_'') }}
+        has changed state to: {{ trigger.event.data.new_state.state }}
+      data:
+        sticky: true

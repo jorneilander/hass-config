@@ -30,7 +30,7 @@ homeassistant:
 automation: !include_dir_list ./automations/
 device_tracker: !include_dir_list ./integrations/device_tracker/
 http: !include ./integrations/http.yaml
-influxdb: !include ./integrations/influxdb.yaml
+# influxdb: !include ./integrations/influxdb.yaml
 lovelace: !include ./integrations/lovelace.yaml
 mqtt: !include ./integrations/mqtt.yaml
 prometheus: !include ./integrations/prometheus.yaml

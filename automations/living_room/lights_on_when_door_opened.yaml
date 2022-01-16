@@ -15,11 +15,11 @@ action:
     entity_id: light.dining_room_lights
   - service: light.turn_on
     data:
-      brightness_pct: |
-        {% if states('sensor.living_room_motion_detector_illuminance_lux') < states('input_number.living_room_light_trigger_lux') %}
+      brightness_pct: |-
+        {%- if states('sensor.living_room_motion_detector_illuminance_lux') < states('input_number.living_room_light_trigger_lux') -%}
         100%
-        {% else %}
+        {%- else -%}
         0%
-        {% endif %}
+        {%- endif -%}
     entity_id: light.living_room_lights
 mode: single

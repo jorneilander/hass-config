@@ -5,8 +5,8 @@ description: "Turn on lights when door opened before 09:00"
 trigger:
   - platform: state
     entity_id: binary_sensor.living_room_door_sensor_contact
-    from: off
-    to: on
+    from: "off"
+    to: "on"
 condition:
   - condition: and
     conditions:

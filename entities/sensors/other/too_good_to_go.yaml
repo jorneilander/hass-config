@@ -1,0 +1,7 @@
+---
+platform: tgtg
+username: !env_var SECRET_TOO_GOOD_TO_GO_USERNAME
+access_token: !env_var SECRET_TOO_GOOD_TO_GO_ACCESS_TOKEN
+refresh_token: !env_var SECRET_TOO_GOOD_TO_GO_REFRESH_TOKEN
+user_id: !env_var SECRET_TOO_GOOD_TO_GO_USER_ID
+scan_interval: 900

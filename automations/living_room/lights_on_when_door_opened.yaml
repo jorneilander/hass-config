@@ -16,7 +16,7 @@ action:
   - service: light.turn_on
     data:
       brightness_pct: |-
-        {%- if states('sensor.living_room_motion_detector_illuminance_lux') < states('input_number.living_room_light_trigger_lux') -%}
+        {%- if (states('sensor.living_room_motion_detector_illuminance_lux') | int ) < (states('input_number.living_room_light_trigger_lux') | int) -%}
         100
         {%- else -%}
         0

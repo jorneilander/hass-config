@@ -218,6 +218,20 @@ cards:
           left: 35%
           top: 40%
         type: state-label
+      - entity: binary_sensor.hallway_door_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 6%
+          top: 70%
+        type: state-icon
+      - entity: binary_sensor.living_room_door_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 28%
+          top: 73%
+        type: state-icon
     image: >-
       http://images.cannonfodder.nl/homeassistant/Floor%20Plan/Ground%20Floor.png
     type: picture-elements

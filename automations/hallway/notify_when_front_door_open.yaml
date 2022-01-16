@@ -13,3 +13,9 @@ action:
       message: "Front door has been opened"
       data:
         sticky: false
+  - alias: "Turn on hallway light"
+    service: light.turn_on
+    target:
+      entity_id: light.hallway_light
+      data:
+        brightness_pct: 40

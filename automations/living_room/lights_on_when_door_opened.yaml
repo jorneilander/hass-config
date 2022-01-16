@@ -1,22 +1,13 @@
 ---
-alias: Living room - Turn on lights when door opened before 09:00
-id: "living_room_lights_on_when_door_opened_before_nine"
-description: "Turn on lights when door opened before 09:00"
+alias: Living room - Lights on when door opened
+id: "living_room_lights_on_when_door_opened"
+description: "Turn on lights when door is opened"
 trigger:
   - platform: state
     entity_id: binary_sensor.living_room_door_sensor_contact
     from: "off"
     to: "on"
-condition:
-  - condition: and
-    conditions:
-      # - alias: "Before 09:00"
-      #   condition: time
-      #   before: "09:00:00"
-      - alias: "Dark room"
-        condition: numeric_state
-        entity_id: sensor.living_room_motion_detector_illuminance_lux
-        below: 30
+condition: []
 action:
   - service: light.turn_on
     data:
@@ -24,6 +15,11 @@ action:
     entity_id: light.dining_room_lights
   - service: light.turn_on
     data:
-      brightness_pct: 100
+      brightness_pct: |
+        {% if states('sensor.living_room_motion_detector_illuminance_lux') < states('input_number.living_room_light_trigger_lux') %}
+        100%
+        {% else %}
+        0%
+        {% endif %}
     entity_id: light.living_room_lights
 mode: single

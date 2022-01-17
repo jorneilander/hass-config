@@ -230,7 +230,14 @@ cards:
           '--paper-item-icon-active-color': red
           '--paper-item-icon-color': green
           left: 28%
-          top: 73%
+          top: 73Kitchen - Fridge - Climate sensor%
+        type: state-icon
+      - entity: binary_sensor.living_room_motion_detector_occupancy
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 39%
+          top: 48%
         type: state-icon
     image: >-
       http://images.cannonfodder.nl/homeassistant/Floor%20Plan/Ground%20Floor.png

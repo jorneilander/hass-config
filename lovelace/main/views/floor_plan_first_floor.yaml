@@ -66,7 +66,7 @@ cards:
         style:
           '--paper-item-icon-active-color': darkorange
           '--paper-item-icon-color': black
-          left: 29%
+          left: 28%
           top: 65%
         tap_action:
           action: toggle
@@ -78,6 +78,13 @@ cards:
           left: 52%
           top: 81%
         type: state-label
+      - entity: binary_sensor.1st_floor_landing_motion_detector_occupancy
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 31%
+          top: 65%
+        type: state-icon
     image: >-
       http://images.cannonfodder.nl/homeassistant/Floor%20Plan/1st%20Floor.png
     type: picture-elements

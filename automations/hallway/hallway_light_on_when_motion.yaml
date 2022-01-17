@@ -1,6 +1,6 @@
 ---
-alias: Attick Light - On on motion
-id: "attick_light_on_when_motion"
+alias: Hallway light - On on motion
+id: "hallway_light_on_when_motion"
 description: ""
 trigger:
   - platform: state
@@ -10,7 +10,7 @@ condition: []
 action:
   - service: light.turn_on
     target:
-      entity_id: light.attick_landing_light
+      entity_id: light.hallway_light
     data:
       brightness_pct: |
         {%- if (now() > today_at("19:30")) or (now() < today_at("09:00")) -%}

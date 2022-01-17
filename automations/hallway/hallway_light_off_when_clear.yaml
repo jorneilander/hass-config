@@ -1,5 +1,5 @@
 ---
-alias: Attick Light - Off when clear
+alias: Hallway Light - Off when clear
 id: "hallway_light_off_when_clear"
 description: ""
 trigger:

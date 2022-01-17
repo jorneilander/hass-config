@@ -1,6 +1,6 @@
 ---
 alias: Attick Light - Off when clear
-id: "attick_light_off_when_clear"
+id: "hallway_light_off_when_clear"
 description: ""
 trigger:
   - platform: state

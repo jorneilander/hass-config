@@ -4,7 +4,7 @@ id: "attick_light_on_when_motion"
 description: ""
 trigger:
   - platform: state
-    entity_id: binary_sensor.attick_landing_motion_detector_occupancy
+    entity_id: binary_sensor.hallway_motion_sensor_occupancy
     to: "on"
 condition: []
 action:
@@ -13,10 +13,12 @@ action:
       entity_id: light.attick_landing_light
     data:
       brightness_pct: |
-        {%- if (now() > today_at("19:30")) or (now() < today_at("07:30")) -%}
+        {%- if (now() > today_at("19:30")) or (now() < today_at("09:00")) -%}
         1
+        {%- elif (states('sensor.hallway_motion_detector_illuminance_lux') | int ) <  ( states('input_number.hallway_light_trigger_lux') | int ) -%}
+        50
         {%- else -%}
-        100
+        0
         {%- endif -%}
       transition: 2
 mode: restart

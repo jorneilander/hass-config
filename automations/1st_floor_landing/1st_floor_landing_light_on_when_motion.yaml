@@ -1,0 +1,24 @@
+---
+id: 1st_floor_landing_lights_on_when_motion
+alias: 1st floor landing - Lights on when motion
+trigger:
+  - platform: state
+    entity_id: binary_sensor.1st_floor_landing_motion_detector_occupancy
+    from: "off"
+    to: "on"
+condition:
+action:
+  - alias: "Turn on 1st floor landing light"
+    service: light.turn_on
+    target:
+      entity_id: light.1st_floor_landing_light
+    data:
+      brightness_pct: |
+        {%- if (now() > today_at("19:30")) or (now() < today_at("09:00")) -%}
+        1
+        {%- elif (states('sensor.1st_floor_landing_motion_detector_illuminance_lux') | int ) <  ( states('input_number.1st_floor_landing_light_trigger_lux') | int ) -%}
+        50
+        {%- else -%}
+        0
+        {%- endif -%}
+      transition: 2

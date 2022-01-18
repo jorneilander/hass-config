@@ -15,7 +15,7 @@ action:
       brightness_pct: |
         {%- if (now() > today_at("19:30")) or (now() < today_at("09:00")) -%}
         1
-        {%- elif (states('sensor.hallway_motion_detector_illuminance_lux') | int ) <  ( states('input_number.hallway_light_trigger_lux') | int ) -%}
+        {%- elif (states('sensor.hallway_motion_detector_illuminance_lux') | default(0) | int ) <  ( states('input_number.hallway_light_trigger_lux') | int ) -%}
         50
         {%- else -%}
         0

@@ -3,7 +3,7 @@ alias: Garbage alert
 id: "garbage_collection_alert"
 mode: single
 trigger:
-  - platform: event
+  - platform: state
     entity_id:
       - sensor.afvalinfo_home_gft
       - sensor.afvalinfo_home_papier

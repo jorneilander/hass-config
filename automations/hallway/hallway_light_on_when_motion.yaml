@@ -4,7 +4,7 @@ id: "hallway_light_on_when_motion"
 description: ""
 trigger:
   - platform: state
-    entity_id: binary_sensor.hallway_motion_sensor_occupancy
+    entity_id: binary_sensor.hallway_motion_detector_occupancy
     to: "on"
 condition: []
 action:

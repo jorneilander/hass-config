@@ -4,12 +4,13 @@ id: "garbage_collection_alert"
 mode: single
 trigger:
   - platform: event
-    event_type: state_changed
-condition:
-  - condition: template
-    value_template: "{{ trigger.event.data.new_state.attributes | default(false) }}"
-  - condition: template
-    value_template: "{{ trigger.event.data.new_state.attributes.is_collection_date_today | default(false) }}"
+    entity_id:
+      - sensor.afvalinfo_home_gft
+      - sensor.afvalinfo_home_papier
+      - sensor.afvalinfo_home_pbd
+    attribute: is_collection_date_today
+    to: true
+condition: []
 action:
   - service: telegram_bot.send_message
     data:

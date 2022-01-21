@@ -57,5 +57,5 @@ cards:
         tap_action:
           action: toggle
         type: state-icon
-    image: 'http://images.cannonfodder.nl/homeassistant/Floor%20Plan/Attick.png'
+    image: 'https://images.cannonfodder.nl/homeassistant/Floor%20Plan/Attick.png'
     type: picture-elements

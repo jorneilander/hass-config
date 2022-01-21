@@ -86,5 +86,5 @@ cards:
           top: 65%
         type: state-icon
     image: >-
-      http://images.cannonfodder.nl/homeassistant/Floor%20Plan/1st%20Floor.png
+      https://images.cannonfodder.nl/homeassistant/Floor%20Plan/1st%20Floor.png
     type: picture-elements

@@ -247,5 +247,5 @@ cards:
           top: 70%
         type: state-icon
     image: >-
-      http://images.cannonfodder.nl/homeassistant/Floor%20Plan/Ground%20Floor.png
+      https://images.cannonfodder.nl/homeassistant/Floor%20Plan/Ground%20Floor.png
     type: picture-elements

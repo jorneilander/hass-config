@@ -32,15 +32,12 @@ device_tracker: !include_dir_list ./integrations/device_tracker/
 http: !include ./integrations/http.yaml
 # influxdb: !include ./integrations/influxdb.yaml
 lovelace: !include ./integrations/lovelace.yaml
-mqtt: !include ./integrations/mqtt.yaml
 prometheus: !include ./integrations/prometheus.yaml
 recorder: !include ./integrations/recorder.yaml
 script: !include_dir_merge_named ./scripts/
-spotify: !include ./integrations/spotify.yaml
 telegram_bot: !include ./integrations/telegram_bot.yaml
 utility_meter: !include ./entities/utility_meter.yaml
 webhook:
-zigbee2mqtt_networkmap:
 notify: !include_dir_list ./integrations/notify/
 rest_command: !include_dir_merge_named ./integrations/rest_commands/
 

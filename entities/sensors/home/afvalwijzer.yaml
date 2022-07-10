@@ -11,7 +11,7 @@ resources:
 location: alkmaar
 postcode: !env_var SECRET_HOME_POSTAL_CODE
 streetnumber: !env_var SECRET_HOME_STREET_NUMBER
-streetnumbersuffix: !env_var SECRET_HOME_STREET_NUMBER_SUFFIX
+streetnumbersuffix: ""
 dateformat: "%d-%m-%Y"
 locale: "nl"
 timespanindays: 365

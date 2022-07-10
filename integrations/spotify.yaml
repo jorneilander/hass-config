@@ -1,3 +1,0 @@
----
-client_id: !env_var SECRET_SPOTIFY_CLIENT_ID
-client_secret: !env_var SECRET_SPOTIFY_CLIENT_SECRET

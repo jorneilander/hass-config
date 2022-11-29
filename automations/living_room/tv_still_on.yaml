@@ -1,0 +1,19 @@
+alias: 📺 TV is still on 📺
+id: living_room_tv_still_on
+trigger:
+  - platform: numeric_state
+    entity_id:
+      - sensor.living_room_smart_plug_tv_energy_power
+    above: 15
+    for: 00:01:00
+condition:
+  - condition: template
+    value_template: "{{ states('media_player.nvidia_shield') in ['off', 'idle'] }}"
+action:
+  - service: telegram_bot.send_message
+    data:
+      title: 📺 TV is still on 📺
+      message:
+        "It looks like the TV is still on and nobody's watching anything"
+      inline_keyboard:
+        - Turn everything off:/living_room_turn_off_media

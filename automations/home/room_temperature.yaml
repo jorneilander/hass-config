@@ -1,0 +1,29 @@
+---
+alias: 🥵 Room temperature 🥶
+id: "home_room_temperature"
+trigger:
+  - platform: numeric_state
+    entity_id:
+      - sensor.bedroom_eline_climate_sensor_temperature
+      - sensor.bedroom_julien_climate_sensor_temperature
+      - sensor.bedroom_master_climate_sensor_temperature
+      - sensor.dining_room_climate_sensor_temperature
+      - sensor.study_climate_sensor_temperature
+    above: 18
+    below: 21
+    for:
+      minutes: 10
+action:
+  - service: telegram_bot.send_message
+    data:
+      message: '🥵 Room temperature 🥶
+
+        {{ trigger.to_state.attributes.friendly_name | replace(''_'',''\_'') }} is
+        reporting: {{ trigger.to_state.attributes.temperature }}{{ trigger.to_state.attributes.unit_of_measurement }}.
+
+        The temperature is
+        {%- if trigger.to_state.attributes.temperature > trigger.from_state.attributes.temperature -%}
+          rising!
+        {%- else -%}
+          falling!
+        {%- endif -%}'

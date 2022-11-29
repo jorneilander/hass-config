@@ -1,0 +1,11 @@
+---
+alias: "Mindergas.nl - Post meter readings"
+trigger:
+  - platform: time
+    at: "00:02:03"
+action:
+  - service: rest_command.mindergas_post_meter_readings
+    data_template:
+      ## use 1h before now, to make sure we use yesterdays date
+      date: "{{ (now() - timedelta(hours = 1)).date() }}"
+      meter_reading: "{{ states('sensor.gas_consumption') }}"

@@ -1,0 +1,33 @@
+alias: Living Room - Listen to Spotify
+id: living_room_listen_to_spotify
+mode: restart
+trigger:
+  - entity_id:
+      - sensor.0x00158d000428e63f_click
+    platform: state
+    to: right
+condition: []
+action:
+  - service: switch.turn_on
+    entity_id:
+      - switch.living_room_smart_plug_tv
+  - delay: 00:00:05
+  - service: switch.turn_on
+    entity_id:
+      - switch.living_room_receiver
+  - service: switch.turn_off
+    entity_id:
+      - switch.living_room_tv
+  - service: media_player.turn_on
+    entity_id:
+      - media_player.nvidia_shield
+  - delay: 00:00:02
+  - service: media_player.select_source
+    data_template:
+      entity_id: media_player.nvidia_shield
+      source: Spotify
+  - delay: 00:00:02
+  - service: mqtt.publish
+    data_template:
+      topic: "cmnd/Living_room_-_IR_send/irsend"
+      payload_template: '{"Protocol":"NEC","Bits":32,"Data":0x4B3631CE}'

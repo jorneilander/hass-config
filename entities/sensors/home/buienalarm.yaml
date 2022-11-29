@@ -1,0 +1,10 @@
+---
+platform: buienalarm
+timeframe: 5
+name: buienalarm
+monitored_conditions:
+  - temperature
+  - precipitation
+  - precipitation_forecast_average
+  - precipitation_forecast_total
+  - next_rain_forecast

@@ -1,0 +1,8 @@
+---
+1st_floor_landing_light_trigger_lux:
+  name: 1st floor landing - Light trigger lux
+  min: 0
+  max: 50
+  step: 1
+  unit_of_measurement: lux
+  icon: mdi:sun-wireless-outline

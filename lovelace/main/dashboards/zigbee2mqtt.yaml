@@ -1,0 +1,3 @@
+---
+views:
+  - !include ../views/zigbee2mqtt.yaml

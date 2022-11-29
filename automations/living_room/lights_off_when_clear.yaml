@@ -1,0 +1,21 @@
+---
+alias: Living room - Lights off when clear
+id: "living_room_lights_off_when_clear"
+description: ""
+trigger:
+  - platform: state
+    entity_id: binary_sensor.living_room_motion_detector_occupancy
+    to: "off"
+condition:
+- alias: "condition alias (name)"
+  condition: time
+  after: "23:00:00"
+  before: "07:00:00"
+action:
+  - service: light.turn_off
+    target:
+      entity_id: light.dining_room_lights
+  - service: light.turn_off
+    target:
+      entity_id: light.living_room_lights
+mode: single

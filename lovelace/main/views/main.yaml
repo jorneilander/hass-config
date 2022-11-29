@@ -1,0 +1,333 @@
+title: ''
+badges: []
+cards:
+  - cards:
+      - cards:
+          - entity: fan.living_room_ceiling_fan
+            icon: mdi:fan-speed-1
+            show_name: false
+            tap_action:
+              action: call-service
+              service: fan.set_preset_mode
+              service_data:
+                entity_id: fan.living_room_ceiling_fan
+                preset_mode: high
+              target:
+                entity_id: fan.living_room_ceiling_fan
+            type: custom:button-card
+          - entity: fan.living_room_ceiling_fan
+            icon: mdi:fan-speed-2
+            show_name: false
+            tap_action:
+              action: call-service
+              service: fan.set_preset_mode
+              service_data:
+                entity_id: fan.living_room_ceiling_fan
+                preset_mode: medium
+              target:
+                entity_id: fan.living_room_ceiling_fan
+            type: custom:button-card
+          - entity: fan.living_room_ceiling_fan
+            icon: mdi:fan-speed-3
+            show_name: false
+            tap_action:
+              action: call-service
+              service: fan.set_preset_mode
+              service_data:
+                entity_id: fan.living_room_ceiling_fan
+                preset_mode: low
+              target:
+                entity_id: fan.living_room_ceiling_fan
+            type: custom:button-card
+        type: horizontal-stack
+    type: vertical-stack
+  - cards:
+      - cards:
+          - entity: light.living_room_lights
+            icon: mdi:lightbulb
+            name: Woonkamer
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            type: custom:button-card
+          - entity: light.dining_room_lights
+            icon: mdi:lightbulb
+            name: Eetkamer
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            type: custom:button-card
+          - entity: light.extension_downlights
+            icon: mdi:lightbulb
+            name: Uitbouw
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            type: custom:button-card
+        type: horizontal-stack
+      - cards:
+          - entity: light.hallway_light
+            icon: mdi:lightbulb
+            name: Hal
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            type: custom:button-card
+          - entity: light.1st_floor_landing_light
+            icon: mdi:lightbulb
+            name: Overloop
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            type: custom:button-card
+          - entity: light.shed_light
+            icon: mdi:lightbulb
+            name: Schuur
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            type: custom:button-card
+          - entity: light.attick_landing_light
+            icon: mdi:lightbulb
+            name: Zolder
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            type: custom:button-card
+        type: horizontal-stack
+    type: vertical-stack
+  - cards:
+      - cards:
+          - entity: sensor.living_room_smart_plug_tv_energy_power
+            icon: mdi:power
+            name: |
+              [[[
+                if (entity.state > 150) return 'TV & Versterker';
+                if (entity.state >= 90 && entity.state < 150) return 'TV';
+                if (entity.state >= 70 && entity.state < 90) return 'Versterker';
+                else return 'Uit'
+              ]]]
+            show_icon: true
+            show_name: true
+            show_state: false
+            styles:
+              icon:
+                - color: |
+                    [[[
+                      if (entity.state > 15) return 'lime';
+                      else return 'red';
+                    ]]]
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_turn_off_media_corner
+            type: custom:button-card
+          - color: rgb(152, 152, 152)
+            entity: automation.living_room_play_nintendo_switch
+            hold_action:
+              action: more-info
+            icon: mdi:nintendo-switch
+            name: Switch
+            show_icon: true
+            show_name: true
+            show_state: false
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_play_nintendo_switch
+            type: custom:button-card
+          - color: rgb(229,9,20)
+            entity: automation.living_room_watch_netflix
+            hold_action:
+              action: more-info
+            icon: mdi:netflix
+            name: Netflix
+            show_icon: true
+            show_name: true
+            show_state: false
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_watch_netflix
+            type: custom:button-card
+        type: horizontal-stack
+      - cards:
+          - color: rgb(30,215,96)
+            entity: automation.living_room_listen_to_spotify
+            hold_action:
+              action: more-info
+            icon: mdi:spotify
+            name: Spotify
+            show_icon: true
+            show_name: true
+            show_state: false
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_listen_to_spotify
+            type: custom:button-card
+          - color: rgb(229, 160, 13)
+            entity: automation.living_room_watch_plex
+            hold_action:
+              action: more-info
+            icon: mdi:plex
+            name: Plex
+            show_icon: true
+            show_name: true
+            show_state: false
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_watch_plex
+            type: custom:button-card
+          - color: white
+            entity: automation.living_room_watch_disney
+            entity_picture: /local/poison_apple.svg
+            hold_action:
+              action: more-info
+            name: Disney+
+            show_entity_picture: true
+            show_icon: true
+            show_name: true
+            show_state: false
+            styles:
+              name:
+                - padding: 0px 10px 15px
+                - font-size: 14px
+                - text-overflow: unset
+                - white-space: unset
+                - word-break: break-word
+            tap_action:
+              action: call-service
+              service: automation.trigger
+              service_data:
+                entity_id: automation.living_room_watch_disney
+            type: custom:button-card
+        type: horizontal-stack
+      - entity: media_player.nvidia_shield
+        hide:
+          volume: true
+        type: custom:mini-media-player
+      - cards:
+          - color: rgb(223, 255, 97)
+            color_type: card
+            icon: mdi:volume-medium
+            tap_action:
+              action: call-service
+              service: mqtt.publish
+              service_data:
+                payload: |
+                  {"Protocol":"NEC","Bits": 32,"Data":"0x4BB6C03F","Repeat": 10}
+                topic: cmnd/Living_room_-_IR_send/irsend
+            type: custom:button-card
+          - color: rgb(223, 255, 97)
+            color_type: card
+            icon: mdi:volume-minus
+            tap_action:
+              action: call-service
+              service: mqtt.publish
+              service_data:
+                payload: |
+                  {"Protocol":"NEC","Bits": 32,"Data":"0x4BB6C03F","Repeat": 0}
+                topic: cmnd/Living_room_-_IR_send/irsend
+            type: custom:button-card
+          - color: rgb(223, 255, 97)
+            color_type: card
+            icon: mdi:volume-mute
+            tap_action:
+              action: call-service
+              service: media_player.volume_up
+              service_data:
+                entity_id: media_player.living_room_speaker
+            type: custom:button-card
+          - color: rgb(223, 255, 97)
+            color_type: card
+            icon: mdi:volume-plus
+            tap_action:
+              action: call-service
+              service: mqtt.publish
+              service_data:
+                payload: |
+                  {"Protocol":"NEC","Bits": 32,"Data":"0x4BB640BF","Repeat": 1}
+                topic: cmnd/Living_room_-_IR_send/irsend
+            type: custom:button-card
+          - color: rgb(223, 255, 97)
+            color_type: card
+            icon: mdi:volume-high
+            tap_action:
+              action: call-service
+              service: mqtt.publish
+              service_data:
+                payload: |
+                  {"Protocol":"NEC","Bits": 32,"Data":"0x4BB640BF","Repeat": 10}
+                topic: cmnd/Living_room_-_IR_send/irsend
+            type: custom:button-card
+        type: horizontal-stack
+    type: vertical-stack

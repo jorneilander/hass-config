@@ -1,0 +1,8 @@
+---
+hallway_light_trigger_lux:
+  name: Hallway - Light trigger lux
+  min: 0
+  max: 50
+  step: 1
+  unit_of_measurement: lux
+  icon: mdi:sun-wireless-outline

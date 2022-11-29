@@ -38,9 +38,6 @@ www
 home-assistant.log
 ozw_log.txt
 
-# Development files
-custom_components/
-
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -58,3 +55,15 @@ custom_components/
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,homeassistant
+
+.storage
+
+# Generic ignores
+*.log
+*.log.*
+*.db
+*.db-shm
+*.db-wal
+*.pyc
+._*
+__pycache__

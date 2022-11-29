@@ -1,0 +1,14 @@
+---
+alias: Hallway Light - Off when clear
+id: "hallway_light_off_when_clear"
+description: ""
+trigger:
+  - platform: state
+    entity_id: binary_sensor.hallway_motion_detector_occupancy
+    to: "off"
+condition: []
+action:
+  - service: light.turn_off
+    target:
+      entity_id: light.hallway_light
+mode: single

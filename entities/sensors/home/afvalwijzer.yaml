@@ -9,8 +9,8 @@ resources:
   - trash_type_today
   - trash_type_tomorrow
 location: alkmaar
-postcode: !env_var SECRET_HOME_POSTAL_CODE
-streetnumber: !env_var SECRET_HOME_STREET_NUMBER
+postcode: !secret SECRET_HOME_POSTAL_CODE
+streetnumber: !secret SECRET_HOME_STREET_NUMBER
 streetnumbersuffix: ""
 dateformat: "%d-%m-%Y"
 locale: "nl"

@@ -1,8 +1,8 @@
 ---
 api_version: 2
 ssl: false
-host: !env_var SECRET_INFLUXDB_HOST
-port: !env_var SECRET_INFLUXDB_PORT
-token: !env_var SECRET_INFLUXDB_TOKEN
+host: !secret SECRET_INFLUXDB_HOST
+port: !secret SECRET_INFLUXDB_PORT
+token: !secret SECRET_INFLUXDB_TOKEN
 organization: fba098d80b9612f9
 bucket: "home-assistant"

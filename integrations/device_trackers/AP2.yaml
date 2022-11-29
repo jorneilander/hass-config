@@ -1,6 +1,6 @@
 ---
 platform: luci
-host: !env_var SECRET_DEVICE_TRACKER_AP2_HOST
-username: !env_var SECRET_DEVICE_TRACKER_AP2_USERNAME
-password: !env_var SECRET_DEVICE_TRACKER_AP2_PASSWORD
+host: !secret SECRET_DEVICE_TRACKER_AP2_HOST
+username: !secret SECRET_DEVICE_TRACKER_AP2_USERNAME
+password: !secret SECRET_DEVICE_TRACKER_AP2_PASSWORD
 ssl: true

@@ -1,7 +1,7 @@
 platform: androidtv
 name: nVidia Shield
 device_class: androidtv
-host: !env_var SECRET_MEDIA_PLAYER_LIVING_ROOM_NVIDIA_SHIELD_HOST
+host: !secret SECRET_MEDIA_PLAYER_LIVING_ROOM_NVIDIA_SHIELD_HOST
 adbkey: "/secrets/adb-keys/adbkey"
 exclude_unnamed_apps: true
 apps:

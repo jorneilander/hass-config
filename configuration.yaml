@@ -15,8 +15,8 @@ homeassistant:
   temperature_unit: C
   currency: EUR
 
-  external_url: !secret SECRET_HASS_EXTERNAL_URL
-  internal_url: !secret SECRET_HASS_INTERNAL_URL
+  # external_url: !secret SECRET_HASS_EXTERNAL_URL
+  # internal_url: !secret SECRET_HASS_INTERNAL_URL
 
   # Load packages
   packages: !include_dir_named packages
@@ -35,7 +35,7 @@ lovelace: !include ./integrations/lovelace.yaml
 prometheus: !include ./integrations/prometheus.yaml
 recorder: !include ./integrations/recorder.yaml
 script: !include_dir_merge_named ./scripts/
-telegram_bot: !include ./integrations/telegram_bot.yaml
+# telegram_bot: !include ./integrations/telegram_bot.yaml
 utility_meter: !include ./entities/utility_meter.yaml
 webhook:
 notify: !include_dir_list ./integrations/notify/
@@ -44,7 +44,7 @@ rest_command: !include_dir_merge_named ./integrations/rest_commands/
 # webhook: !include integrations/webhooks.yaml
 
 # Entities
-fan: !include_dir_list ./entities/fans/
+# fan: !include_dir_list ./entities/fans/
 input_number: !include_dir_merge_named ./entities/input_numbers/
 # media_player: !include_dir_list ./entities/media_players/
 sensor: !include_dir_list ./entities/sensors/

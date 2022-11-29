@@ -51,9 +51,3 @@ sensor: !include_dir_list ./entities/sensors/
 switch: !include_dir_list ./entities/switches/
 zone: !include_dir_list ./entities/zones/
 
-panel_iframe:
-  networkmap:
-    title: 'Zigbee Map'
-    url: '/local/community/zigbee2mqtt_networkmap/map.html'
-    icon: 'mdi:graphql'
-

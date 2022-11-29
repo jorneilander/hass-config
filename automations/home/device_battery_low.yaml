@@ -11,9 +11,9 @@ use_blueprint:
         message: |
           The following sensors are running low on battery:
           {{sensors}}
-    - service: notify.mobile_app_geironul
-      data:
-        message: |
-          The following sensors are running low on battery:
-          {{sensors}}
+    # - service: notify.mobile_app_geironul
+    #   data:
+    #     message: |
+    #       The following sensors are running low on battery:
+    #       {{sensors}}
 

@@ -1,8 +1,4 @@
 ---
-- url: /hacsfiles/zigbee2mqtt-networkmap/zigbee2mqtt-networkmap.js
-  type: module
-- url: /hacsfiles/text-element/text-element.js
-  type: module
 - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
   type: module
 - url: /hacsfiles/button-card/button-card.js

@@ -7,12 +7,12 @@ trigger:
     from: "off"
     to: "on"
 action:
-  - alias: "Front door opened notice"
-    service: notify.mobile_app_geironul
-    data:
-      message: "Front door has been opened"
-      data:
-        sticky: false
+  # - alias: "Front door opened notice"
+  #   service: notify.mobile_app_geironul
+  #   data:
+  #     message: "Front door has been opened"
+  #     data:
+  #       sticky: false
   - alias: "Turn on hallway light"
     service: light.turn_on
     data:

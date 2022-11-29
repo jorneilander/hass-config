@@ -1,6 +1,8 @@
 ---
 default_config:
 mobile_app:
+logger:
+  default: info
 
 homeassistant:
   name: Home

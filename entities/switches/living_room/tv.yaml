@@ -1,9 +1,0 @@
----
-name: "Living Room - TV"
-platform: mqtt
-command_topic: "cmnd/Living_room_-_IR_send/irsend"
-optimistic: true
-payload_on: >
-  {"Protocol":"PANASONIC","Bits":48,"Data":0x400401007C7D,"repeat": 3}
-payload_off: >
-  {"Protocol":"PANASONIC","Bits":48,"Data":0x40040100FCFD,"repeat": 3}

@@ -1,0 +1,8 @@
+---
+living_room_light_trigger_lux:
+  name: Living room - Light trigger lux
+  min: 0
+  max: 50
+  step: 1
+  unit_of_measurement: lux
+  icon: mdi:sun-wireless-outline

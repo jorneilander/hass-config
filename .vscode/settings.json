@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "**/*.y*ml": "home-assistant"
+  },
+  "files.watcherExclude": {
+    "**/target": true
+  }
+}

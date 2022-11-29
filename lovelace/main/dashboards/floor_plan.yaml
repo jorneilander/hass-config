@@ -1,0 +1,7 @@
+---
+views:
+  - !include ../views/floor_plan_ground_floor.yaml
+  - !include ../views/floor_plan_first_floor.yaml
+  - !include ../views/floor_plan_attick.yaml
+  - !include ../views/living_room.yaml
+  - !include ../views/knopjes.yaml

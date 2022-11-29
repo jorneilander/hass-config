@@ -1,0 +1,90 @@
+---
+title: 1st Floor
+icon: 'mdi:bed'
+panel: true
+path: 1st-floor
+badges: []
+cards:
+  - elements:
+      - entity: binary_sensor.1st_floor_landing_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 34%
+          top: 65%
+        type: state-icon
+      - entity: binary_sensor.bedroom_eline_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 52%
+          top: 65%
+        type: state-icon
+      - entity: binary_sensor.bedroom_master_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 17%
+          top: 35%
+        type: state-icon
+      - entity: sensor.bedroom_master_climate_sensor_temperature
+        style:
+          color: black
+          font-size: x-small
+          left: 17%
+          top: 49%
+        type: state-label
+      - entity: binary_sensor.bedroom_julien_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 48%
+          top: 22%
+        type: state-icon
+      - entity: sensor.bedroom_julien_climate_sensor_temperature
+        style:
+          color: black
+          font-size: x-small
+          left: 48%
+          top: 35%
+        type: state-label
+      - entity: binary_sensor.bedroom_eline_window_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 60%
+          top: 65%
+        type: state-icon
+      - entity: binary_sensor.bedroom_julien_window_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 60%
+          top: 29%
+        type: state-icon
+      - entity: light.1st_floor_landing_light
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 28%
+          top: 65%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: sensor.bedroom_eline_climate_sensor_temperature
+        style:
+          color: black
+          font-size: x-small
+          left: 52%
+          top: 81%
+        type: state-label
+      - entity: binary_sensor.1st_floor_landing_motion_detector_occupancy
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 31%
+          top: 65%
+        type: state-icon
+    image: >-
+      https://images.cannonfodder.nl/homeassistant/Floor%20Plan/1st%20Floor.png
+    type: picture-elements

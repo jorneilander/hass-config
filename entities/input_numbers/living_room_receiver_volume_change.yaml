@@ -1,0 +1,7 @@
+---
+living_room_receiver_volume_change:
+  name: Change volume
+  initial: 0
+  min: -20
+  max: +20
+  step: 1

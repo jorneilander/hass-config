@@ -1,0 +1,11 @@
+alias: External lights - Off when sunrise
+id: "external_lights_off_when_sunrise"
+description: ""
+trigger:
+  - event: sunrise
+    platform: sun
+condition: []
+action:
+  - service: light.turn_off
+    data: {}
+    entity_id: light.outside_lights

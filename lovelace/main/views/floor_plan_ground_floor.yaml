@@ -1,0 +1,251 @@
+---
+icon: 'mdi:television-guide'
+panel: true
+path: ''
+title: Ground Floor
+badges: []
+cards:
+  - elements:
+      - entity: binary_sensor.living_room_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 25%
+          top: 35%
+        type: state-icon
+      - entity: light.living_room_lights
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 20%
+          top: 35%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: light.dining_room_lights
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 52%
+          top: 78%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: binary_sensor.pantry_door_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 94%
+          top: 29%
+        type: state-icon
+      - entity: binary_sensor.pantry_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 80.5%
+          top: 20%
+        type: state-icon
+      - entity: binary_sensor.dining_room_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 52%
+          top: 61%
+        type: state-icon
+      - entity: binary_sensor.hallway_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 21%
+          top: 75%
+        type: state-icon
+      - entity: light.hallway_light
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 18%
+          top: 75%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: light.living_room_light_kitchen_corner
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 39%
+          top: 15%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: light.living_room_light_window_corner
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 8%
+          top: 15%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: light.living_room_light_tv_corner
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 9%
+          top: 55%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: light.front_light
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 2%
+          top: 57%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: light.garden_light_pantry
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 95%
+          top: 48%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: light.extension_downlights
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 78%
+          top: 63%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: binary_sensor.extension_door_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 90%
+          top: 63%
+        type: state-icon
+      - entity: switch.living_room_smart_plug_tv
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 15%
+          top: 56%
+        type: state-icon
+      - conditions:
+          - entity: switch.living_room_smart_plug_tv
+            state: 'on'
+        elements:
+          - entity: sensor.living_room_smart_plug_tv_energy_power
+            style:
+              color: black
+              font-size: x-small
+              left: 15%
+              top: 58%
+            type: state-label
+        type: conditional
+      - entity: sensor.power_consumption
+        style:
+          color: black
+          font-size: x-small
+          left: 22%
+          top: 65%
+        type: state-label
+      - entity: sensor.utility_closet_smart_plug_energy_power
+        style:
+          color: black
+          font-size: x-small
+          left: 22%
+          top: 70%
+        type: state-label
+      - entity: sensor.dining_room_smart_plug_table_energy_power
+        style:
+          color: black
+          font-size: x-small
+          left: 52%
+          top: 88%
+        type: state-label
+      - style:
+          color: black
+          left: 71%
+          top: 93%
+        text: 'Shed:'
+        type: 'custom:text-element'
+      - entity: binary_sensor.shed_door_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 79%
+          top: 93%
+        type: state-icon
+      - entity: binary_sensor.shed_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 83%
+          top: 93%
+        type: state-icon
+      - entity: light.shed_light
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 75%
+          top: 93%
+        tap_action:
+          action: toggle
+        type: state-icon
+      - entity: sensor.shed_fridge_climate_sensor_temperature
+        style:
+          color: black
+          left: 87%
+          top: 93%
+        type: state-label
+      - entity: sensor.kitchen_fridge_climate_sensor_temperature
+        style:
+          font-size: x-small
+          color: black
+          left: 48%
+          top: 38%
+        type: state-label
+      - entity: sensor.dining_room_climate_sensor_temperature
+        style:
+          color: black
+          font-size: x-small
+          left: 35%
+          top: 40%
+        type: state-label
+      - entity: binary_sensor.hallway_door_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 6%
+          top: 70%
+        type: state-icon
+      - entity: binary_sensor.living_room_door_sensor_contact
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 28%
+          top: 73%
+        type: state-icon
+      - entity: binary_sensor.living_room_motion_detector_occupancy
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 39%
+          top: 48%
+        type: state-icon
+      - entity: binary_sensor.hallway_motion_detector_occupancy
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 18%
+          top: 70%
+        type: state-icon
+    image: >-
+      https://images.cannonfodder.nl/homeassistant/Floor%20Plan/Ground%20Floor.png
+    type: picture-elements

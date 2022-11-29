@@ -1,0 +1,15 @@
+---
+- url: /hacsfiles/zigbee2mqtt-networkmap/zigbee2mqtt-networkmap.js
+  type: module
+- url: /hacsfiles/text-element/text-element.js
+  type: module
+- url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+  type: module
+- url: /hacsfiles/button-card/button-card.js
+  type: module
+- url: /hacsfiles/entity-attributes-card/entity-attributes-card.js
+  type: module
+- url: /hacsfiles/battery-state-card/battery-state-card.js
+  type: module
+- url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
+  type: module

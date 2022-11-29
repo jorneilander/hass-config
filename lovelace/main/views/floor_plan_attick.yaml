@@ -1,0 +1,61 @@
+---
+icon: 'mdi:account-hard-hat'
+panel: true
+path: ''
+title: Attick
+badges: []
+cards:
+  - elements:
+      - entity: sensor.study_climate_sensor_temperature
+        style:
+          color: black
+          font-size: x-small
+          left: 35%
+          top: 43%
+        type: state-label
+      - entity: sensor.server_room_smart_plug_energy_power
+        style:
+          color: black
+          font-size: small
+          left: 10%
+          top: 80%
+        type: state-label
+      - entity: sensor.study_smart_plug_jorn_energy_power
+        style:
+          color: black
+          font-size: small
+          left: 25%
+          top: 20%
+        type: state-label
+      - entity: binary_sensor.study_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 37%
+          top: 30%
+        type: state-icon
+      - entity: binary_sensor.attick_landing_motion_detector_occupancy
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 43%
+          top: 87%
+        type: state-icon
+      - entity: binary_sensor.attick_landing_smoke_detector_smoke
+        style:
+          '--paper-item-icon-active-color': red
+          '--paper-item-icon-color': green
+          left: 38%
+          top: 65%
+        type: state-icon
+      - entity: light.attick_landing_light
+        style:
+          '--paper-item-icon-active-color': darkorange
+          '--paper-item-icon-color': black
+          left: 33%
+          top: 65%
+        tap_action:
+          action: toggle
+        type: state-icon
+    image: 'https://images.cannonfodder.nl/homeassistant/Floor%20Plan/Attick.png'
+    type: picture-elements

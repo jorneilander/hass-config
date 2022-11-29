@@ -1,0 +1,14 @@
+---
+alias: Shed - Light off on door close
+id: "light_off_when_door_closes"
+description: ""
+trigger:
+  - platform: state
+    entity_id: binary_sensor.shed_door_sensor_contact
+    to: "off"
+condition: []
+action:
+  - service: light.turn_off
+    target:
+      entity_id: light.shed_light
+mode: single

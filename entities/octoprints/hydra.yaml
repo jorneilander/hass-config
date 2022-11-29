@@ -1,0 +1,6 @@
+---
+host: !env_var SECRET_OCTOPI_HYDRA_HOST
+api_key: !env_var SECRET_OCTOPI_HYDRA_API_KEY
+name: Hydra
+bed: true
+number_of_tools: 2

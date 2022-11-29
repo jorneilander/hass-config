@@ -1,0 +1,38 @@
+---
+alias: Garbage alert
+id: "garbage_collection_alert"
+mode: single
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.afvalinfo_home_gft
+      - sensor.afvalinfo_home_papier
+      - sensor.afvalinfo_home_pbd
+    attribute: is_collection_date_today
+    to: true
+condition: []
+action:
+  - service: telegram_bot.send_message
+    data:
+      message: |
+        🚮 {{ trigger.to_state.attributes.friendly_name }} 🚮
+
+        Today is garbage day!
+
+        Upcoming garbage collections
+        Zwart (PMD)   {{ states('sensor.afvalinfo_home_pbd') }} - {{ state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') }} day(s)
+        Groen (GFT)   {{ states('sensor.afvalinfo_home_gft') }} - {{ state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') }} day(s)
+        Blauw (PAP)   {{ states('sensor.afvalinfo_home_papier') }} - {{ state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') }} day(s)
+  - service: notify.mobile_app_geironul
+    data:
+      message: |
+        🚮 {{ trigger.to_state.attributes.friendly_name }} 🚮
+
+        Today is garbage day!
+
+        Upcoming garbage collections
+        Zwart (PMD)   {{ states('sensor.afvalinfo_home_pbd') }} - {{ state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') }} day(s)
+        Groen (GFT)   {{ states('sensor.afvalinfo_home_gft') }} - {{ state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') }} day(s)
+        Blauw (PAP)   {{ states('sensor.afvalinfo_home_papier') }} - {{ state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') }} day(s)
+      data:
+        sticky: true

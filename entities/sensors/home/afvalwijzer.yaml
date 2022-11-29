@@ -1,0 +1,17 @@
+---
+platform: afvalinfo
+id: Home
+resources:
+  - gft
+  - pbd
+  - papier
+  - restafval
+  - trash_type_today
+  - trash_type_tomorrow
+location: alkmaar
+postcode: !env_var SECRET_HOME_POSTAL_CODE
+streetnumber: !env_var SECRET_HOME_STREET_NUMBER
+streetnumbersuffix: ""
+dateformat: "%d-%m-%Y"
+locale: "nl"
+timespanindays: 365

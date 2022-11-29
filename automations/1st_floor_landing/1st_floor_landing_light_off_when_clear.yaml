@@ -1,0 +1,15 @@
+---
+id: 1st_floor_landing_lights_on_when_movement
+alias: 1st floor landing - Lights on when movement
+trigger:
+  - platform: state
+    entity_id: binary_sensor.1st_floor_landing_motion_detector_occupancy
+    from: "on"
+    to: "off"
+condition:
+action:
+  - alias: "Turn on 1st floor landing light"
+    service: light.turn_off
+    target:
+      entity_id: light.1st_floor_landing_light
+

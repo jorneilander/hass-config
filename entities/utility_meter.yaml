@@ -8,7 +8,7 @@ daily_energy_peak:
   name: Daily Energy (Peak)
   cycle: daily
 daily_gas:
-  source: sensor.gas_consumption
+  source: sensor.gas_meter_gas_consumption
   name: Daily Gas
   cycle: daily
 monthly_energy_offpeak:
@@ -20,6 +20,6 @@ monthly_energy_peak:
   name: Monthly Energy (Peak)
   cycle: monthly
 monthly_gas:
-  source: sensor.gas_consumption
+  source: sensor.gas_meter_gas_consumption
   name: Monthly Gas
   cycle: monthly

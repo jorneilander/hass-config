@@ -1,0 +1,10 @@
+---
+alias: Backup - Create full backup
+id: create_backup
+trigger:
+  - platform: time_pattern
+    hours: "3"
+    minutes: "0"
+    seconds: "0"
+action:
+  - service: hassio.backup_full

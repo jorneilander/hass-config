@@ -1,0 +1,12 @@
+---
+alias: Backup - Upload backups to Borgbase
+id: upload_backups_to_borgbase
+trigger:
+  - platform: time_pattern
+    hours: "5"
+    minutes: "0"
+    seconds: "0"
+action:
+  - service: hassio.addon_start
+    data:
+      addon: f51ab629_borg_backup

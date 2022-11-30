@@ -1,9 +1,9 @@
 ---
-# platform: p2000
-# name: Home
-# regios: 10
-# disciplines: 1,2,3,4
-# radius: 10000
-# scan_interval: 10
-# latitude: !secret SECRET_HOME_LATITUDE
-# longitude: !secret SECRET_HOME_LONGITUDE
+platform: p2000
+name: Home
+regios: 10
+disciplines: 1,2,3,4
+radius: 10000
+scan_interval: 10
+latitude: !secret SECRET_HOME_LATITUDE
+longitude: !secret SECRET_HOME_LONGITUDE

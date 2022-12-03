@@ -17,8 +17,8 @@ homeassistant:
   temperature_unit: C
   currency: EUR
 
-  # external_url: !secret SECRET_HASS_EXTERNAL_URL
-  # internal_url: !secret SECRET_HASS_INTERNAL_URL
+  external_url: !secret SECRET_HASS_EXTERNAL_URL
+  internal_url: !secret SECRET_HASS_INTERNAL_URL
 
   # Load packages
   packages: !include_dir_named packages

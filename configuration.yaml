@@ -9,6 +9,7 @@ homeassistant:
   legacy_templates: false
 
   time_zone: Europe/Amsterdam
+  country: NL
   latitude: !secret SECRET_HOME_LATITUDE
   longitude: !secret SECRET_HOME_LONGITUDE
   elevation: !secret SECRET_HOME_ELEVATION

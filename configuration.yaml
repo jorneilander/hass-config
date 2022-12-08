@@ -27,7 +27,8 @@ homeassistant:
   media_dirs:
     local: /media
 
-  allowlist_external_dirs: /
+  allowlist_external_dirs:
+    - "/"
 
 # Integrations
 automation: !include_dir_list ./automations/

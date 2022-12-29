@@ -8,4 +8,4 @@ action:
     data_template:
       ## use 1h before now, to make sure we use yesterdays date
       date: "{{ (now() - timedelta(hours = 1)).date() }}"
-      meter_reading: "{{ states('sensor.gas_meter_gas_consumption') }}"
+      meter_reading: "{{ states('sensor.gas_meter_gas_consumption_2') }}"

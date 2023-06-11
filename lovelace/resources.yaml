@@ -11,3 +11,5 @@
   type: module
 - url: /hacsfiles/lovelace-wallpanel/wallpanel.js
   type: module
+- url: /hacsfiles/todoist-card/todoist-card.js
+  type: module

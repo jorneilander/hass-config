@@ -1,0 +1,13 @@
+name: mobile_jorn_maeike_priority_high
+platform: group
+services:
+  - service: mobile_app_jorns_iphone
+    data:
+      data:
+        ttl: 0
+        priority: high
+  - service: mobile_app_sigrun
+    data:
+      data:
+        ttl: 0
+        priority: high

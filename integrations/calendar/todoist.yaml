@@ -1,6 +1,5 @@
 ---
-platform: todoist
-token: !secret SECRET_TODOIST_API_TOKEN
+platform: rest
 name: To-do List
 method: GET
 resource: 'https://api.todoist.com/sync/v9/projects/get_data'

@@ -7,7 +7,7 @@ resource: 'https://api.todoist.com/sync/v9/projects/get_data'
 params:
   project_id: 1518100023
 headers:
-  Authorization: !secret todoist_api_token
+  Authorization: !secret SECRET_TODOIST_API_TOKEN
 value_template: '{{ value_json[''project''][''id''] }}'
 json_attributes:
   - project

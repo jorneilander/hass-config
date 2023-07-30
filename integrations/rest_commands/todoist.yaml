@@ -1,0 +1,8 @@
+---
+todoist:
+  method: post
+  url: 'https://api.todoist.com/sync/v9/{{ url }}'
+  payload: '{{ payload }}'
+  headers:
+    Authorization: !secret SECRET_TODOIST_API_TOKEN
+  content_type: 'application/x-www-form-urlencoded'

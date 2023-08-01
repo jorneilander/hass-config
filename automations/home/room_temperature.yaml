@@ -14,7 +14,7 @@ trigger:
     for:
       minutes: 10
 action:
-  - service: telegram_bot.send_message
+  - service: notify.mobile_app_jorns_iphone
     data:
       message: '🥵 Room temperature 🥶
 

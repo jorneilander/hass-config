@@ -6,14 +6,10 @@ use_blueprint:
   path: sbyx/low-battery-level-detection-notification-for-all-battery-sensors.yaml
   input:
     actions:
-    - service: telegram_bot.send_message
+    - service: notify.mobile_app_jorns_iphone
       data:
         message: |
           The following sensors are running low on battery:
           {{sensors}}
-    # - service: notify.mobile_app_geironul
-    #   data:
-    #     message: |
-    #       The following sensors are running low on battery:
-    #       {{sensors}}
+
 

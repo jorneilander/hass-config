@@ -25,3 +25,5 @@
   type: module
 - url: /hacsfiles/my-cards/my-cards.js
   type: module
+- url: /hacsfiles/lovelace-state-switch/state-switch.js
+  type: module

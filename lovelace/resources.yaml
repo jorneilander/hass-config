@@ -23,3 +23,5 @@
   type: module
 - url: /hacsfiles/simple-weather-card/simple-weather-card-bundle.js
   type: module
+- url: /hacsfiles/my-cards/my-cards.js
+  type: module

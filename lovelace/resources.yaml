@@ -13,7 +13,13 @@
   type: module
 - url: /hacsfiles/todoist-card/todoist-card.js
   type: module
-- url: /local/mini-graph-card-bundle.js
+- url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
   type: module
 - url: /hacsfiles/lovelace-layout-card/layout-card.js
+  type: module
+- url: /hacsfiles/lovelace-card-mod/card-mod.js
+  type: module
+- url: /hacsfiles/light-entity-card/light-entity-card.js
+  type: module
+- url: /hacsfiles/simple-weather-card/simple-weather-card-bundle.js
   type: module

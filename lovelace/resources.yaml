@@ -27,3 +27,6 @@
   type: module
 - url: /hacsfiles/lovelace-state-switch/state-switch.js
   type: module
+- url: /hacsfiles/weather-radar-card/weather-radar-card.js
+  type: module
+

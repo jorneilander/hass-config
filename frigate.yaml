@@ -1,17 +1,17 @@
 ---
 mqtt:
   enabled: True
-  host: !secret SECRET_FRIGATE_MQTT_HOST
-  user: !secret SECRET_FRIGATE_MQTT_USERNAME
-  password: !secret SECRET_FRIGATE_MQTT_PASSWORD
+  host: "{FRIGATE_MQTT_HOST}"
+  user: "{FRIGATE_MQTT_USERNAME}"
+  password: "{FRIGATE_MQTT_PASSWORD}"
 
 cameras:
   doorbell: # <--- this will be changed to your actual camera later
     enabled: true
-    webui_url: !secret SECRET_FRIGATE_CAMERA1_WEBUI_URL
+    webui_url: "{FRIGATE_CAMERA1_WEBUI_URL}"
     ffmpeg:
       inputs:
-        - path: !secret SECRET_FRIGATE_CAMERA1_PATH
+        - path: "{FRIGATE_CAMERA1_PATH}"
           roles:
             - audio
             - detect

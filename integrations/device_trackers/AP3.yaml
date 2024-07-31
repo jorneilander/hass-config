@@ -1,0 +1,6 @@
+---
+platform: luci
+host: !secret SECRET_DEVICE_TRACKER_AP3_HOST
+username: !secret SECRET_DEVICE_TRACKER_AP3_USERNAME
+password: !secret SECRET_DEVICE_TRACKER_AP3_PASSWORD
+ssl: true

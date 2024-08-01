@@ -1,0 +1,6 @@
+---
+platform: xiaomi_miio_fan
+name: Xiaomi SmartMi Standing Fan 3
+model: zhimi.fan.za5
+host: !secret SECRET_FAN_XIAOMI_SMART_FAN_3_HOST
+token: !secret SECRET_FAN_XIAOMI_SMART_FAN_3_TOKEN

@@ -19,17 +19,19 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.helpers.event import async_call_later
+from homeassistant.helpers.issue_registry import IssueSeverity, async_create_issue
 from homeassistant.helpers.start import async_at_start
 from homeassistant.loader import async_get_integration
 import voluptuous as vol
 
-from custom_components.hacs.frontend import async_register_frontend
-
 from .base import HacsBase
 from .const import DOMAIN, MINIMUM_HA_VERSION, STARTUP
+from .data_client import HacsDataClient
 from .enums import ConfigurationType, HacsDisabledReason, HacsStage, LovelaceMode
+from .frontend import async_register_frontend
 from .utils.configuration_schema import hacs_config_combined
 from .utils.data import HacsData
+from .utils.logger import LOGGER
 from .utils.queue_manager import QueueManager
 from .utils.version import version_left_higher_or_equal_then_right
 from .websocket import async_register_websocket_commands
@@ -88,6 +90,10 @@ async def async_initialize_integration(
     hacs.hass = hass
     hacs.queue = QueueManager(hass=hass)
     hacs.data = HacsData(hacs=hacs)
+    hacs.data_client = HacsDataClient(
+        session=clientsession,
+        client_name=f"HACS/{integration.version}",
+    )
     hacs.system.running = True
     hacs.session = clientsession
 
@@ -154,8 +160,9 @@ async def async_initialize_integration(
             hacs.disable_hacs(HacsDisabledReason.RESTORE)
             return False
 
-        can_update = await hacs.async_can_update()
-        hacs.log.debug("Can update %s repositories", can_update)
+        if not hacs.configuration.experimental:
+            can_update = await hacs.async_can_update()
+            hacs.log.debug("Can update %s repositories", can_update)
 
         hacs.set_active_categories()
 
@@ -169,14 +176,12 @@ async def async_initialize_integration(
             hacs.log.info("Update entities are only supported when using UI configuration")
 
         else:
-            if hacs.configuration.experimental:
-                hass.config_entries.async_setup_platforms(
-                    hacs.configuration.config_entry, [Platform.SENSOR, Platform.UPDATE]
-                )
-            else:
-                hass.config_entries.async_setup_platforms(
-                    hacs.configuration.config_entry, [Platform.SENSOR]
-                )
+            await hass.config_entries.async_forward_entry_setups(
+                config_entry,
+                [Platform.SENSOR, Platform.UPDATE]
+                if hacs.configuration.experimental
+                else [Platform.SENSOR],
+            )
 
         hacs.set_stage(HacsStage.SETUP)
         if hacs.system.disabled:
@@ -214,6 +219,24 @@ async def async_initialize_integration(
 
 async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
     """Set up this integration using yaml."""
+    if DOMAIN in config:
+        async_create_issue(
+            hass,
+            DOMAIN,
+            "deprecated_yaml_configuration",
+            is_fixable=False,
+            issue_domain=DOMAIN,
+            severity=IssueSeverity.WARNING,
+            translation_key="deprecated_yaml_configuration",
+            learn_more_url="https://hacs.xyz/docs/configuration/options",
+        )
+        LOGGER.warning(
+            "YAML configuration of HACS is deprecated and will be "
+            "removed in version 2.0.0, there will be no automatic "
+            "import of this. "
+            "Please remove it from your configuration, "
+            "restart Home Assistant and use the UI to configure it instead."
+        )
     return await async_initialize_integration(hass=hass, config=config)
 
 
@@ -228,6 +251,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Handle removal of an entry."""
     hacs: HacsBase = hass.data[DOMAIN]
+
+    if hacs.queue.has_pending_tasks:
+        hacs.log.warning("Pending tasks, can not unload, try again later.")
+        return False
 
     # Clear out pending queue
     hacs.queue.clear()
@@ -262,5 +289,6 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
 
 async def async_reload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     """Reload the HACS config entry."""
-    await async_unload_entry(hass, config_entry)
+    if not await async_unload_entry(hass, config_entry):
+        return
     await async_setup_entry(hass, config_entry)

@@ -1,0 +1,19 @@
+{
+  "domain": "electrolux_status",
+  "name": "Electrolux Care Integration V2",
+  "codeowners": [
+    "@albaintor"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/albaintor/homeassistant_electrolux_status",
+  "homekit": {},
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/albaintor/homeassistant_electrolux_status/issues",
+  "requirements": [
+    "pyelectroluxocp==0.0.16"
+  ],
+  "ssdp": [],
+  "version": "1.0.0",
+  "zeroconf": []
+}

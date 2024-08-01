@@ -1,0 +1,31 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Electrolux Status",
+        "description": "Si vous avez besoin d'aide dans la configuration consultez ce site: https://github.com/albaintor/homeassistant_electrolux_status",
+        "data": {
+          "username": "Identifiant",
+          "password": "Mot de passe",
+          "region": "Région (emea, apac, na, latam ou frigidaire)",
+          "language": "Electrolux fournit les capteurs"
+        }
+      }
+    },
+    "error": {
+      "auth": "Identifiant/mot de passe incorrect."
+    },
+    "abort": {
+      "single_instance_allowed": "Une seule instance est autorisée."
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "data": {
+          "renew_interval": "Fréquence de renouvellement de la websocket (secondes)"
+        }
+      }
+    }
+  }
+}

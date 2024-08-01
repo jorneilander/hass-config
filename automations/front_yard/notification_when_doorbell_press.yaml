@@ -50,6 +50,9 @@ action:
         event_type: mobile_app_notification_action
         event_data:
           action: "{{ action_not_coming }}"
+    timeout:
+      minutes: "1"
+    continue_on_timeout: false
   - alias: "Perform the action"
     choose:
       - conditions: "{{ wait.trigger.event.data.action == action_coming }}"

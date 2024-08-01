@@ -1,8 +1,15 @@
 import logging
 from datetime import timedelta
 
+DOMAIN = "afvalinfo"
+
 SENSOR_TYPES = {
+    "cleanprofsgft": ["CleanprofsGft", "mdi:recycle"],
+    "cleanprofspbd": ["CleanprofsPbd", "mdi:recycle"],
+    "cleanprofsrestafval": ["CleanprofsRestafval", "mdi:recycle"],
     "gft": ["GFT", "mdi:recycle"],
+    "grofvuil": ["Grofvuil", "mdi:recycle"],
+    "kca": ["KCA", "mdi:recycle"],
     "kerstboom": ["Kerstboom", "mdi:recycle"],
     "papier": ["Papier", "mdi:recycle"],
     "pbd": ["PBD", "mdi:recycle"],
@@ -15,7 +22,7 @@ SENSOR_TYPES = {
 
 SENSOR_LOCATIONS_TO_URL = {
     "trashapi": [
-        "http://trashapi.azurewebsites.net/trash?Location={0}&ZipCode={1}&HouseNumber={2}&HouseNumberSuffix={3}&DiftarCode={4}"
+        "https://trashapi.azurewebsites.net/trash?Location={0}&ZipCode={1}&HouseNumber={2}&HouseNumberSuffix={3}&District={4}&DiftarCode={5}&ShowWholeYear={6}&GetCleanprofsData={7}"
     ]
 }
 
@@ -61,27 +68,29 @@ NUMBER_TO_MONTH = {
     12: "december",
 }
 
-CONF_CITY = "city"
+CONF_ENABLED_SENSORS = "sensors"
 CONF_LOCATION = "location"
 CONF_POSTCODE = "postcode"
 CONF_STREET_NUMBER = "streetnumber"
 CONF_STREET_NUMBER_SUFFIX = "streetnumbersuffix"
+CONF_DISTRICT = "district"
+CONF_GET_WHOLE_YEAR = "getwholeyear"
 CONF_DATE_FORMAT = "dateformat"
-CONF_TIMESPAN_IN_DAYS = "timespanindays"
 CONF_LOCALE = "locale"
 CONF_ID = "id"
 CONF_NO_TRASH_TEXT = "notrashtext"
 CONF_DIFTAR_CODE = "diftarcode"
 SENSOR_PREFIX = "Afvalinfo "
+ATTR_ERROR = "error"
 ATTR_LAST_UPDATE = "last_update"
-ATTR_HIDDEN = "hidden"
 ATTR_IS_COLLECTION_DATE_TODAY = "is_collection_date_today"
 ATTR_DAYS_UNTIL_COLLECTION_DATE = "days_until_collection_date"
 ATTR_YEAR_MONTH_DAY_DATE = "year_month_day_date"
 ATTR_FRIENDLY_NAME = "friendly_name"
 ATTR_LAST_COLLECTION_DATE = "last_collection_date"
 ATTR_TOTAL_COLLECTIONS_THIS_YEAR = "total_collections_this_year"
+ATTR_WHOLE_YEAR_DATES = "whole_year_dates"
 
 _LOGGER = logging.getLogger(__name__)
 
-MIN_TIME_BETWEEN_UPDATES = timedelta(hours=1)
+MIN_TIME_BETWEEN_UPDATES = timedelta(hours=2, minutes=30)

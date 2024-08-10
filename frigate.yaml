@@ -6,13 +6,49 @@ mqtt:
   password: "{FRIGATE_MQTT_PASSWORD}"
 
 cameras:
-  doorbell: # <--- this will be changed to your actual camera later
+  doorbell:
     enabled: true
     webui_url: "{FRIGATE_CAMERA1_WEBUI_URL}"
+    detect:
+      width: 1280
+      height: 720
+      fps: 5
     ffmpeg:
+      output_args:
+        record: preset-record-generic-audio-aac
       inputs:
         - path: "{FRIGATE_CAMERA1_PATH}"
+          input_args: preset-rtsp-restream
           roles:
             - audio
             - detect
             - record
+    zones:
+      entire_yard:
+        coordinates: 1280,577,1280,494,1030,468,805,510,325,498,79,720,1188,720
+      public_space:
+        coordinates: 319,379,58,372,75,483,288,526,648,511,827,488,1015,455,1280,413,1254,350,759,380
+      sky:
+        coordinates: 437,216,751,229,1280,308,1280,88,1078,141,963,92,868,68,821,55,776,49,694,27,567,21,478,0,149,0,59,239
+
+ffmpeg:
+  hwaccel_args: preset-rpi-64-h264
+
+record:
+  enabled: True
+  retain:
+    days: 1
+    mode: motion
+  events:
+    retain:
+      default: 30
+      mode: motion
+
+snapshots:
+  enabled: True
+  retain:
+    default: 30
+
+birdseye:
+  # Optional: Enable birdseye view (default: shown below)
+  enabled: False

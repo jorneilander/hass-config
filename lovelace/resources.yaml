@@ -29,4 +29,7 @@
   type: module
 - url: /hacsfiles/weather-radar-card/weather-radar-card.js
   type: module
-
+- url: /hacsfiles/ha-tdv-bar/ha-tdv-bar.js
+  type: module
+- url: /hacsfiles/lovelace-hourly-weather/hourly-weather.js
+  type: module

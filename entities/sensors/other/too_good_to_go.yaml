@@ -1,8 +1,0 @@
----
-platform: tgtg
-email: !secret SECRET_TOO_GOOD_TO_GO_USERNAME
-access_token: !secret SECRET_TOO_GOOD_TO_GO_ACCESS_TOKEN
-refresh_token: !secret SECRET_TOO_GOOD_TO_GO_REFRESH_TOKEN
-user_id: !secret SECRET_TOO_GOOD_TO_GO_USER_ID
-cookie: !secret SECRET_TOO_GOOD_TO_GO_COOKIE
-scan_interval: 900

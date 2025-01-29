@@ -107,31 +107,145 @@ class ScreenWakeLock {
 	}
 }
 
-const version = "4.25.5";
+class CameraMotionDetection {
+	constructor() {
+		this.enabled = false;
+		this.width = 64;
+		this.height = 48;
+		this.threshold = this.width * this.height * 0.05;
+		this.captureInterval = 300;
+
+		this.videoElement = document.createElement("video");
+		this.videoElement.setAttribute("id", "wallpanelMotionDetectionVideo");
+		this.videoElement.style.display = 'none';
+		document.body.appendChild(this.videoElement);
+
+		this.canvasElement = document.createElement("canvas");
+		this.canvasElement.setAttribute("id", "wallpanelMotionDetectionCanvas");
+		this.canvasElement.style.display = 'none';
+		document.body.appendChild(this.canvasElement);
+
+		this.context = this.canvasElement.getContext('2d', { willReadFrequently: true });
+	}
+
+	capture() {
+		let diffPixels = 0;
+		this.context.globalCompositeOperation = 'difference';
+		this.context.drawImage(this.videoElement, 0, 0, this.width, this.height);
+		const diffImageData = this.context.getImageData(0, 0, this.width, this.height);
+		const rgba = diffImageData.data;
+		for (let i = 0; i < rgba.length; i += 4) {
+			const pixelDiff = rgba[i] + rgba[i + 1] + rgba[i + 2];
+			if (pixelDiff >= 256) {
+				diffPixels ++;
+				if (diffPixels >= this.threshold) {
+					break;
+				}
+			}
+		}
+		if (diffPixels >= this.threshold) {
+			logger.debug("Motion detetcted:", diffPixels, this.threshold);
+			wallpanel.motionDetected();
+		}
+		this.context.globalCompositeOperation = 'source-over';
+		this.context.drawImage(this.videoElement, 0, 0, this.width, this.height);
+	}
+
+	start() {
+		if (this.enabled) {
+			return;
+		}
+		if (!navigator.mediaDevices) {
+			logger.error("No media devices found");
+			return;
+		}
+
+		this.enabled = true;
+		this.width = config.camera_motion_detection_capture_width;
+		this.height = config.camera_motion_detection_capture_height;
+		this.threshold = this.width * this.height * config.camera_motion_detection_threshold * 0.01;
+		this.captureInterval = config.camera_motion_detection_capture_interval * 1000;
+
+		this.videoElement.width = this.width;
+		this.videoElement.height = this.height;
+		this.canvasElement.width = this.width;
+		this.canvasElement.height = this.height;
+		if (config.camera_motion_detection_capture_visible) {
+			this.canvasElement.style.position = "fixed";
+			this.canvasElement.style.top = 0;
+			this.canvasElement.style.left = 0;
+			this.canvasElement.style.zIndex = 10000;
+			this.canvasElement.style.border = "1px solid black";
+			this.canvasElement.style.display = 'block';
+		}
+		else {
+			this.canvasElement.style.display = 'none';
+		}
+
+		navigator.mediaDevices.getUserMedia(
+			{ audio: false, video: { facingMode: { acceptable: "user" }, width: this.width, height: this.height } }
+		).then((stream) => {
+			this.videoElement.srcObject = stream
+			this.videoElement.play();
+			if (this.enabled) {
+				setInterval(this.capture.bind(this), this.captureInterval);
+			}
+		}).catch((err) => {
+			logger.error("Camera motion detection error:", err);
+		});
+	}
+
+	stop() {
+		if (!this.enabled) {
+			return;
+		}
+		this.enabled = false;
+		this.videoElement.pause();
+		this.videoElement.srcObject.getTracks().forEach(track => {
+			track.stop();
+		});
+	}
+}
+
+const version = "4.34.0";
 const defaultConfig = {
 	enabled: false,
 	enabled_on_tabs: [],
 	debug: false,
+	log_level_console: "info",
 	hide_toolbar: false,
+	keep_toolbar_space: false,
 	hide_toolbar_action_icons: false,
 	hide_sidebar: false,
 	fullscreen: false,
 	z_index: 1000,
 	idle_time: 15,
 	fade_in_time: 3.0,
+	fade_out_time_motion_detected: 1.0,
+	fade_out_time_screensaver_entity: 3.0,
+	fade_out_time_browser_mod_popup: 1.0,
+	fade_out_time_interaction: 0.3,
 	crossfade_time: 3.0,
 	display_time: 15.0,
 	keep_screen_on_time: 0,
 	black_screen_after_time: 0,
 	control_reactivation_time: 1.0,
 	screensaver_stop_navigation_path: '',
+	screensaver_stop_close_browser_mod_popup: false,
 	screensaver_entity: '',
 	stop_screensaver_on_mouse_move: true,
 	stop_screensaver_on_mouse_click: true,
 	stop_screensaver_on_key_down: true,
 	stop_screensaver_on_location_change: true,
+	disable_screensaver_on_browser_mod_popup: false,
+	disable_screensaver_on_browser_mod_popup_func: '',
 	show_images: true,
 	image_url: "https://picsum.photos/${width}/${height}?random=${timestamp}",
+	image_url_entity: '',
+	immich_api_key: '',
+	immich_album_names: [],
+	immich_shared_albums: true,
+	immich_resolution: "preview",
 	image_fit: 'cover', // cover / contain / fill
 	image_list_update_interval: 3600,
 	image_order: 'sorted', // sorted / random
@@ -153,11 +267,18 @@ const defaultConfig = {
 	image_animation_ken_burns: false,
 	image_animation_ken_burns_zoom: 1.3,
 	image_animation_ken_burns_delay: 0,
+	camera_motion_detection_enabled: false,
+	camera_motion_detection_threshold: 5,
+	camera_motion_detection_capture_width: 64,
+	camera_motion_detection_capture_height: 48,
+	camera_motion_detection_capture_interval: 0.3,
+	camera_motion_detection_capture_visible: false,
 	style: {},
 	badges: [],
 	cards: [
 		{type: 'weather-forecast', entity: 'weather.home', show_forecast: true}
 	],
+	views: [],
 	card_interaction: false,
 	profile: '',
 	profile_entity: '',
@@ -170,6 +291,7 @@ let activePanel = null;
 let activeTab = null;
 let fullscreen = false;
 let screenWakeLock = new ScreenWakeLock();
+let cameraMotionDetection = new CameraMotionDetection();
 let wallpanel = null;
 let skipDisableScreensaverOnLocationChanged = false;
 let classStyles = {
@@ -220,6 +342,17 @@ if (window.browser_mod) {
 		// V2
 		browserId = window.browser_mod.browserID.replace('-', '_');
 	}
+}
+
+function getActiveBrowserModPopup() {
+	if (!browserId) {
+		return null;
+	}
+	const bmp = document.getElementsByTagName("browser-mod-popup");
+	if (!bmp || !bmp[0] || !bmp[0].shadowRoot || bmp[0].shadowRoot.children.length == 0) {
+		return null;
+	}
+	return bmp[0];
 }
 
 function isObject(item) {
@@ -289,19 +422,27 @@ const logger = {
 		logger.addMessage("info", arguments);
 	},
 	debug: function (text) {
-		//console.debug.apply(this, arguments);
+		if (["debug"].includes(config.log_level_console)) {
+			console.debug.apply(this, arguments);
+		}
 		logger.addMessage("debug", arguments);
 	},
 	info: function (text) {
-		console.info.apply(this, arguments);
+		if (["debug", "info"].includes(config.log_level_console)) {
+			console.info.apply(this, arguments);
+		}
 		logger.addMessage("info", arguments);
 	},
 	warn: function (text) {
-		console.warn.apply(this, arguments);
+		if (["debug", "info", "warn"].includes(config.log_level_console)) {
+			console.warn.apply(this, arguments);
+		}
 		logger.addMessage("warn", arguments);
 	},
 	error: function (text) {
-		console.error.apply(this, arguments);
+		if (["debug", "info", "warn", "error"].includes(config.log_level_console)) {
+			console.error.apply(this, arguments);
+		}
 		logger.addMessage("error", arguments);
 	}
 };
@@ -334,7 +475,11 @@ function mergeConfig(target, ...sources) {
 					return state;
 				}
 				if (typeof val === 'string' || val instanceof String) {
+					val = val.replace("${browser_id}", browserId ? browserId : "browser-id-unset");
 					val = val.replace(/\$\{entity:\s*([^}]+\.[^}]+)\}/g, replacer);
+				}
+				if (typeof target[key] === 'boolean') {
+					val = ["true", "on", "yes", "1"].includes(val.toString());
 				}
 				Object.assign(target, { [key]: val });
 			}
@@ -367,11 +512,16 @@ function updateConfig() {
 		}
 	}
 	config = mergeConfig(config, paramConfig);
-	const profile = insertBrowserID(config.profile);
+	const profile = config.profile;
 
 	if (config.profiles && profile && config.profiles[profile]) {
 		config = mergeConfig(config, config.profiles[profile]);
 		logger.debug(`Profile set from config: ${profile}`);
+	}
+	if (config.profiles && browserId && config.profiles[`device.${browserId}`]) {
+		let profile = `device.${browserId}`;
+		config = mergeConfig(config, config.profiles[profile]);
+		logger.debug(`Profile set from device: ${profile}`);
 	}
 	if (config.profiles && user && config.profiles[`user.${user}`]) {
 		let profile = `user.${user}`;
@@ -379,7 +529,7 @@ function updateConfig() {
 		logger.debug(`Profile set from user: ${profile}`);
 	}
 	config = mergeConfig(config, paramConfig);
-	const profile_entity = insertBrowserID(config.profile_entity);
+	const profile_entity = config.profile_entity;
 	if (config.profiles && profile_entity && elHass.__hass.states[profile_entity] && config.profiles[elHass.__hass.states[profile_entity].state]) {
 		let profile = elHass.__hass.states[profile_entity].state;
 		config = mergeConfig(config, config.profiles[profile]);
@@ -415,12 +565,12 @@ function updateConfig() {
 		config.show_images = false;
 	}
 
-	logger.debug(`Wallpanel config is now: ${JSON.stringify(config)}`);
+	logger.debug("Wallpanel config is now:", config);
 	if (wallpanel) {
 		if (isActive()) {
 			wallpanel.reconfigure(oldConfig);
 		}
-		else if (wallpanel.screensaverRunning()) {
+		else if (wallpanel.screensaverRunning && wallpanel.screensaverRunning()) {
 			wallpanel.stopScreensaver();
 		}
 	}
@@ -438,6 +588,15 @@ function isActive() {
 	if (config.enabled_on_tabs && config.enabled_on_tabs.length > 0 && activeTab && !config.enabled_on_tabs.includes(activeTab)) {
 		return false;
 	}
+	if (wallpanel &&
+		wallpanel.disable_screensaver_on_browser_mod_popup_function &&
+		getActiveBrowserModPopup() &&
+		wallpanel.disable_screensaver_on_browser_mod_popup_function(getActiveBrowserModPopup())) {
+		return false;
+	}
+	if (config.disable_screensaver_on_browser_mod_popup && getActiveBrowserModPopup()) {
+		return false;
+	}
 	return true;
 }
 
@@ -449,6 +608,7 @@ function imageSourceType() {
 	if (config.image_url.startsWith("media-entity://")) return "media-entity";
 	if (config.image_url.startsWith("media-source://")) return "media-source";
 	if (config.image_url.startsWith("https://api.unsplash")) return "unsplash-api";
+	if (config.image_url.startsWith("immich+")) return "immich-api";
 	return "url";
 }
 
@@ -549,9 +709,11 @@ function setToolbarHidden(hidden) {
 		}
 		if (hidden) {
 			appToolbar.style.setProperty("display", "none");
-			view.style.minHeight = "100vh";
-			view.style.marginTop = "0";
-			view.style.paddingTop = "0";
+			if (!config.keep_toolbar_space) {
+				view.style.minHeight = "100vh";
+				view.style.marginTop = "0";
+				view.style.paddingTop = "0";
+			}
 		}
 		else {
 			appToolbar.style.removeProperty("display");
@@ -591,21 +753,6 @@ function navigate(path, keepSearch=true) {
 }
 
 
-function insertBrowserID(string) {
-	if (!string) {
-		logger.debug(`insertBrowserID(${string}): no string`);
-		return string
-	}
-	if (!browserId) {
-		logger.debug(`insertBrowserID(${string}): no browser_mod`);
-		return string
-	}
-	let res = string.replace("${browser_id}", browserId);
-	logger.debug(`insertBrowserID(${string}): return ${res}`);
-	return res;
-}
-
-
 document.addEventListener('fullscreenerror', (event) => {
 	logger.error('Failed to enter fullscreen');
 });
@@ -641,6 +788,20 @@ function enterFullscreen() {
 	}
 }
 
+function exitFullscreen() {
+	logger.debug("Exit fullscreen");
+	if (document.fullscreenElement) {
+		document.fullscreenElement.exitFullscreen().then(
+			result => {
+				logger.debug("Successfully exited from fullscreen mode");
+			},
+			error => {
+				logger.error(error);
+			}
+		)
+	}
+}
+
 
 class WallpanelView extends HuiView {
 	constructor() {
@@ -659,7 +820,7 @@ class WallpanelView extends HuiView {
 		this.screensaverStoppedAt = new Date();
 		this.infoBoxContentCreatedDate;
 		this.idleSince = Date.now();
-		this.lastProfileSet = insertBrowserID(config.profile);
+		this.lastProfileSet = config.profile;
 		this.lastMove = null;
 		this.lastCorner = 0; // 0 - top left, 1 - bottom left, 2 - bottom right, 3 - top right
 		this.translateInterval = null;
@@ -669,11 +830,13 @@ class WallpanelView extends HuiView {
 		this.energyCollectionUpdateInterval = 60;
 		this.lastEnergyCollectionUpdate = 0;
 		this.screensaverStopNavigationPathTimeout = null;
+		this.disable_screensaver_on_browser_mod_popup_function = null;
 
-		this.lovelace = getHaPanelLovelace().lovelace;
+		this.lovelace = null;
 		this.__hass = elHass.__hass;
 		this.__cards = [];
 		this.__badges = [];
+		this.__views = [];
 
 		elHass.provideHass(this);
 		setInterval(this.timer.bind(this), 1000);
@@ -701,14 +864,14 @@ class WallpanelView extends HuiView {
 			return;
 		}
 
-		const screensaver_entity = insertBrowserID(config.screensaver_entity);
+		const screensaver_entity = config.screensaver_entity;
 
 		if (screensaver_entity && this.__hass.states[screensaver_entity]) {
 			let lastChanged = new Date(this.__hass.states[screensaver_entity].last_changed);
 			let state = this.__hass.states[screensaver_entity].state;
 
 			if (state == "off" && this.screensaverStartedAt && lastChanged.getTime() - this.screensaverStartedAt > 0) {
-				this.stopScreensaver();
+				this.stopScreensaver(config.fade_out_time_screensaver_entity);
 			}
 			else if (state == "on" && this.screensaverStoppedAt && lastChanged.getTime() - this.screensaverStoppedAt > 0) {
 				this.startScreensaver();
@@ -722,6 +885,9 @@ class WallpanelView extends HuiView {
 			this.__badges.forEach(badge => {
 				badge.hass = this.hass;
 			});
+			this.__views.forEach(view => {
+				view.hass = this.hass;
+			});
 		}
 	}
 
@@ -730,12 +896,14 @@ class WallpanelView extends HuiView {
 	}
 
 	setScreensaverEntityState() {
-		const screensaver_entity = insertBrowserID(config.screensaver_entity);
+		const screensaver_entity = config.screensaver_entity;
 		if (!screensaver_entity || !this.__hass.states[screensaver_entity]) return;
 		if (this.screensaverRunning() && this.__hass.states[screensaver_entity].state == 'on') return;
 		if (!this.screensaverRunning() && this.__hass.states[screensaver_entity].state == 'off') return;
-
-		this.__hass.callService('input_boolean', this.screensaverRunning() ? "turn_on" : "turn_off", {
+		
+		const service = this.screensaverRunning() ? "turn_on" : "turn_off";
+		logger.debug("Updating screensaver_entity", screensaver_entity, service);
+		this.__hass.callService('input_boolean', service, {
 			entity_id: screensaver_entity
 		}).then(
 			result => {
@@ -747,8 +915,28 @@ class WallpanelView extends HuiView {
 		);
 	}
 
+	setImageURLEntityState() {
+		const image_url_entity = config.image_url_entity;
+		if (!image_url_entity || !this.__hass.states[image_url_entity]) return;
+		const activeImage = this.getActiveImageElement();
+		if (!activeImage || !activeImage.imageUrl) return;
+	
+		logger.debug("Updating image_url_entity", image_url_entity, activeImage.imageUrl);
+		this.__hass.callService('input_text', "set_value", {
+			entity_id: image_url_entity,
+			value: activeImage.imageUrl
+		}).then(
+			result => {
+				logger.debug(result);
+			},
+			error => {
+				logger.error("Failed to set image url entity state:", error);
+			}
+		);
+	}
+
 	updateProfile() {
-		const profile_entity = insertBrowserID(config.profile_entity);
+		const profile_entity = config.profile_entity;
 		if (profile_entity && this.__hass.states[profile_entity]) {
 			const profile = this.__hass.states[profile_entity].state;
 			if ((profile && profile != this.lastProfileSet) || (!profile && this.lastProfileSet)) {
@@ -766,9 +954,14 @@ class WallpanelView extends HuiView {
 			return;
 		}
 		if (this.screensaverRunning()) {
-			this.updateScreensaver();
+			if (config.disable_screensaver_on_browser_mod_popup && getActiveBrowserModPopup()) {
+				this.stopScreensaver(config.fade_out_time_browser_mod_popup);
+			}
+			else {
+				this.updateScreensaver();
+			}
 		}
-		else {
+		else if (isActive()) {
 			if (config.idle_time > 0 && Date.now() - this.idleSince >= config.idle_time*1000) {
 				this.startScreensaver();
 			}
@@ -829,6 +1022,7 @@ class WallpanelView extends HuiView {
 		this.imageOneContainer.style.left = 0;
 		this.imageOneContainer.style.width = '100%';
 		this.imageOneContainer.style.height = '100%';
+		this.imageOneContainer.style.border = 'none';
 
 		this.imageOneBackground.style.position = 'absolute';
 		this.imageOneBackground.style.pointerEvents = 'none';
@@ -836,6 +1030,7 @@ class WallpanelView extends HuiView {
 		this.imageOneBackground.style.left = 0;
 		this.imageOneBackground.style.width = '100%';
 		this.imageOneBackground.style.height = '100%';
+		this.imageOneBackground.style.border = 'none';
 
 		if (!this.screensaverRunning()) {
 			this.imageOne.removeAttribute('style');
@@ -845,6 +1040,7 @@ class WallpanelView extends HuiView {
 		this.imageOne.style.width = '100%';
 		this.imageOne.style.height = '100%';
 		this.imageOne.style.objectFit = 'contain';
+		this.imageOne.style.border = 'none';
 
 		this.imageOneInfoContainer.removeAttribute('style');
 		this.imageOneInfoContainer.style.position = 'absolute';
@@ -853,6 +1049,7 @@ class WallpanelView extends HuiView {
 		this.imageOneInfoContainer.style.left = 0;
 		this.imageOneInfoContainer.style.width = '100%';
 		this.imageOneInfoContainer.style.height = '100%';
+		this.imageOneInfoContainer.style.border = 'none';
 
 		if (!this.screensaverRunning()) {
 			this.imageTwoContainer.removeAttribute('style');
@@ -864,6 +1061,7 @@ class WallpanelView extends HuiView {
 		this.imageTwoContainer.style.left = 0;
 		this.imageTwoContainer.style.width = '100%';
 		this.imageTwoContainer.style.height = '100%';
+		this.imageTwoContainer.style.border = 'none';
 
 		this.imageTwoBackground.style.position = 'absolute';
 		this.imageTwoBackground.style.pointerEvents = 'none';
@@ -871,6 +1069,7 @@ class WallpanelView extends HuiView {
 		this.imageTwoBackground.style.left = 0;
 		this.imageTwoBackground.style.width = '100%';
 		this.imageTwoBackground.style.height = '100%';
+		this.imageTwoBackground.style.border = 'none';
 
 		if (!this.screensaverRunning()) {
 			this.imageTwo.removeAttribute('style');
@@ -880,6 +1079,7 @@ class WallpanelView extends HuiView {
 		this.imageTwo.style.width = '100%';
 		this.imageTwo.style.height = '100%';
 		this.imageTwo.style.objectFit = 'contain';
+		this.imageTwo.style.border = 'none';
 
 		this.imageTwoInfoContainer.removeAttribute('style');
 		this.imageTwoInfoContainer.style.position = 'absolute';
@@ -888,6 +1088,7 @@ class WallpanelView extends HuiView {
 		this.imageTwoInfoContainer.style.left = 0;
 		this.imageTwoInfoContainer.style.width = '100%';
 		this.imageTwoInfoContainer.style.height = '100%';
+		this.imageTwoInfoContainer.style.border = 'none';
 
 		this.screensaverImageOverlay.removeAttribute('style');
 		this.screensaverImageOverlay.style.position = 'absolute';
@@ -909,6 +1110,30 @@ class WallpanelView extends HuiView {
 		this.infoContainer.style.height = '100%';
 		this.infoContainer.style.transition = 'opacity 2000ms ease-in-out';
 		this.infoContainer.style.padding = '25px';
+		this.infoContainer.style.boxSizing = 'border-box';
+
+		this.infoBox.removeAttribute('style');
+		this.infoBox.style.pointerEvents = 'none';
+		this.infoBox.style.width = 'fit-content';
+		this.infoBox.style.maxHeight = '100%';
+		this.infoBox.style.borderRadius = '10px';
+		this.infoBox.style.overflowY = "auto";
+		this.infoBox.style.scrollbarWidth = "none";
+		this.infoBox.style.setProperty('--wp-card-width', '500px');
+		this.infoBox.style.setProperty('--wp-card-padding', '0');
+		this.infoBox.style.setProperty('--wp-card-margin', '5px');
+		this.infoBox.style.setProperty('--wp-card-backdrop-filter', 'none');
+		this.infoBox.style.setProperty('--wp-badges-minwidth', '200px');
+
+		this.infoBoxPosX.style.height = '100%';
+		this.infoBoxPosX.style.width = '100%';
+
+		this.infoBoxPosY.style.height = '100%';
+		this.infoBoxPosY.style.width = '100%';
+
+		this.infoBoxContent.style.width = 'fit-content';
+		this.infoBoxContent.style.height = '100%';
+		this.infoBoxContent.style.display = 'grid';
 
 		this.fixedInfoContainer.removeAttribute('style');
 		this.fixedInfoContainer.style.position = 'fixed';
@@ -917,16 +1142,6 @@ class WallpanelView extends HuiView {
 		this.fixedInfoContainer.style.left = 0;
 		this.fixedInfoContainer.style.width = '100%';
 		this.fixedInfoContainer.style.height = '100%';
-
-		this.infoBox.removeAttribute('style');
-		this.infoBox.style.pointerEvents = 'none';
-		this.infoBox.style.width = 'fit-content';
-		this.infoBox.style.height = 'fit-content';
-		this.infoBox.style.borderRadius = '10px';
-		this.infoBox.style.setProperty('--wp-card-width', '500px');
-		this.infoBox.style.setProperty('--wp-card-padding', '0');
-		this.infoBox.style.setProperty('--wp-card-margin', '5px');
-		this.infoBox.style.setProperty('--wp-card-backdrop-filter', 'none');
 
 		this.fixedInfoBox.style.cssText = this.infoBox.style.cssText;
 		this.fixedInfoBox.style.pointerEvents = 'none';
@@ -969,7 +1184,13 @@ class WallpanelView extends HuiView {
 
 		if (config.style) {
 			for (const elId in config.style) {
-				if (elId.startsWith('wallpanel-') && elId != 'wallpanel-shadow-host' && !classStyles[elId]) {
+				if (
+					elId.startsWith('wallpanel-') &&
+					elId != 'wallpanel-shadow-host' &&
+					elId != 'wallpanel-screensaver-info-box-badges' &&
+					elId != 'wallpanel-screensaver-info-box-views' &&
+					!classStyles[elId]
+				) {
 					let el = this.shadowRoot.getElementById(elId);
 					if (el) {
 						logger.debug(`Setting style attributes for element #${elId}`);
@@ -994,8 +1215,8 @@ class WallpanelView extends HuiView {
 
 	updateShadowStyle() {
 		let computed = getComputedStyle(this.infoContainer);
-		let maxX = this.infoContainer.offsetWidth - parseInt(computed.paddingLeft) * 2 - parseInt(computed.paddingRight) * 2 - this.infoBox.offsetWidth;
-		let maxY = this.infoContainer.offsetHeight - parseInt(computed.paddingTop) * 2 - parseInt(computed.paddingBottom) * 2 - this.infoBox.offsetHeight;
+		let maxX = this.infoContainer.offsetWidth - parseInt(computed.paddingLeft) - parseInt(computed.paddingRight) - this.infoBox.offsetWidth;
+		let maxY = this.infoContainer.offsetHeight - parseInt(computed.paddingTop) - parseInt(computed.paddingBottom) - this.infoBox.offsetHeight;
 		let host = '';
 
 		if (config.style) {
@@ -1057,8 +1278,8 @@ class WallpanelView extends HuiView {
 
 	randomMove() {
 		let computed = getComputedStyle(this.infoContainer);
-		let maxX = this.infoContainer.offsetWidth - parseInt(computed.paddingLeft) * 2 - parseInt(computed.paddingRight) * 2 - this.infoBox.offsetWidth;
-		let maxY = this.infoContainer.offsetHeight - parseInt(computed.paddingTop) * 2 - parseInt(computed.paddingBottom) * 2 - this.infoBox.offsetHeight;
+		let maxX = this.infoContainer.offsetWidth - parseInt(computed.paddingLeft) - parseInt(computed.paddingRight) - this.infoBox.offsetWidth;
+		let maxY = this.infoContainer.offsetHeight - parseInt(computed.paddingTop) - parseInt(computed.paddingBottom) - this.infoBox.offsetHeight;
 		let x = Math.floor(Math.random() * maxX);
 		let y = Math.floor(Math.random() * maxY);
 		this.moveInfoBox(x, y);
@@ -1067,8 +1288,8 @@ class WallpanelView extends HuiView {
 	moveAroundCorners() {
 		this.lastCorner = (this.lastCorner + 1) % 4;
 		let computed = getComputedStyle(this.infoContainer);
-		let x = [2, 3].includes(this.lastCorner) ? this.infoContainer.offsetWidth - parseInt(computed.paddingLeft) * 2 - parseInt(computed.paddingRight) * 2 - this.infoBox.offsetWidth : 0;
-		let y = [1, 2].includes(this.lastCorner) ? this.infoContainer.offsetHeight - parseInt(computed.paddingTop) * 2 - parseInt(computed.paddingBottom) * 2 - this.infoBox.offsetHeight : 0;
+		let x = [2, 3].includes(this.lastCorner) ? this.infoContainer.offsetWidth - parseInt(computed.paddingLeft) - parseInt(computed.paddingRight) - this.infoBox.offsetWidth : 0;
+		let y = [1, 2].includes(this.lastCorner) ? this.infoContainer.offsetHeight - parseInt(computed.paddingTop) - parseInt(computed.paddingBottom) - this.infoBox.offsetHeight : 0;
 		this.moveInfoBox(x, y);
 	}
 
@@ -1108,31 +1329,121 @@ class WallpanelView extends HuiView {
 
 	createInfoBoxContent() {
 		logger.debug("Creating info box content");
+		const haPanelLovelace = getHaPanelLovelace();
+		if (!haPanelLovelace) {
+			return;
+		}
+		this.lovelace = haPanelLovelace.__lovelace;
 		this.infoBoxContentCreatedDate = new Date();
 		this.infoBoxContent.innerHTML = '';
 		this.__badges = [];
 		this.__cards = [];
+		this.__views = [];
 		this.energyCollectionUpdateEnabled = false;
 
 		this.shadowRoot.querySelectorAll(".wp-card").forEach(card => {
 			card.parentElement.removeChild(card);
 		})
 
-		if (config.badges) {
+		if (config.badges && config.badges.length > 0) {
 			const div = document.createElement('div');
+			div.id = "wallpanel-screensaver-info-box-badges";
+			div.classList.add("wp-badges");
 			div.style.padding = 'var(--wp-card-padding)';
 			div.style.margin = 'var(--wp-card-margin)';
 			div.style.textAlign = 'center';
-			config.badges.forEach(badgeConfig => {
+			div.style.display = 'flex';
+			div.style.alignItems = 'flex-start';
+			div.style.flexWrap = 'wrap';
+			div.style.justifyContent = 'center';
+			div.style.gap = '8px';
+			div.style.margin = '0px';
+			div.style.minWidth = 'var(--wp-badges-minwidth)';
+			if (config.style[div.id]) {
+				for (const attr in config.style[div.id]) {
+					logger.debug(`Setting style attribute ${attr} to ${config.style[div.id][attr]}`);
+					div.style.setProperty(attr, config.style[div.id][attr]);
+				}
+			}
+			config.badges.forEach(badge => {
+				let badgeConfig = JSON.parse(JSON.stringify(badge));
 				logger.debug("Creating badge:", badgeConfig);
-				const badgeElement = this.createBadgeElement(badgeConfig);
+				let style = {};
+				if (badgeConfig.wp_style) {
+					style = badgeConfig.wp_style;
+					delete badgeConfig.wp_style;
+				}
+				const createBadgeElement = this._createBadgeElement ? this._createBadgeElement : this.createBadgeElement;
+				const badgeElement = createBadgeElement.bind(this)(badgeConfig);
 				badgeElement.hass = this.hass;
+				for (const attr in style) {
+					badgeElement.style.setProperty(attr, style[attr]);
+				}
 				this.__badges.push(badgeElement);
 				div.append(badgeElement);
 			});
 			this.infoBoxContent.appendChild(div);
 		}
-		if (config.cards) {
+
+		if (config.views && config.views.length > 0) {
+			const div = document.createElement('div');
+			div.id = "wallpanel-screensaver-info-box-views";
+			div.classList.add("wp-views");
+			if (config.style[div.id]) {
+				for (const attr in config.style[div.id]) {
+					logger.debug(`Setting style attribute ${attr} to ${config.style[div.id][attr]}`);
+					div.style.setProperty(attr, config.style[div.id][attr]);
+				}
+			}
+
+			const viewConfigs = this.lovelace.config.views;
+			config.views.forEach(view => {
+				let viewIndex = -1;
+				let viewConfig = JSON.parse(JSON.stringify(view));
+				for (var i = 0; i < viewConfigs.length; i++) {
+					if (
+						(viewConfigs[i].path && view.path && viewConfigs[i].path.toLowerCase() == view.path.toLowerCase()) ||
+						(viewConfigs[i].title && view.title && viewConfigs[i].title.toLowerCase() == view.title.toLowerCase())
+					) {
+						viewIndex = i;
+						viewConfig.title = viewConfigs[i].title;
+						viewConfig.path = viewConfigs[i].path;
+						break;
+					}
+				}
+				if (viewIndex == -1) {
+					logger.error(`View with path '${viewConfig.path}' / tile '${viewConfig.title}' not found`);
+					viewIndex = 0;
+				}
+
+				const viewElement = document.createElement('hui-view');
+				viewElement.route = {prefix: '/' + activePanel, path: '/' + view.path};
+				viewElement.lovelace = this.lovelace;
+				viewElement.panel = this.hass.panels[activePanel];
+				viewElement.hass = this.hass;
+				viewElement.index = viewIndex;
+				if (typeof viewConfig.narrow == "boolean") {
+					viewElement.narrow = viewConfig.narrow;
+				}
+				this.__views.push(viewElement);
+
+				const viewContainer = document.createElement('div');
+				if (config.card_interaction) {
+					viewElement.style.pointerEvents = "initial";
+				}
+				if (viewConfig.wp_style) {
+					for (const attr in viewConfig.wp_style) {
+						viewContainer.style.setProperty(attr, viewConfig.wp_style[attr]);
+					}
+				}
+
+				viewContainer.append(viewElement);
+				div.append(viewContainer);
+			});
+			this.infoBoxContent.appendChild(div);
+		}
+
+		if (config.cards && config.cards.length > 0) {
 			config.cards.forEach(card => {
 				// Copy object
 				let cardConfig = JSON.parse(JSON.stringify(card));
@@ -1146,19 +1457,23 @@ class WallpanelView extends HuiView {
 					cardConfig.collection_key = "energy_wallpanel";
 					this.energyCollectionUpdateEnabled = true;
 				}
+
 				const createCardElement = this._createCardElement ? this._createCardElement : this.createCardElement;
 				const cardElement = createCardElement.bind(this)(cardConfig);
 				cardElement.hass = this.hass;
-
 				this.__cards.push(cardElement);
 
 				let parent = this.infoBoxContent;
-				const div = document.createElement('div');
-				div.classList.add("wp-card");
-				div.style.width = 'var(--wp-card-width)';
-				div.style.padding = 'var(--wp-card-padding)';
-				div.style.margin = 'var(--wp-card-margin)';
-				div.style.backdropFilter = 'var(--wp-card-backdrop-filter)';
+				const cardContainer = document.createElement('div');
+				cardContainer.classList.add("wp-card");
+				cardContainer.style.width = 'var(--wp-card-width)';
+				cardContainer.style.padding = 'var(--wp-card-padding)';
+				cardContainer.style.margin = 'var(--wp-card-margin)';
+				cardContainer.style.backdropFilter = 'var(--wp-card-backdrop-filter)';
+
+				if (config.card_interaction) {
+					cardContainer.style.pointerEvents = "initial";
+				}
 				for (const attr in style) {
 					if (attr == "parent") {
 						let pel = this.shadowRoot.getElementById(style[attr]);
@@ -1167,14 +1482,12 @@ class WallpanelView extends HuiView {
 						}
 					}
 					else {
-						div.style.setProperty(attr, style[attr]);
+						cardContainer.style.setProperty(attr, style[attr]);
 					}
 				}
-				if (config.card_interaction) {
-					div.style.pointerEvents = "initial";
-				}
-				div.append(cardElement);
-				parent.appendChild(div);
+
+				cardContainer.append(cardElement);
+				parent.appendChild(cardContainer);
 			});
 		}
 
@@ -1410,6 +1723,8 @@ class WallpanelView extends HuiView {
 		});
 
 		this.reconfigure();
+		// Correct possibly incorrect entity state
+		this.setScreensaverEntityState();
 	}
 
 	reconfigure(oldConfig) {
@@ -1434,14 +1749,23 @@ class WallpanelView extends HuiView {
 					wp.switchActiveImage();
 				}
 			}
-
-			if (imageSourceType() == "unsplash-api" || imageSourceType() == "media-source") {
+			if (["immich-api", "unsplash-api", "media-source"].includes(imageSourceType())) {
 				this.updateImageList(true, preloadCallback);
 			}
 			else {
 				this.imageList = [];
 				this.preloadImages(preloadCallback);
 			}
+		}
+
+		if (config.disable_screensaver_on_browser_mod_popup_func) {
+			this.disable_screensaver_on_browser_mod_popup_function = new Function('bmp', config.disable_screensaver_on_browser_mod_popup_func);
+		}
+		if (config.camera_motion_detection_enabled) {
+			cameraMotionDetection.start();
+		}
+		else {
+			cameraMotionDetection.stop();
 		}
 	}
 
@@ -1533,6 +1857,9 @@ class WallpanelView extends HuiView {
 	}
 
 	setImageDataInfo(img) {
+		if (!img || !img.imageUrl) {
+			return;
+		}
 		let infoElement = null;
 		if (this.imageOne.imageUrl == img.imageUrl) {
 			infoElement = this.imageOneInfo;
@@ -1544,7 +1871,7 @@ class WallpanelView extends HuiView {
 			return;
 		}
 
-		if (!config.show_image_info) {
+		if (!config.show_image_info || !config.image_info_template) {
 			infoElement.innerHTML = "";
 			infoElement.style.display = "none";
 			return;
@@ -1556,19 +1883,32 @@ class WallpanelView extends HuiView {
 		if (!imageInfo) {
 			imageInfo = {};
 		}
-		let html = config.image_info_template;
-		html = html.replace(/\${([^}]+)}/g, (match, tags, offset, string) => {
-			imageInfo.image = {
-				url: img.imageUrl,
-				path: img.imageUrl.replace(/^[^:]+:\/\/[^/]+/, ""),
-				relativePath: img.imageUrl.replace(config.image_url, "").replace(/^\/+/, ""),
-				filename: img.imageUrl.replace(/^.*[\\/]/, ""),
-				folderName: ""
-			};
+		if (!imageInfo.image) {
+			imageInfo.image = {};
+		}
+		if (!imageInfo.image.url) {
+			imageInfo.image.url = img.imageUrl;
+		}
+		if (!imageInfo.image.path) {
+			imageInfo.image.path = img.imageUrl.replace(/^[^:]+:\/\/[^/]+/, "");
+		}
+		if (!imageInfo.image.relativePath) {
+			imageInfo.image.relativePath = img.imageUrl.replace(config.image_url, "").replace(/^\/+/, "");
+		}
+		if (!imageInfo.image.filename) {
+			imageInfo.image.filename =  img.imageUrl.replace(/^.*[\\/]/, "");
+		}
+		if (!imageInfo.image.folderName) {
+			imageInfo.image.folderName = "";
 			const parts = img.imageUrl.split("/");
 			if (parts.length >= 2) {
 				imageInfo.image.folderName = parts[parts.length - 2];
 			}
+		}
+		logger.debug("Image info:", imageInfo)
+
+		let html = config.image_info_template;
+		html = html.replace(/\${([^}]+)}/g, (match, tags, offset, string) => {
 			let prefix = "";
 			let suffix = "";
 			let options = null;
@@ -1615,7 +1955,7 @@ class WallpanelView extends HuiView {
 			if (!val) {
 				return "";
 			}
-			if (/DateTime/.test(tag)) {
+			if (/DateTime/i.test(tag)) {
 				let date = new Date(val.replace(/(\d\d\d\d):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/, '$1-$2-$3T$4:$5:$6'));
 				if (isNaN(date)) {
 					// Invalid date
@@ -1640,6 +1980,9 @@ class WallpanelView extends HuiView {
 		let updateFunction = null;
 		if (imageSourceType() == "unsplash-api") {
 			updateFunction = this.updateImageListFromUnsplashAPI;
+		}
+		else if (imageSourceType() == "immich-api") {
+			updateFunction = this.updateImageListFromImmichAPI;
 		}
 		else if (imageSourceType() == "media-source") {
 			updateFunction = this.updateImageListFromMediaSource;
@@ -1777,17 +2120,109 @@ class WallpanelView extends HuiView {
 				logger.warn("Unsplash API error, get random images", http);
 				urls.push("https://source.unsplash.com/random/${width}x${height}?sig=${timestamp}");
 			}
-			wp.updatingImageList = false;
 			if (!wp.cancelUpdatingImageList) {
 				wp.imageList = urls;
 				imageInfoCache = data;
 				logger.debug("Image list from unsplash is now:", wp.imageList);
 				if (preload) {
+					wp.updatingImageList = false;
 					wp.preloadImages(preloadCallback);
 				}
 			}
+			wp.updatingImageList = false;
 		};
 		logger.debug(`Unsplash API request: ${config.image_url}`);
+		http.send();
+	}
+
+	updateImageListFromImmichAPI(preload, preloadCallback = null) {
+		if (!config.immich_api_key) {
+			throw "immich_api_key not configured";
+		}
+		let wp = this;
+		wp.updatingImageList = true;
+		wp.imageList = [];
+		wp.lastImageListUpdate = Date.now();
+		let urls = [];
+		let data = {};
+		const api_url = config.image_url.replace(/^immich\+/, "");
+		const http = new XMLHttpRequest();
+		const resolution = config.immich_resolution == "original" ? "original" : "thumbnail?size=preview"
+		http.responseType = "json";
+		http.open("GET", `${api_url}/albums?shared=${config.immich_shared_albums}`, true);
+		http.setRequestHeader("x-api-key", config.immich_api_key);
+		http.onload = function() {
+			let album_ids = [];
+			if (http.status == 200 || http.status === 0) {
+				const allAlbums = http.response;
+				logger.debug(`Got immich API response`, allAlbums);
+				allAlbums.forEach(album => {
+					logger.debug(album);
+					if (config.immich_album_names.length && ! config.immich_album_names.includes(album.albumName)) {
+						logger.debug("Skipping album: ", album.albumName);
+					}
+					else {
+						logger.debug("Adding album: ", album.albumName);
+						album_ids.push(album.id);
+					}
+				});
+				if (album_ids) {
+					album_ids.forEach(album_id => {
+						logger.debug("Fetching album metdata: ", album_id);
+						const http2 = new XMLHttpRequest();
+						http2.responseType = "json";
+						http2.open("GET", `${api_url}/albums/${album_id}`, true);
+						http2.setRequestHeader("x-api-key", config.immich_api_key);
+						http2.onload = function() {
+							if (http2.status == 200 || http2.status === 0) {
+								const albumDetails = http2.response;
+								logger.debug(`Got immich API response`, albumDetails);
+								albumDetails.assets.forEach(asset => {
+									logger.debug(asset);
+									if (asset.type == "IMAGE") {
+										const url = `${api_url}/assets/${asset.id}/${resolution}`;
+										data[url] = asset.exifInfo;
+										data[url]["image"] = {
+											"filename": asset.originalFileName,
+											"folderName": albumDetails.albumName
+										}
+										urls.push(url);
+									}
+								});
+							} else {
+								logger.error("Immich API error", http2);
+							}
+							album_ids.pop(album_id);
+							if (album_ids.length == 0) {
+								// All processed
+								if (!wp.cancelUpdatingImageList) {
+									if (config.image_order == "random") {
+										wp.imageList = urls.sort((a, b) => 0.5 - Math.random());
+									} else {
+										wp.imageList = urls;
+									}
+									imageInfoCache = data;
+									logger.debug("Image list from immich is now:", wp.imageList);
+									if (preload) {
+										wp.updatingImageList = false;
+										wp.preloadImages(preloadCallback);
+									}
+								}
+								wp.updatingImageList = false;
+							}
+						};
+						http2.send();
+					});
+				}
+				else {
+					logger.error("No immich albums selected");
+					wp.updatingImageList = false;
+				}
+			} else {
+				logger.error("Immich API error", http);
+				wp.updatingImageList = false;
+			}
+		};
 		http.send();
 	}
 
@@ -1803,22 +2238,22 @@ class WallpanelView extends HuiView {
 		return url;
 	}
 
-	updateImageFromUrl(img, url) {
+	updateImageFromUrl(img, url, headers = null) {
 		const realUrl = this.fillPlaceholders(url);
 		if (realUrl != url && imageInfoCache[url]) {
 			imageInfoCache[realUrl] = imageInfoCache[url];
 		}
 		img.imageUrl = realUrl;
 		logger.debug(`Updating image '${img.id}' from '${realUrl}'`);
-		if (imageSourceType() == "media-entity") {
-			this.updateImageUrlWithHttpFetch(img, realUrl);
+		if (["media-entity", "immich-api"].includes(imageSourceType())) {
+			this.updateImageUrlWithHttpFetch(img, realUrl, headers);
 		} else {
 			img.src = realUrl;
 		}
 	}
 
-	updateImageUrlWithHttpFetch(img, url) {
-		var http = new XMLHttpRequest();
+	updateImageUrlWithHttpFetch(img, url, headers) {
+		let http = new XMLHttpRequest();
 		http.onload = function() {
 			if (this.status == 200 || this.status === 0) {
 				img.src = "data:image/jpeg;base64," + arrayBufferToBase64(http.response);
@@ -1826,6 +2261,11 @@ class WallpanelView extends HuiView {
 			http = null;
 		};
 		http.open("GET", url, true);
+		if (headers) {
+			for (const header in headers) {
+				http.setRequestHeader(header, headers[header]);
+			}
+		}
 		http.responseType = "arraybuffer";
 		http.send(null);
 	}
@@ -1877,6 +2317,14 @@ class WallpanelView extends HuiView {
 		this.updateImageFromUrl(img, this.imageList[this.imageIndex]);
 	}
 
+	updateImageFromImmichAPI(img) {
+		if (this.imageList.length == 0) {
+			return;
+		}
+		this.updateImageIndex();
+		this.updateImageFromUrl(img, this.imageList[this.imageIndex], {"x-api-key": config.immich_api_key});
+	}
+
 	updateImageFromMediaEntity(img) {
 		const imageEntity = config.image_url.replace(/^media-entity:\/\//, '')
 		const entity = this.hass.states[imageEntity];
@@ -1894,13 +2342,15 @@ class WallpanelView extends HuiView {
 			return;
 		}
 		img.setAttribute('data-loading', true);
-		img.imageUrl = null;
 
 		if (imageSourceType() == "media-source") {
 			this.updateImageFromMediaSource(img);
 		}
 		else if (imageSourceType() == "unsplash-api") {
 			this.updateImageFromUnsplashAPI(img);
+		}
+		else if (imageSourceType() == "immich-api") {
+			this.updateImageFromImmichAPI(img);
 		}
 		else if (imageSourceType() == "media-entity") {
 			this.updateImageFromMediaEntity(img);
@@ -2014,7 +2464,8 @@ class WallpanelView extends HuiView {
 			newImg = this.imageOne;
 		}
 		logger.debug(`Switching active image to '${newActive.id}'`);
-
+		
+		this.setImageURLEntityState();
 		this.setImageDataInfo(newImg);
 
 		if (newActive.style.opacity != 1) {
@@ -2059,11 +2510,11 @@ class WallpanelView extends HuiView {
 
 	setupScreensaver() {
 		logger.debug("Setup screensaver");
-		if (config.fullscreen && !fullscreen) {
-			enterFullscreen();
-		}
 		if (config.keep_screen_on_time > 0 && !screenWakeLock.enabled) {
 			screenWakeLock.enable();
+		}
+		if (config.fullscreen && !fullscreen) {
+			enterFullscreen();
 		}
 	}
 
@@ -2077,6 +2528,7 @@ class WallpanelView extends HuiView {
 
 		this.updateStyle();
 		this.setupScreensaver();
+		this.setImageURLEntityState();
 		this.restartProgressBarAnimation();
 		this.restartKenBurnsEffect();
 
@@ -2106,13 +2558,21 @@ class WallpanelView extends HuiView {
 
 		this.setScreensaverEntityState();
 
-		if (config.screensaver_stop_navigation_path) {
+		if (config.screensaver_stop_navigation_path || config.screensaver_stop_close_browser_mod_popup) {
 			this.screensaverStopNavigationPathTimeout = setTimeout(() => {
-				skipDisableScreensaverOnLocationChanged = true;
-				navigate(config.screensaver_stop_navigation_path);
-				setTimeout(() => {
-					skipDisableScreensaverOnLocationChanged = false;
-				}, 250);
+				if (config.screensaver_stop_navigation_path) {
+					skipDisableScreensaverOnLocationChanged = true;
+					navigate(config.screensaver_stop_navigation_path);
+					setTimeout(() => {
+						skipDisableScreensaverOnLocationChanged = false;
+					}, 5000);
+				}
+				if (config.screensaver_stop_close_browser_mod_popup) {
+					let bmp = getActiveBrowserModPopup();
+					if (bmp) {
+						bmp.closeDialog();
+					}
+				}
 			}, (config.fade_in_time + 1) * 1000);
 		}
 	}
@@ -2121,7 +2581,7 @@ class WallpanelView extends HuiView {
 		return this.screensaverStartedAt && this.screensaverStartedAt > 0;
 	}
 
-	stopScreensaver() {
+	stopScreensaver(fadeOutTime = 0.0) {
 		logger.debug("Stop screensaver");
 
 		this.screensaverStartedAt = null;
@@ -2135,7 +2595,12 @@ class WallpanelView extends HuiView {
 		this.hideMessage();
 
 		this.debugBox.style.pointerEvents = 'none';
-		this.style.transition = '';
+		if (fadeOutTime > 0) {
+			this.style.transition = `opacity ${Math.round(fadeOutTime*1000)}ms ease-in-out`;
+		}
+		else {
+			this.style.transition = '';
+		}
 		this.style.opacity = 0;
 		this.style.visibility = 'hidden';
 		this.infoBoxPosX.style.animation = '';
@@ -2221,18 +2686,22 @@ class WallpanelView extends HuiView {
 			}
 
 			html += '<a id="download_log" href="">Download log</a><br />';
-			html += `Version: ${version}<br/>`;
-			html += `Config: ${JSON.stringify(conf)}<br/>`;
-			html += `Fullscreen: ${fullscreen}<br/>`;
-			html += `Screensaver started at: ${wallpanel.screensaverStartedAt}<br/>`;
-			html += `Screen wake lock: enabled=${screenWakeLock.enabled} native=${screenWakeLock.nativeWakeLockSupported} lock=${screenWakeLock._lock} player=${screenWakeLock._player} error=${screenWakeLock.error}<br/>`;
+			html += `<b>Version:</b> ${version}<br/>`;
+			html += `<b>Config:</b> ${JSON.stringify(conf)}<br/>`;
+			html += `<b>Fullscreen:</b> ${fullscreen}<br/>`;
+			html += `<b>Screensaver started at:</b> ${wallpanel.screensaverStartedAt}<br/>`;
+			html += `<b>Screen wake lock:</b> enabled=${screenWakeLock.enabled} native=${screenWakeLock.nativeWakeLockSupported} lock=${screenWakeLock._lock} player=${screenWakeLock._player} error=${screenWakeLock.error}<br/>`;
 			if (screenWakeLock._player) {
 				let p = screenWakeLock._player;
-				html += `Screen wake lock video: readyState=${p.readyState} currentTime=${p.currentTime} paused=${p.paused} ended=${p.ended}<br/>`;
+				html += `<b>Screen wake lock video</b>: readyState=${p.readyState} currentTime=${p.currentTime} paused=${p.paused} ended=${p.ended}<br/>`;
 			}
 			const activeImage = this.getActiveImageElement();
 			if (activeImage) {
-				html += `Current image: ${activeImage.imageUrl}`;
+				html += `<b>Current image:</b> ${activeImage.imageUrl}<br/>`;
+				const imgInfo = imageInfoCache[activeImage.imageUrl];
+				if (imgInfo) {
+					html += `<b>Image info:</b> ${JSON.stringify(imgInfo)}<br/>`;
+				}
 			}
 			this.debugBox.innerHTML = html;
 			this.debugBox.querySelector("#download_log").addEventListener(
@@ -2259,9 +2728,13 @@ class WallpanelView extends HuiView {
 		const inactiveImage = this.getInactiveImageElement();
 		this.updateImage(inactiveImage,
 			function(wp, img) {
-				wp.switchActiveImage(500);
+				wp.switchActiveImage(250);
 			}
 		);
+	}
+
+	motionDetected() {
+		this.stopScreensaver(config.fade_out_time_motion_detected);
 	}
 
 	handleInteractionEvent(evt, isClick) {
@@ -2305,11 +2778,29 @@ class WallpanelView extends HuiView {
 			return;
 		}
 
+		const bmp = getActiveBrowserModPopup();
+		if (bmp) {
+			const bm_elements = [ bmp.shadowRoot.querySelector(".content"), bmp.shadowRoot.querySelector("ha-dialog-header") ];
+			for (let i=0; i<bm_elements.length; i++) {
+				if (bm_elements[i]) {
+					const pos = bm_elements[i].getBoundingClientRect();
+					logger.debug("Event position:", bm_elements[i], x, y, pos.left, pos.right, pos.top, pos.bottom);
+					if (x >= pos.left && x <= pos.right && y >= pos.top && y <= pos.bottom) {
+						logger.debug("Event on browser mod popup:", bm_elements[i]);
+						return;
+					}
+				}
+			};
+		}
+
 		if (config.card_interaction) {
 			if (this.getMoreInfoDialog()) {
 				return;
 			}
-			let elements = this.__cards;
+			let elements = [];
+			elements = elements.concat(this.__cards);
+			elements = elements.concat(this.__badges);
+			elements = elements.concat(this.__views);
 			elements.push(this.shadowRoot.getElementById("wallpanel-screensaver-info-box-content"));
 			elements.push(this.shadowRoot.getElementById("wallpanel-screensaver-fixed-info-box-content"));
 			for (let i=0; i<elements.length; i++) {
@@ -2341,12 +2832,8 @@ class WallpanelView extends HuiView {
 					if (this.imageListDirection != "forwards") {
 						this.switchImageDirection("forwards");
 					}
-					else if (
-						(now - this.lastImageUpdate > 500) &&
-						(this.imageOne.getAttribute('data-loading') == "false") &&
-						(this.imageTwo.getAttribute('data-loading') == "false")
-					) {
-						this.switchActiveImage(500);
+					else if (this.imageOne.getAttribute('data-loading') == "false" && this.imageTwo.getAttribute('data-loading') == "false") {
+						this.switchActiveImage(250);
 					}
 				}
 				return;
@@ -2356,12 +2843,8 @@ class WallpanelView extends HuiView {
 					if (this.imageListDirection != "backwards") {
 						this.switchImageDirection("backwards");
 					}
-					else if (
-						isClick && (now - this.lastImageUpdate > 500) &&
-						(this.imageOne.getAttribute('data-loading') == "false") &&
-						(this.imageTwo.getAttribute('data-loading') == "false")
-					) {
-						this.switchActiveImage(500);
+					else if (this.imageOne.getAttribute('data-loading') == "false" && this.imageTwo.getAttribute('data-loading') == "false") {
+						this.switchActiveImage(250);
 					}
 				}
 				return;
@@ -2387,7 +2870,7 @@ class WallpanelView extends HuiView {
 		if (!isClick || config.stop_screensaver_on_mouse_click) {
 			// Prevent interaction with the dashboards after screensaver was stopped
 			this.blockEventsUntil = now + config.control_reactivation_time * 1000;
-			this.stopScreensaver();
+			this.stopScreensaver(config.fade_out_time_interaction);
 		}
 	}
 }
@@ -2424,11 +2907,18 @@ function reconfigure() {
 
 
 function locationChanged() {
-	if (wallpanel.screensaverRunning()) {
-		if (!config.stop_screensaver_on_location_change || skipDisableScreensaverOnLocationChanged) {
-			return;
+	if (
+		wallpanel &&
+		wallpanel.screensaverRunning &&
+		wallpanel.screensaverRunning() &&
+		config.stop_screensaver_on_location_change
+	) {
+		if (skipDisableScreensaverOnLocationChanged) {
+			skipDisableScreensaverOnLocationChanged = false;
 		}
-		wallpanel.stopScreensaver();
+		else {
+			wallpanel.stopScreensaver();
+		}
 	}
 
 	let panel = null;
@@ -2457,7 +2947,7 @@ function startup() {
 		setTimeout(startup, 1000);
 		return;
 	}
-	logger.info(`%c🖼️ Wallpanel version ${version}`, "color: #34b6f9; font-weight: bold;");
+	console.info(`%c🖼️ Wallpanel version ${version}`, "color: #34b6f9; font-weight: bold;");
 	updateConfig();
 	customElements.define("wallpanel-view", WallpanelView);
 	wallpanel = document.createElement("wallpanel-view");
@@ -3635,4 +4125,3 @@ EXIF.pretty = function(img) {
 EXIF.readFromBinaryFile = function(file) {
 	return findEXIFinJPEG(file);
 }
-

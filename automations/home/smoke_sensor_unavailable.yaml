@@ -1,0 +1,31 @@
+---
+alias: ⚠️ Smoke Alarm(s) unavailable ⚠️
+id: "smoke_sensor_unavailable"
+mode: restart
+triggers:
+  - trigger: time
+    at: "07:00"
+conditions: >-
+      {%- set sensors = namespace() -%}
+      {%- set sensors.smoke = [] -%}
+      {%- for sensor in states.binary_sensor if (sensor.entity_id).endswith("smoke") and is_state(sensor.entity_id, ["unavailable", "unknown"]) -%}
+        {%- set sensors.smoke = sensors.smoke + [sensor] -%}
+      {%- endfor -%}
+      {%- if sensors.smoke | length > 0 -%}
+      true
+      {%- endif -%}
+actions:
+  - action: notify.mobile_app_jorns_iphone
+    data:
+      title: ⚠️ Smoke Alarm(s) unavailable ⚠️
+      message: |
+        Some smoke alarms are unavailable, go fix!
+      data:
+        sticky: true
+  - action: persistent_notification.create
+    data:
+      title: "⚠️ Smoke Alarm(s) unavailable ⚠️"
+      message: |
+        {% for sensor in states.binary_sensor if (sensor.entity_id).endswith("smoke") and is_state(sensor.entity_id, ["unavailable", "unknown"]) %}
+          {{- sensor.name }}
+        {% endfor %}

@@ -18,3 +18,10 @@ actions:
         {% endfor %}
       data:
         sticky: true
+  - action: persistent_notification.create
+    data:
+      title: 🔥 Smoke Alarm 🔥
+      message: |
+        {%- for sensor in states.binary_sensor if (sensor.entity_id).endswith("smoke") and is_state(sensor.entity_id, "on") -%}
+          {{ sensor.name }}
+        {% endfor %}

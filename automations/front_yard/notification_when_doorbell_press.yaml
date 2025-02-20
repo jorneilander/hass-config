@@ -2,96 +2,41 @@
 alias: Doorbell - Notification when pressed
 id: "notification_when_doorbell_press"
 description: ""
+mode: single
 trigger:
   - alias: Someone presses the doorbell
-    platform: state
+    trigger: state
     entity_id: binary_sensor.doorbell_visitor
     to: "on"
 condition: []
-action:
-  - alias: "Set up variables for the actions"
-    variables:
-      action_coming: "{{ 'COMING_' ~ context.id }}"
-      action_not_coming: "{{ 'NOT_COMING' ~ context.id }}"
+variables:
+  local_time: "{{ now().strftime('%Y-%m-%dT%H%M%S%Z') }}"
+  snapshot_path_local: "/config/www/tmp/{{ local_time }}.jpg"
+  snapshot_path_external: "/local/tmp/{{ local_time }}.jpg"
+actions:
   - alias: "Send an alert to everyone"
-    service: notify.mobile_jorn_maeike_priority_high
+    action: notify.mobile_jorn_maeike_priority_high
     data:
       message: |
         There is someone at the door!
   - alias: Take a snapshot
-    service: camera.snapshot
+    action: camera.snapshot
     data:
-      filename: /config/www/tmp/snapshot_doorbell.jpg
+      filename: "{{ snapshot_path_local }}"
     target:
       entity_id: camera.doorbell_clear
   - delay: '00:00:02'
-  - alias: Send the snapshot to everyone with list of actions
-    service: notify.mobile_jorn_maeike_priority_high
+  - alias: Send the snapshot to everyone
+    action: notify.mobile_jorn_maeike_priority_high
     data:
       message: Here they are
       data:
         attachment:
-          url: "/local/tmp/snapshot_doorbell.jpg"
+          url: "{{ snapshot_path_external }}"
           content_type: "JPEG"
-        actions:
-          - action: "{{ action_coming }}"
-            title: I'll be right there!
-          - action: "{{ action_not_coming }}"
-            title: Send him away
-  - alias: "Wait for a response"
-    wait_for_trigger:
-      - platform: event
-        event_type: mobile_app_notification_action
-        event_data:
-          # waiting for the specific action avoids accidentally continuing
-          # for another script/automation's notification action
-          action: "{{ action_coming }}"
-      - platform: event
-        event_type: mobile_app_notification_action
-        event_data:
-          action: "{{ action_not_coming }}"
-    timeout:
-      minutes: "1"
-    continue_on_timeout: false
-  - alias: "Perform the action"
-    choose:
-      - conditions: "{{ wait.trigger.event.data.action == action_coming }}"
-        sequence:
-          - service: select.select_option
-            target:
-              entity_id:
-                - select.doorbell_play_quick_reply_message
-            data:
-              option: Hi, we will be right there. Please wait a moment.
-      - conditions: "{{ wait.trigger.event.data.action == action_not_coming }}"
-        sequence:
-          - service: select.select_option
-            target:
-              entity_id:
-                - select.doorbell_play_quick_reply_message
-            data:
-              option: I'm sorry. I think you've knocked on the wrong door.
-mode: single
-
-
-# service: camera.snapshot
-# data:
-#   filename: /config/www/tmp/snapshot_{{ entity_id }}.jpg
-# target:
-#   entity_id: camera.doorbell_clear
-
-# snapshot_create_file_path: /config/www/tmp/snapshot_{{ entity_id }}.jpg
-# snapshot_access_file_path: "{{ snapshot_create_file_path | replace('/config/www','/local') }}"
-
-  # - device_id: !input notify_device
-  #   domain: mobile_app
-  #   type: notify
-  #   title: "{{ notification_title }}"
-  #   message: "{{ notification_message }}"
-  #   data: >
-  #     {% set android_data = {"image": "%s"} | format(snapshot_access_file_path) %}
-  #     {% set ios_data = {"attachment": {"url": "%s", "content_type": "JPEG"}} | format(snapshot_access_file_path) %}
-  #     {{ ios_data if is_ios else android_data }}
-
-  # https://community.home-assistant.io/t/reolink-doorbell-trigger-quick-message/558065/49
-  # https://community.home-assistant.io/t/send-camera-snapshot-notification-on-motion/254565
+  - alias: Set persistent notification
+    action: persistent_notification.create
+    data:
+      title: Someone was at the door
+      message: |
+        ![image info]({{ snapshot_path_external }})

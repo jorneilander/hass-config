@@ -1,0 +1,12 @@
+---
+alias: Living room - Movie Night - Enabled
+id: "living_room_movie_night_enabled"
+description: ""
+triggers:
+  - trigger: state
+    entity_id: input_boolean.movie_night_enabled
+    to: "on"
+actions:
+  - action: scene.turn_on
+    target:
+      entity_id: scene.movie_night

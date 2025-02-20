@@ -1,0 +1,25 @@
+---
+alias: Living room - AppleTV - Movie Night - Play
+id: "living_room_appletv_movie_night_play"
+description: ""
+triggers:
+  - trigger: state
+    entity_id: media_player.woonkamer
+    to: playing
+conditions:
+  - condition: state
+    entity_id: input_boolean.movie_night_enabled
+    state: "on"
+actions:
+  - action: light.turn_on
+    entity_id: light.dining_room_lights
+    data:
+      brightness_pct: 50
+  - action: light.turn_on
+    entity_id: light.living_room_light_kitchen_corner
+    data:
+      brightness_pct: 50
+  - action: light.turn_off
+    entity_id: light.living_room_light_tv_corner
+  - action: light.turn_off
+    entity_id: light.living_room_light_window_corner

@@ -1,0 +1,20 @@
+# Example scenes.yaml entry
+- id: movie_night # <-- Required for editor to work.
+  name: Movie Night
+  entities:
+    input_select.movie_night:
+      state: on
+    light.extension_downlights:
+      state: off
+    light.dining_room_lights:
+      state: on
+      brightness: 192
+    light.living_room_lights:
+      state: on
+      brightness: 192
+    media_player.lg_webos_tv_oled65c11lb:
+      state: on
+      source: Living room
+      sound_output: external_arc
+    media_player.woonkamer:
+      state: on

@@ -1,0 +1,24 @@
+---
+alias: Living room - AppleTV - Movie Night - Pauze
+id: "living_room_appletv_movie_night_pauze"
+description: ""
+triggers:
+  - trigger: state
+    entity_id: media_player.woonkamer
+    to: standby
+conditions:
+  - condition: state
+    entity_id: input_boolean.movie_night_enabled
+    state: "on"
+actions:
+  - action: light.turn_on
+    entity_id: light.dining_room_lights
+    data:
+      brightness_pct: 100
+  - action: light.turn_on
+    entity_id: light.living_room_lights
+    data:
+      brightness_pct: 100
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.movie_night_enabled

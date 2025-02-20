@@ -1,0 +1,4 @@
+---
+movie_night_enabled:
+  name: Movie Night
+  icon: mdi:format-list-bulleted

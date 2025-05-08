@@ -4,7 +4,7 @@
             "already_configured": "Das Gerät ist bereits konfiguriert",
             "already_configured_account": "Konto ist bereits konfiguriert",
             "reconfigure_successful": "Die Neukonfiguration war erfolgreich",
-            "single_instance_allowed": "Bereits konfiguriert.Nur eine einzelne Konfiguration möglich."
+            "single_instance_allowed": "Bereits konfiguriert. Nur eine einzelne Konfiguration möglich."
         },
         "error": {
             "invalid_auth": "Ungültige Authentifizierung"
@@ -13,14 +13,14 @@
             "user": {
                 "data": {
                     "language": "Sprache",
-                    "notifications": "Erhöhen Sie Benachrichtigungen für Benachrichtigungen auf Warnstufe",
-                    "notifications_diagnostic": "Erhöhen Sie Benachrichtigungen für Diagnosebereich Hinweise",
-                    "notifications_warning": "Erhöhen Sie Benachrichtigungen für Warnniveaus -Mitteilungen",
+                    "notifications": "Benachrichtigungen für Meldungen der Stufe ALERT aktivieren",
+                    "notifications_diagnostic": "Benachrichtigungen für Meldungen der Stufe DIAGNOSTIC aktivieren",
+                    "notifications_warning": "Benachrichtigungen für Meldungen der Stufe WARNING aktivieren",
                     "password": "Passwort",
                     "username": "Benutzername"
                 },
-                "description": "Wenn Sie bei der Konfiguration Hilfe benötigen",
-                "title": "Elektroluxstatus"
+                "description": "Wenn Sie Hilfe bei der Konfiguration benötigen, besuchen Sie: https://github.com/albaintor/homeassistant_electrolux_status",
+                "title": "Electrolux Status"
             }
         }
     },
@@ -29,11 +29,11 @@
             "user": {
                 "data": {
                     "language": "Sprache",
-                    "notifications": "Erhöhen Sie Benachrichtigungen für Benachrichtigungen auf Warnstufe",
-                    "notifications_diagnostic": "Erhöhen Sie Benachrichtigungen für Diagnosebereich Hinweise",
-                    "notifications_warning": "Erhöhen Sie Benachrichtigungen für Warnniveaus -Mitteilungen",
+                    "notifications": "Benachrichtigungen für Meldungen der Stufe ALERT aktivieren",
+                    "notifications_diagnostic": "Benachrichtigungen für Meldungen der Stufe DIAGNOSTIC aktivieren",
+                    "notifications_warning": "Benachrichtigungen für Meldungen der Stufe WARNING aktivieren",
                     "password": "Passwort",
-                    "renew_interval": "Erneuerungsintervall von WebSocket (Sekunden)"
+                    "renew_interval": "Erneuerungsintervall der Websocket‑Verbindung (Sekunden)"
                 }
             }
         }

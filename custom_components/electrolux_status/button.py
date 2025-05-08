@@ -116,7 +116,15 @@ class ElectroluxButton(ElectroluxEntity, ButtonEntity):
         client: OneAppApi = self.api
         value = self.val_to_send
         if self.entity_source:
-            command = {self.entity_source: {self.entity_attr: value}}
+            if self.entity_source == "userSelections":
+                command = {
+                    self.entity_source: {
+                        "programUID": self.appliance_status["properties"]['reported']["userSelections"]['programUID'],
+                        self.entity_attr: value
+                    },
+                }
+            else:
+                command = {self.entity_source: {self.entity_attr: value}}
         else:
             command = {self.entity_attr: value}
         _LOGGER.debug("Electrolux send command %s", command)

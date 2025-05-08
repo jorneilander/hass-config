@@ -22,10 +22,10 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
 def get_electrolux_session(
-    username, password, client_session, language="eng"
+    username, password, country_code, client_session, language="eng"
 ) -> OneAppApi:
     """Return OneAppApi Session."""
-    return OneAppApi(username, password, client_session)
+    return OneAppApi(username, password, country_code, client_session)
 
 
 def should_send_notification(config_entry, alert_severity, alert_status):

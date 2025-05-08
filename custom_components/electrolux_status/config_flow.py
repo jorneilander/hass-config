@@ -13,7 +13,7 @@ from homeassistant.config_entries import (
     ConfigFlowResult,
     OptionsFlow,
 )
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, CONF_COUNTRY_CODE
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -30,6 +30,7 @@ from .const import (
     CONF_NOTIFICATION_DIAG,
     CONF_NOTIFICATION_WARNING,
     DEFAULT_LANGUAGE,
+    DEFAULT_COUNTRY_CODE,
     DOMAIN,
     languages,
 )
@@ -60,7 +61,7 @@ class ElectroluxStatusFlowHandler(ConfigFlow, domain=DOMAIN):
                     return self.async_abort(reason="already_configured_account")
 
             valid = await self._test_credentials(
-                user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+                user_input[CONF_USERNAME], user_input[CONF_PASSWORD], user_input[CONF_COUNTRY_CODE]
             )
             if valid:
                 return self.async_create_entry(
@@ -83,7 +84,7 @@ class ElectroluxStatusFlowHandler(ConfigFlow, domain=DOMAIN):
         self._errors = {}
         if user_input is not None:
             valid = await self._test_credentials(
-                user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+                user_input[CONF_USERNAME], user_input[CONF_PASSWORD], user_input[CONF_COUNTRY_CODE]
             )
             if valid:
                 return self.async_create_entry(
@@ -110,6 +111,11 @@ class ElectroluxStatusFlowHandler(ConfigFlow, domain=DOMAIN):
                     type=TextSelectorType.PASSWORD, autocomplete="current-password"
                 )
             ),
+            vol.Required(CONF_COUNTRY_CODE, default=DEFAULT_COUNTRY_CODE): TextSelector(
+                TextSelectorConfig(
+                    type=TextSelectorType.TEXT, autocomplete="country-code"
+                )
+            ),
         }
         if self.show_advanced_options:
             data_schema.update(
@@ -133,11 +139,11 @@ class ElectroluxStatusFlowHandler(ConfigFlow, domain=DOMAIN):
             errors=self._errors,
         )
 
-    async def _test_credentials(self, username, password):
+    async def _test_credentials(self, username, password, country_code):
         """Return true if credentials is valid."""
         try:
             client = get_electrolux_session(
-                username, password, async_get_clientsession(self.hass)
+                username, password, country_code, async_get_clientsession(self.hass)
             )
             await client.get_appliances_list()
         except Exception as inst:  # pylint: disable=broad-except  # noqa: BLE001
@@ -166,6 +172,7 @@ class ElectroluxStatusOptionsFlowHandler(OptionsFlow):
 
         selected_language = self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE)
         current_password = self.config_entry.data.get(CONF_PASSWORD, None)
+        current_country_code = self.config_entry.data.get(CONF_COUNTRY_CODE, None)
         notify_alert = self.config_entry.data.get(CONF_NOTIFICATION_DEFAULT, True)
         notify_warning = self.config_entry.data.get(CONF_NOTIFICATION_WARNING, False)
         notify_diagnostic = self.config_entry.data.get(CONF_NOTIFICATION_DIAG, False)
@@ -177,6 +184,11 @@ class ElectroluxStatusOptionsFlowHandler(OptionsFlow):
                         TextSelectorConfig(
                             type=TextSelectorType.PASSWORD,
                             autocomplete="current-password",
+                        )
+                    ),
+                    vol.Required(CONF_COUNTRY_CODE, default=current_country_code): TextSelector(
+                        TextSelectorConfig(
+                            type=TextSelectorType.TEXT, autocomplete="country-code"
                         )
                     ),
                     vol.Required(CONF_LANGUAGE, default=selected_language): selector(
@@ -212,6 +224,7 @@ class ElectroluxStatusOptionsFlowHandler(OptionsFlow):
         data = {
             **self.config_entry.data,
             CONF_PASSWORD: self.options[CONF_PASSWORD],
+            CONF_COUNTRY_CODE: self.options[CONF_COUNTRY_CODE],
             CONF_LANGUAGE: self.options[CONF_LANGUAGE],
             CONF_NOTIFICATION_DEFAULT: self.options[CONF_NOTIFICATION_DEFAULT],
             CONF_NOTIFICATION_WARNING: self.options[CONF_NOTIFICATION_WARNING],

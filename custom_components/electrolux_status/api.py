@@ -40,6 +40,17 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 HEADERS = {"Content-type": "application/json; charset=UTF-8"}
 
+def deep_merge_dicts(dict1, dict2):
+    """
+    Recursively merge two dictionaries.
+    """
+    result = dict1.copy()
+    for key, value in dict2.items():
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            result[key] = deep_merge_dicts(result[key], value)
+        else:
+            result[key] = value
+    return result
 
 class ElectroluxLibraryEntity:
     """Electrolux Library Entity."""
@@ -158,8 +169,6 @@ class ElectroluxLibraryEntity:
 
         May contain slashes for nested keys.
         """
-
-        # Some capabilities are not stored in hierarchy but directly in a key with format "a/b" like useSelections
         if self.capabilities.get(attr_name, None):
             return self.capabilities.get(attr_name)
 
@@ -651,7 +660,7 @@ class Appliance:
         """Update the reported data."""
         _LOGGER.debug("Electrolux update reported data %s", reported_data)
         try:
-            self.reported_state.update(reported_data)
+            self.reported_state.update(deep_merge_dicts(self.reported_state, reported_data))
             _LOGGER.debug("Electrolux updated reported data %s", self.state)
             self.update_missing_entities()
             for entity in self.entities:

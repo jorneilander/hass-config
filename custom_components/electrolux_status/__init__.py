@@ -7,6 +7,7 @@ from homeassistant.const import (
     CONF_LANGUAGE,
     CONF_PASSWORD,
     CONF_USERNAME,
+    CONF_COUNTRY_CODE,
     EVENT_HOMEASSISTANT_STOP,
 )
 from homeassistant.core import HomeAssistant
@@ -17,6 +18,7 @@ from homeassistant.helpers.typing import ConfigType
 from .const import (
     CONF_RENEW_INTERVAL,
     DEFAULT_LANGUAGE,
+    DEFAULT_COUNTRY_CODE,
     DEFAULT_WEBSOCKET_RENEWAL_DELAY,
     DOMAIN,
     PLATFORMS,
@@ -26,7 +28,6 @@ from .coordinator import ElectroluxCoordinator
 from .util import get_electrolux_session
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
-
 
 # noinspection PyUnusedLocal
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -45,10 +46,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     username = entry.data.get(CONF_USERNAME)
     password = entry.data.get(CONF_PASSWORD)
+    country_code = entry.data.get(CONF_COUNTRY_CODE, DEFAULT_COUNTRY_CODE)
     language = languages.get(entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE), "eng")
     session = async_get_clientsession(hass)
 
-    client = get_electrolux_session(username, password, session, language)
+    client = get_electrolux_session(username, password, country_code, session, language)
     coordinator = ElectroluxCoordinator(
         hass,
         client=client,

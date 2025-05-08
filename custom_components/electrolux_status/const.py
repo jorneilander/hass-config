@@ -8,6 +8,9 @@ from homeassistant.const import Platform
 NAME = "Electrolux status"
 DOMAIN = "electrolux_status"
 DOMAIN_DATA = f"{DOMAIN}_data"
+COMPONENTS_DIRECTORY = "custom_components"
+LOOKUP_DIRECTORY = "appliance_definitions"
+LOOKUP_DIRECTORY_PATH = f"{COMPONENTS_DIRECTORY}/{DOMAIN}/{LOOKUP_DIRECTORY}/"
 
 # Platforms
 BINARY_SENSOR = Platform.BINARY_SENSOR
@@ -27,6 +30,7 @@ CONF_NOTIFICATION_WARNING = "notifications_warning"
 
 # Defaults
 DEFAULT_LANGUAGE = "English"
+DEFAULT_COUNTRY_CODE = "us"
 DEFAULT_WEBSOCKET_RENEWAL_DELAY = 43200  # 12 hours
 
 # these are attributes that appear in the state file but not in the capabilities.

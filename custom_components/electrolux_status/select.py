@@ -161,10 +161,20 @@ class ElectroluxSelect(ElectroluxEntity, SelectEntity):
         if value is None:
             return
 
+        _LOGGER.debug("Electrolux select option before reported status %s", self.appliance_status["properties"]['reported'])
+
         client: OneAppApi = self.api
         command: dict[str, Any] = {}
         if self.entity_source:
-            command = {self.entity_source: {self.entity_attr: value}}
+            if self.entity_source == "userSelections":
+                command = {
+                    self.entity_source: {
+                        "programUID": self.appliance_status["properties"]['reported']["userSelections"]['programUID'],
+                        self.entity_attr: value
+                    },
+                }
+            else:
+                command = {self.entity_source: {self.entity_attr: value}}
         else:
             command = {self.entity_attr: value}
 

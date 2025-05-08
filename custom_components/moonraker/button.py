@@ -1,9 +1,9 @@
 """Button platform for Moonraker integration."""
+
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from homeassistant.components.button import (ButtonEntity,
-                                             ButtonEntityDescription)
+from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 
 from .const import DOMAIN, METHODS
 from .entity import BaseMoonrakerEntity
@@ -92,6 +92,23 @@ BUTTONS: tuple[MoonrakerButtonDescription, ...] = [
             METHODS.MACHINE_UPDATE_REFRESH
         ),
         icon="mdi:refresh",
+    ),
+    MoonrakerButtonDescription(
+        key="reset_totals",
+        name="Reset Totals",
+        entity_registry_enabled_default=False,
+        press_fn=lambda button: button.coordinator.async_send_data(
+            METHODS.SERVER_HISTORY_RESET_TOTALS
+        ),
+        icon="mdi:history",
+    ),
+    MoonrakerButtonDescription(
+        key="start_print_from_queue",
+        name="Start Print from Queue",
+        press_fn=lambda button: button.coordinator.async_send_data(
+            METHODS.SERVER_JOB_QUEUE_START
+        ),
+        icon="mdi:playlist-play",
     ),
 ]
 

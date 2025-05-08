@@ -1,4 +1,17 @@
 ---
+detectors:
+  ov:
+    type: openvino
+    device: GPU
+
+model:
+  width: 300
+  height: 300
+  input_tensor: nhwc
+  input_pixel_format: bgr
+  path: /openvino-model/ssdlite_mobilenet_v2.xml
+  labelmap_path: /openvino-model/coco_91cl_bkgr.txt
+
 mqtt:
   enabled: True
   host: "{FRIGATE_MQTT_HOST}"
@@ -10,9 +23,9 @@ cameras:
     enabled: true
     webui_url: "{FRIGATE_CAMERA1_WEBUI_URL}"
     detect:
-      width: 1280
-      height: 720
-      fps: 5
+      width: 2048
+      height: 1536
+      fps: 10
     ffmpeg:
       output_args:
         record: preset-record-generic-audio-aac
@@ -29,26 +42,34 @@ cameras:
       public_space:
         coordinates: 319,379,58,372,75,483,288,526,648,511,827,488,1015,455,1280,413,1254,350,759,380
       sky:
-        coordinates: 437,216,751,229,1280,308,1280,88,1078,141,963,92,868,68,821,55,776,49,694,27,567,21,478,0,149,0,59,239
+        coordinates:
+          437,216,751,229,1280,308,1280,88,1078,141,963,92,868,68,821,55,776,49,694,27,567,21,478,0,149,0,59,239
 
 ffmpeg:
-  hwaccel_args: preset-rpi-64-h264
+  hwaccel_args: preset-vaapi
 
 record:
-  enabled: True
+  enabled: true
+  export:
+    timelapse_args: -vf setpts=PTS/60 -r 25
   retain:
     days: 1
     mode: motion
-  events:
+  alerts:
     retain:
-      default: 30
-      mode: motion
+      days: 7
+  detections:
+    retain:
+      days: 7
 
 snapshots:
-  enabled: True
+  enabled: true
   retain:
-    default: 30
+    default: 7
 
 birdseye:
   # Optional: Enable birdseye view (default: shown below)
-  enabled: False
+  enabled: false
+version: 0.15-1
+
+

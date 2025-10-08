@@ -1,5 +1,5 @@
 ---
-alias: Curtains - Open when sunrise
+alias: Living room - Curtains - Open when sunrise
 id: "curtains_opened_when_sunrise"
 description: "Open the curtains on sunrise"
 trigger:

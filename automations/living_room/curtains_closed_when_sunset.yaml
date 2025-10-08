@@ -1,5 +1,5 @@
 ---
-alias: Curtains - Close when sunset
+alias: Living room - Curtains - Close when sunset
 id: "curtains_closed_when_sunset"
 description: "Close the curtains on sunset"
 trigger:

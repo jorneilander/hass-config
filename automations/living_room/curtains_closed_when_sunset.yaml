@@ -1,0 +1,13 @@
+---
+alias: Curtains - Close when sunset
+id: "curtains_closed_when_sunset"
+description: "Close the curtains on sunset"
+trigger:
+  - platform: sun
+    event: sunset
+    offset: "00:00:00"
+condition: []
+actions:
+  - action: cover.close_cover
+    entity_id: cover.curtain_living_room_left
+mode: single

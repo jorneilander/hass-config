@@ -18,3 +18,5 @@
       sound_output: external_arc
     media_player.woonkamer:
       state: on
+    cover.curtain_living_room_left:
+      state: closed

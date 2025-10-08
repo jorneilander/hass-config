@@ -1,0 +1,13 @@
+---
+alias: Curtains - Open when sunrise
+id: "curtains_opened_when_sunrise"
+description: "Open the curtains on sunrise"
+trigger:
+  - platform: sun
+    event: sunrise
+    offset: "00:00:00"
+condition: []
+actions:
+  - action: cover.open_cover
+    entity_id: cover.curtain_living_room_left
+mode: single

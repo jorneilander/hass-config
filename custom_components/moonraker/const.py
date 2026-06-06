@@ -7,7 +7,7 @@ from homeassistant.const import Platform
 # Base component constants
 DOMAIN = "moonraker"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.8.0"
+VERSION = "1.13.3"
 MANIFACTURER = "@marcolivierarsenault"
 
 # Platforms
@@ -48,6 +48,9 @@ class METHODS(Enum):
     MACHINE_DEVICE_POWER_DEVICES = "machine.device_power.devices"
     MACHINE_DEVICE_POWER_GET_DEVICE = "machine.device_power.get_device"
     MACHINE_DEVICE_POWER_POST_DEVICE = "machine.device_power.post_device"
+    MACHINE_SERVICES_START = "machine.services.start"
+    MACHINE_SERVICES_STOP = "machine.services.stop"
+    MACHINE_SERVICES_RESTART = "machine.services.restart"
     MACHINE_UPDATE_REFRESH = "machine.update.refresh"
     MACHINE_UPDATE_STATUS = "machine.update.status"
     MACHINE_SYSTEM_INFO = "machine.system_info"
@@ -69,6 +72,7 @@ class METHODS(Enum):
     SERVER_JOB_QUEUE_START = "server.job_queue.start"
     SERVER_RESTART = "server.restart"
     SERVER_WEBCAMS_LIST = "server.webcams.list"
+    SERVER_SPOOLMAN_ID = "server.spoolman.status"
 
 
 class ExtendedEnum(Enum):

@@ -9,6 +9,7 @@ from typing import Any, cast
 
 import attr
 from dateutil.relativedelta import relativedelta
+from titlecase import titlecase
 
 from homeassistant.components.media_player.const import MediaClass, MediaType
 from homeassistant.components.media_source.error import MediaSourceError, Unresolvable
@@ -25,7 +26,7 @@ from homeassistant.util.dt import DEFAULT_TIME_ZONE, async_get_time_zone
 
 from . import get_friendly_name
 from .api import FrigateApiClient, FrigateApiClientError
-from .const import CONF_MEDIA_BROWSER_ENABLE, DOMAIN, NAME
+from .const import CONF_MEDIA_BROWSER_ENABLE, DEFAULT_VOD_EVENT_PADDING, DOMAIN, NAME
 from .views import (
     get_client_for_frigate_instance_id,
     get_config_entry_for_frigate_instance_id,
@@ -571,6 +572,36 @@ class FrigateMediaSource(MediaSource):
                     f"Could not get timezone object for timezone: {tz_name}"
                 )
 
+            # For event clips, fetch event data and use timestamp-based VOD with padding
+            if (
+                isinstance(identifier, EventIdentifier)
+                and identifier.frigate_media_type == FrigateMediaType.CLIPS
+            ):
+                try:
+                    client = self._get_client(identifier)
+                    event = await client.async_get_event(identifier.id)
+
+                    start_time = event.get("start_time")
+                    end_time = event.get("end_time")
+
+                    if start_time is not None:
+                        padded_start = int(start_time - DEFAULT_VOD_EVENT_PADDING)
+
+                        if end_time is not None:
+                            padded_end = int(end_time + DEFAULT_VOD_EVENT_PADDING)
+                        else:
+                            padded_end = int(
+                                dt.datetime.now(DEFAULT_TIME_ZONE).timestamp()
+                            )
+
+                        server_path = f"vod/{identifier.camera}/start/{padded_start}/end/{padded_end}/index.m3u8"
+                        return PlayMedia(
+                            f"/api/frigate/{identifier.frigate_instance_id}/{server_path}",
+                            identifier.mime_type,
+                        )
+                except FrigateApiClientError as exc:
+                    _LOGGER.warning("Failed to fetch event %s: %s", identifier.id, exc)
+
             server_path = identifier.get_integration_proxy_path(tz_info)
             return PlayMedia(
                 f"/api/frigate/{identifier.frigate_instance_id}/{server_path}",
@@ -754,7 +785,7 @@ class FrigateMediaSource(MediaSource):
         if identifier.is_root():
             title = f"{identifier.frigate_media_type.value.capitalize()} ({count})"
         else:
-            title = f"{' > '.join([s for s in get_friendly_name(identifier.name).split('.') if s != '']).title()} ({count})"
+            title = f"{titlecase(' > '.join([s for s in get_friendly_name(identifier.name).split('.') if s != '']))} ({count})"
 
         base = BrowseMediaSource(
             domain=DOMAIN,

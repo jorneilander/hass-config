@@ -15,6 +15,7 @@ class SettingsStoreData:
     hideSidebar = attr.ib(type=bool, default=None)
     hideHeader = attr.ib(type=bool, default=None)
     defaultPanel = attr.ib(type=str, default=None)
+    defaultAction = attr.ib(type=object, default=None)
     sidebarPanelOrder = attr.ib(type=list, default=None)
     sidebarHiddenPanels = attr.ib(type=list, default=None)
     sidebarTitle = attr.ib(type=str, default=None)
@@ -23,10 +24,18 @@ class SettingsStoreData:
     hideInteractIcon = attr.ib(type=bool, default=None)
     autoRegister = attr.ib(type=bool, default=None)
     lockRegister = attr.ib(type=bool, default=None)
+    saveScreenState = attr.ib(type=bool, default=None)
+    overlayIcon = attr.ib(type=object, default=None)
+    fullInteraction = attr.ib(type=bool, default=None)
+    kioskMode = attr.ib(type=bool, default=None)
+    cameraResolution = attr.ib(type=str, default=None)
+    go2rtcBaseUrl = attr.ib(type=str, default=None)
 
     @classmethod
     def from_dict(cls, data):
-        return cls(**data)
+        class_attributes = attr.fields_dict(cls).keys()
+        valid = {key: value for key, value in data.items() if key in class_attributes}
+        return cls(**valid)
 
     def asdict(self):
         return attr.asdict(self)
@@ -38,15 +47,18 @@ class BrowserStoreData:
     registered = attr.ib(type=bool, default=False)
     locked = attr.ib(type=bool, default=False)
     camera = attr.ib(type=bool, default=False)
+    go2rtc = attr.ib(type=bool, default=False)
     settings = attr.ib(type=SettingsStoreData, factory=SettingsStoreData)
     meta = attr.ib(type=str, default="default")
 
     @classmethod
     def from_dict(cls, data):
+        class_attributes = attr.fields_dict(cls).keys()
+        valid = {key: value for key, value in data.items() if key in class_attributes}
         settings = SettingsStoreData.from_dict(data.get("settings", {}))
         return cls(
             **(
-                data
+                valid
                 | {
                     "settings": settings,
                 }
@@ -63,6 +75,7 @@ class ConfigStoreData:
     version = attr.ib(type=str, default="2.0")
     settings = attr.ib(type=SettingsStoreData, factory=SettingsStoreData)
     user_settings = attr.ib(type=dict[str:SettingsStoreData], factory=dict)
+    session_browser_map = attr.ib(type=dict, factory=dict)
 
     @classmethod
     def from_dict(cls, data={}):
@@ -128,6 +141,14 @@ class BrowserModStore:
 
         return remove_listener
 
+    def get_version(self):
+        return self.data.version
+
+    async def set_version(self, version):
+        if self.data.version != version:
+            self.data.version = version
+            await self.updated()
+
     def get_browser(self, browserID):
         return self.data.browsers.get(browserID, BrowserStoreData())
 
@@ -155,4 +176,52 @@ class BrowserModStore:
 
     async def set_global_settings(self, **data):
         self.data.settings.__dict__.update(data)
+        await self.updated()
+
+    def get_session_browser_id(self, refresh_token_id):
+        """Return the browserID stored for a given refresh token ID, or None."""
+        return self.data.session_browser_map.get(refresh_token_id)
+
+    async def set_session_browser_map(self, refresh_token_id, browserID):
+        """Store a refresh_token_id -> browserID mapping."""
+        self.data.session_browser_map[refresh_token_id] = browserID
+        await self.updated()
+
+    async def delete_session_browser_map(self, refresh_token_id):
+        """Remove a refresh_token_id -> browserID mapping if it exists."""
+        if refresh_token_id in self.data.session_browser_map:
+            del self.data.session_browser_map[refresh_token_id]
+            await self.updated()
+
+    async def cleanup_session_map(self, hass):
+        """Remove session_browser_map entries whose refresh tokens no longer exist."""
+        stale = [
+            token_id
+            for token_id in list(self.data.session_browser_map.keys())
+            if hass.auth.async_get_refresh_token(token_id) is None
+        ]
+        if stale:
+            for token_id in stale:
+                _LOGGER.debug(
+                    "Session map cleanup: removing stale refresh_token_id %s", token_id
+                )
+                del self.data.session_browser_map[token_id]
+            await self.updated()
+
+    async def cleanup(self, browser_include, browser_exclude):
+        """Cleanup old browsers from data store."""
+        if browser_include:
+            for browserID in browser_include:
+                if self.data.browsers.get(browserID):
+                    _LOGGER.debug("Data Store Cleanup: Deleting browser %s (included)", browserID)
+                    del self.data.browsers[browserID]
+                    self.dirty = True
+
+        if browser_exclude:
+            for browserID in list(self.data.browsers.keys()):
+                if browserID not in browser_exclude and self.data.browsers.get(browserID):
+                    _LOGGER.debug("Data Store Cleanup: %s (not excluded)", browserID)
+                    del self.data.browsers[browserID]
+                    self.dirty = True
+
         await self.updated()

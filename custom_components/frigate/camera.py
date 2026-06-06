@@ -11,7 +11,7 @@ from jinja2 import Template
 import voluptuous as vol
 from yarl import URL
 
-from custom_components.frigate.api import FrigateApiClient
+from custom_components.frigate.api import FrigateApiClient, FrigateApiClientError
 from homeassistant.components.camera import (
     Camera,
     CameraEntityFeature,
@@ -50,6 +50,7 @@ from .const import (
     ATTR_FAVORITE,
     ATTR_INCLUDE_RECORDING,
     ATTR_LABEL,
+    ATTR_NAME,
     ATTR_PLAYBACK_FACTOR,
     ATTR_PTZ_ACTION,
     ATTR_PTZ_ARGUMENT,
@@ -113,6 +114,7 @@ async def async_setup_entry(
             vol.Required(ATTR_PLAYBACK_FACTOR, default="realtime"): str,
             vol.Required(ATTR_START_TIME): str,
             vol.Required(ATTR_END_TIME): str,
+            vol.Optional(ATTR_NAME, default=None): vol.Any(str, None),
         },
         SERVICE_EXPORT_RECORDING,
     )
@@ -199,6 +201,15 @@ class FrigateCamera(
                     ),
                     "encoding": None,
                 },
+                "enabled_topic": {
+                    "msg_callback": self._enabled_message_received,
+                    "qos": 0,
+                    "topic": (
+                        f"{self._frigate_config['mqtt']['topic_prefix']}"
+                        f"/{self._cam_name}/enabled/state"
+                    ),
+                    "encoding": None,
+                },
             },
         )
         FrigateEntity.__init__(self, config_entry)
@@ -210,10 +221,8 @@ class FrigateCamera(
         # from motion camera entities on selectors
         self._attr_device_class = DEVICE_CLASS_CAMERA
         self._stream_source = None
-        self._attr_is_streaming = (
-            self._cam_name
-            in self._frigate_config.get("go2rtc", {}).get("streams", {}).keys()
-        )
+        self._stream_name = self._get_stream_name()
+        self._attr_is_streaming = self._stream_name is not None
         self._attr_is_recording = self._camera_config.get("record", {}).get("enabled")
         self._attr_motion_detection_enabled = self._camera_config.get("motion", {}).get(
             "enabled"
@@ -243,8 +252,40 @@ class FrigateCamera(
                 )
             else:
                 self._stream_source = (
-                    f"rtsp://{URL(self._url).host}:8554/{self._cam_name}"
+                    f"rtsp://{URL(self._url).host}:8554/{self._stream_name}"
                 )
+
+    def _get_stream_name(self) -> str | None:
+        """Get the go2rtc stream name for this camera.
+
+        Checks live.streams from camera config first (prefer matching name,
+        fallback to first entry), then checks go2rtc.streams for camera name.
+        live.streams maps {friendly_name: go2rtc_stream_name}, so the stream
+        name is the dict value.
+        """
+        go2rtc_streams: dict[str, list[str]] = self._frigate_config.get(
+            "go2rtc", {}
+        ).get("streams", {})
+        live_streams: dict[str, str] = self._camera_config.get("live", {}).get(
+            "streams", {}
+        )
+
+        if live_streams:
+            stream_names = list(live_streams.values())
+            # Prefer a stream matching the camera name
+            for stream in stream_names:
+                if stream in go2rtc_streams and stream == self._cam_name:
+                    return stream
+            # Otherwise use the first stream in the dict
+            first_stream = stream_names[0]
+            if first_stream in go2rtc_streams:
+                return first_stream
+
+        # Fallback: check if camera name exists in go2rtc streams
+        if self._cam_name in go2rtc_streams:
+            return self._cam_name
+
+        return None
 
     @callback
     def _state_message_received(self, msg: ReceiveMessage) -> None:
@@ -258,9 +299,31 @@ class FrigateCamera(
         self._attr_motion_detection_enabled = decode_if_necessary(msg.payload) == "ON"
         self.async_write_ha_state()
 
+    @callback
+    def _enabled_message_received(self, msg: ReceiveMessage) -> None:
+        """Handle a new received MQTT extra message."""
+        self._attr_is_on = decode_if_necessary(msg.payload) == "ON"
+
+        if self._attr_is_on:
+            self._stream_name = self._get_stream_name()
+            self._attr_is_streaming = self._stream_name is not None
+            self._attr_is_recording = self._camera_config.get("record", {}).get(
+                "enabled"
+            )
+        else:
+            self._attr_is_streaming = False
+            self._attr_is_recording = False
+
+        self.async_write_ha_state()
+
     @property
     def available(self) -> bool:
         """Signal when frigate loses connection to camera."""
+        if not self._attr_is_on:
+            # if the camera is off it may appear unavailable
+            # but it should be available for service calls
+            return True
+
         if self.coordinator.data:
             if (
                 self.coordinator.data.get("cameras", {})
@@ -290,7 +353,7 @@ class FrigateCamera(
             "via_device": get_frigate_device_identifier(self._config_entry),
             "name": get_friendly_name(self._cam_name),
             "model": self._get_model(),
-            "configuration_url": f"{self._url}/cameras/{self._cam_name}",
+            "configuration_url": f"{self._url}/#{self._cam_name}",
             "manufacturer": NAME,
         }
 
@@ -323,8 +386,9 @@ class FrigateCamera(
             % ({"h": height} if height is not None and height > 0 else {})
         )
 
+        headers = await self._client.get_auth_headers()
         async with async_timeout.timeout(10):
-            response = await websession.get(image_url)
+            response = await websession.get(image_url, headers=headers)
             return await response.read()
 
     async def stream_source(self) -> str | None:
@@ -374,15 +438,26 @@ class FrigateCamera(
         )
 
     async def export_recording(
-        self, playback_factor: str, start_time: str, end_time: str
+        self,
+        playback_factor: str,
+        start_time: str,
+        end_time: str,
+        name: str | None = None,
     ) -> None:
         """Export recording."""
-        await self._client.async_export_recording(
-            self._cam_name,
-            playback_factor,
-            datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S").timestamp(),
-            datetime.datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S").timestamp(),
-        )
+        try:
+            await self._client.async_export_recording(
+                self._cam_name,
+                playback_factor,
+                datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S").timestamp(),
+                datetime.datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S").timestamp(),
+                name=name,
+            )
+        except FrigateApiClientError as err:
+            raise ServiceValidationError(
+                f"Failed to export recording for {self._cam_name}: {err}. "
+                "This may occur if no recordings exist for the specified time range."
+            ) from err
 
     async def favorite_event(self, event_id: str, favorite: bool) -> None:
         """Favorite an event."""
@@ -502,8 +577,9 @@ class BirdseyeCamera(FrigateEntity, Camera):
             % ({"h": height} if height is not None and height > 0 else {})
         )
 
+        headers = await self._client.get_auth_headers()
         async with async_timeout.timeout(10):
-            response = await websession.get(image_url)
+            response = await websession.get(image_url, headers=headers)
             return await response.read()
 
     async def stream_source(self) -> str | None:
@@ -523,7 +599,8 @@ class FrigateCameraWebRTC(FrigateCamera):
         )
         url = f"{self._url}/api/go2rtc/webrtc?src={self._cam_name}"
         payload = {"type": "offer", "sdp": offer_sdp}
-        async with websession.post(url, json=payload) as resp:
+        headers = await self._client.get_auth_headers()
+        async with websession.post(url, json=payload, headers=headers) as resp:
             answer = await resp.json()
             send_message(WebRTCAnswer(answer["sdp"]))
 
@@ -544,7 +621,8 @@ class BirdseyeCameraWebRTC(BirdseyeCamera):
         )
         url = f"{self._url}/api/go2rtc/webrtc?src={self._cam_name}"
         payload = {"type": "offer", "sdp": offer_sdp}
-        async with websession.post(url, json=payload) as resp:
+        headers = await self._client.get_auth_headers()
+        async with websession.post(url, json=payload, headers=headers) as resp:
             answer = await resp.json()
             send_message(WebRTCAnswer(answer["sdp"]))
 

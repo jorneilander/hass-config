@@ -1,4 +1,5 @@
 """Binary sensors platform for Moonraker integration."""
+
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -12,7 +13,7 @@ from .const import DOMAIN, METHODS
 from .entity import BaseMoonrakerEntity
 
 
-@dataclass
+@dataclass(frozen=True)
 class MoonrakerBinarySensorDescription(BinarySensorEntityDescription):
     """Class describing Mookraker binary_sensor entities."""
 
@@ -51,6 +52,27 @@ async def async_setup_optional_binary_sensors(coordinator, entry, async_add_enti
                 device_class=BinarySensorDeviceClass.OCCUPANCY,
             )
             sensors.append(desc)
+        elif split_obj[0] == "hall_filament_width_sensor":
+            # Klipper hall filament width sensor: enabled, filament_detected, is_active
+            # hall_filament_width_sensor may be unnamed (e.g. "hall_filament_width_sensor")
+            base_key = obj.replace(" ", "_")
+            base_name = (
+                split_obj[1].replace("_", " ").title()
+                if len(split_obj) > 1
+                else "Filament Width Sensor"
+            )
+            sensors.append(
+                MoonrakerBinarySensorDescription(
+                    key=f"{base_key}_active",
+                    sensor_name=obj,
+                    is_on_fn=lambda sensor: sensor.coordinator.data["status"][
+                        sensor.sensor_name
+                    ]["is_active"],
+                    name=f"{base_name} Active",
+                    subscriptions=[(obj, "is_active")],
+                    icon="mdi:motion-sensor",
+                )
+            )
 
     coordinator.load_sensor_data(sensors)
     await coordinator.async_refresh()
@@ -80,28 +102,26 @@ async def async_setup_update_binary_sensors(coordinator, entry, async_add_entiti
 
 def update_available_fn(sensor):
     """Return if update is available."""
-    if "machine_update" not in sensor.coordinator.data:
+    machine_update = sensor.coordinator.data.get("machine_update")
+    if not machine_update:
         return False
 
-    for component in sensor.coordinator.data["machine_update"]["version_info"]:
+    version_info = machine_update.get("version_info") or {}
+    for component, info in version_info.items():
         if component == "system":
-            if (
-                sensor.coordinator.data["machine_update"]["version_info"][component][
-                    "package_count"
-                ]
-                > 0
-            ):
+            if info.get("package_count", 0) > 0:
                 return True
             continue
 
-        if (
-            sensor.coordinator.data["machine_update"]["version_info"][component][
-                "remote_version"
-            ]
-            != sensor.coordinator.data["machine_update"]["version_info"][component][
-                "version"
-            ]
-        ):
+        if not isinstance(info, dict):
+            continue
+
+        version = info.get("version")
+        remote_version = info.get("remote_version")
+        if version is None or remote_version is None:
+            continue
+
+        if remote_version != version:
             return True
 
     return False

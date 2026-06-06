@@ -1,0 +1,51 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Richte dein Too Good To Go Konto ein",
+                "data": {
+                    "email": "E-Mail"
+                }
+            },
+            "item_ids": {
+                "description": "Optionale Artikel-IDs zum Sammeln\n\nStandardmäßig sammelt diese Integration nur Favoriten aus der App. Wenn du andere Artikel sehen möchtest, füge sie hier hinzu.",
+                "data": {
+                    "item_ids": "Artikel-IDs"
+                }
+            },
+            "pin": {
+                "description": "Gib die PIN aus der Too Good To Go-E-Mail ein.",
+                "data": {
+                    "pin": "PIN"
+                }
+            },
+            "finished": {
+                "description": "Anmeldung erfolgreich"
+            },
+            "failed": {
+                "description": "Anmeldung fehlgeschlagen. Klicke auf Senden, um es erneut zu versuchen."
+            }
+        },
+        "error": {
+            "captcha": "Too Good To Go verlangt zusätzliche Verifizierung. Du kannst es erneut versuchen.",
+            "unknown_login_error": "Authentifizierung fehlgeschlagen. Überprüfe die Protokolle für weitere Informationen."
+        },
+        "progress": {
+            "login": "Eine Too Good To Go-Anmelde-E-Mail wird gesendet. Prüfe dein Postfach auf einen PIN-Code."
+        },
+        "abort": {
+            "captcha": "Zusätzliche Verifizierung erforderlich. Versuche es später erneut.",
+            "already_configured": "Dieser Benutzer ist bereits konfiguriert.",
+            "unknown_login_error": "Authentifizierung fehlgeschlagen. Überprüfe die Protokolle für weitere Informationen.",
+            "import_missing_email": "YAML-Import fehlgeschlagen - E-Mail ist erforderlich. Bitte füge eine E-Mail zu deiner YAML-Konfiguration hinzu oder richte die Integration manuell ein."
+        }
+    },
+    "exceptions": {
+        "too_many_requests": {
+            "message": "Zu viele Anfragen an die API. Updates wurden um 1 Stunde verzögert."
+        },
+        "api_error": {
+            "message": "Ein unbekannter Fehler ist aufgetreten. Überprüfe die Protokolle für weitere Informationen."
+        }
+    }
+}

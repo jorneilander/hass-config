@@ -8,8 +8,8 @@ import re
 from pyelectroluxocp import OneAppApi
 
 from homeassistant.components.persistent_notification import async_create
-from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 
 from .const import (
     CONF_NOTIFICATION_DEFAULT,
@@ -21,9 +21,7 @@ from .const import (
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
-def get_electrolux_session(
-    username, password, country_code, client_session, language="eng"
-) -> OneAppApi:
+def get_electrolux_session(username, password, country_code, client_session) -> OneAppApi:
     """Return OneAppApi Session."""
     return OneAppApi(username, password, country_code, client_session)
 
@@ -34,10 +32,9 @@ def should_send_notification(config_entry, alert_severity, alert_status):
         return False
     if alert_severity == "DIAGNOSTIC":
         return config_entry.data.get(CONF_NOTIFICATION_DIAG, False)
-    elif alert_severity == "WARNING":
+    if alert_severity == "WARNING":
         return config_entry.data.get(CONF_NOTIFICATION_WARNING, False)
-    else:
-        return config_entry.data.get(CONF_NOTIFICATION_DEFAULT, True)
+    return config_entry.data.get(CONF_NOTIFICATION_DEFAULT, True)
 
 
 def create_notification(
@@ -50,9 +47,7 @@ def create_notification(
 ):
     """Create a notification."""
 
-    message = (
-        f"Alert: {alert_name}</br>Severity: {alert_severity}</br>Status: {alert_status}"
-    )
+    message = f"Alert: {alert_name}</br>Severity: {alert_severity}</br>Status: {alert_status}"
 
     if should_send_notification(config_entry, alert_severity, alert_status) is False:
         _LOGGER.debug(
@@ -97,6 +92,8 @@ def time_minutes_to_seconds(minutes: float | None) -> int | None:
 
 def string_to_boolean(value: str | None, fallback=True) -> bool | str | None:
     """Convert a string input to boolean."""
+    if value is None:
+        return None if fallback else False
     on_values = {
         "charging",
         "connected",

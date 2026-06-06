@@ -1,5 +1,5 @@
-import logging
 from datetime import timedelta
+import logging
 
 DOMAIN = "afvalinfo"
 
@@ -22,7 +22,7 @@ SENSOR_TYPES = {
 
 SENSOR_LOCATIONS_TO_URL = {
     "trashapi": [
-        "https://trashapi.azurewebsites.net/trash?Location={0}&ZipCode={1}&HouseNumber={2}&HouseNumberSuffix={3}&District={4}&DiftarCode={5}&ShowWholeYear={6}&GetCleanprofsData={7}"
+        "https://trashapi.azurewebsites.net/trash?Location={0}&ZipCode={1}&HouseNumber={2}&HouseNumberSuffix={3}&DiftarCode={4}&ShowWholeYear={5}&GetCleanprofsData={6}"
     ]
 }
 
@@ -73,13 +73,14 @@ CONF_LOCATION = "location"
 CONF_POSTCODE = "postcode"
 CONF_STREET_NUMBER = "streetnumber"
 CONF_STREET_NUMBER_SUFFIX = "streetnumbersuffix"
-CONF_DISTRICT = "district"
 CONF_GET_WHOLE_YEAR = "getwholeyear"
 CONF_DATE_FORMAT = "dateformat"
 CONF_LOCALE = "locale"
 CONF_ID = "id"
 CONF_NO_TRASH_TEXT = "notrashtext"
 CONF_DIFTAR_CODE = "diftarcode"
+CONF_CALENDAR_START_TIME = "calendar_start_time"
+CONF_CALENDAR_ALL_DAY = "calendar_all_day"
 SENSOR_PREFIX = "Afvalinfo "
 ATTR_ERROR = "error"
 ATTR_LAST_UPDATE = "last_update"

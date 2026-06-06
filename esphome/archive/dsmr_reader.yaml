@@ -1,0 +1,136 @@
+substitutions:
+  name: dsmr-reader
+  friendly_name: DSMR Reader
+
+esphome:
+  name: ${name}
+
+esp8266:
+  board: d1_mini
+
+api:
+  encryption: 
+    key: !secret device_api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret device_ota_password
+
+wifi:
+  ssid: !secret home_wifi_iot_ssid
+  password: !secret home_wifi_iot_password
+  min_auth_mode: WPA2
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${friendly_name} Fallback Hotspot"
+    password: !secret device_wifi_fallback_password
+
+  manual_ip:
+    static_ip: 10.0.10.222
+    gateway: 10.0.10.1
+    subnet: 255.255.255.0
+
+  domain: .home.cannonfodder.nl
+
+logger:
+  # Serial logging is disabled by setting the logger baud rate to 0.
+  # Otherwise the logger will occupy the hardware UART, making it unavailable
+  # for receiving smart meter data on pin D7 (GPIO13).  
+  baud_rate: 0
+  level: VERBOSE
+
+uart:
+  baud_rate: 115200
+  rx_pin: D7
+  rx_buffer_size: 1700
+
+dsmr:
+  max_telegram_length: 1700
+  request_pin: D5
+  request_interval: 1s
+
+sensor:
+  - platform: dsmr
+    energy_delivered_tariff1:
+      name: ${friendly_name} Energy Delivered Tariff 1
+      state_class: total_increasing
+    energy_delivered_tariff2:
+      name: ${friendly_name} Energy Delivered Tariff 2
+      state_class: total_increasing
+    energy_returned_tariff1:
+      name: ${friendly_name} Energy Returned Tariff 1
+    energy_returned_tariff2:
+      name: ${friendly_name} Energy Returned Tariff 2
+    power_delivered:
+      name: ${friendly_name} Power Consumed
+    power_returned:
+      name: ${friendly_name} Power Returned
+    electricity_failures:
+      name: ${friendly_name} Electricity Failures
+    electricity_long_failures:
+      name: ${friendly_name} Electricity Long Failures
+    voltage_l1:
+      name: ${friendly_name} Voltage L1
+    voltage_l2:
+      name: ${friendly_name} Voltage L2
+    voltage_l3:
+      name: ${friendly_name} Voltage L3
+    current_l1:
+      name: ${friendly_name} Current L1
+    current_l2:
+      name: ${friendly_name} Current L2
+    current_l3:
+      name: ${friendly_name} Current L3
+    power_delivered_l1:
+      name: ${friendly_name} Power Delivered L1
+    power_delivered_l2:
+      name: ${friendly_name} Power Delivered L2
+    power_delivered_l3:
+      name: ${friendly_name} Power Delivered L3
+    power_returned_l1:
+      name: ${friendly_name} Power Returned L1
+    power_returned_l2:
+      name: ${friendly_name} Power Returned L2
+    power_returned_l3:
+      name: ${friendly_name} Power Returned L3
+    gas_delivered:
+      name: ${friendly_name} Gas Delivered
+  - platform: wifi_signal
+    name: '${friendly_name} WiFi Signal'
+    update_interval: 60s
+    accuracy_decimals: 0
+  - platform: uptime
+    name: '${friendly_name} Uptime'
+    unit_of_measurement: days
+    update_interval: 300s
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.000011574     
+
+text_sensor:
+  - platform: dsmr
+    identification:
+      name: "${friendly_name} Identification"
+    p1_version:
+      name: "${friendly_name} Version"
+  - platform: version
+    name: "${friendly_name} ESPHome Version"
+  - platform: wifi_info
+    ip_address:
+      name: "${friendly_name} IP address"
+    ssid:
+      name: "${friendly_name} SSID"      
+
+web_server:
+  port: 80
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+i2c:
+  id: bus_a
+  sda: D2
+  scl: D1
+  scan: true

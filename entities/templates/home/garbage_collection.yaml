@@ -1,0 +1,21 @@
+---
+name: "Trash type next"
+default_entity_id: sensor.afvalinfo_home_next_trash_type_and_date
+unique_id: 9e6653f2-6efc-4ccf-ad71-a4663a0ca951
+state: >
+  {%- set ns = namespace(minimum=365) -%}
+  {%- set trash_types = ['gft', 'papier', 'pbd'] -%}
+  {%- set friendly_list = ['Groente Fruit en Tuinafval', 'Plastic Blik en Drankkartons', 'Papier'] -%}
+  {%- for trash_type in trash_types %}
+    {%- set days = state_attr('sensor.afvalinfo_home_' ~trash_type, 'days_until_collection_date')%}
+    {%- if days != None and days < ns.minimum %}
+      {%- set ns.minimum = days %}
+    {%- endif %}
+  {%- endfor %}
+
+  {%- for trash_type in trash_types %}
+    {%- set days = state_attr('sensor.afvalinfo_home_' ~trash_type, 'days_until_collection_date')%}
+    {%- if days == ns.minimum %}
+      {{friendly_list[loop.index0]}} ({{ states('sensor.afvalinfo_home_' ~trash_type) }})
+    {%- endif %}
+  {%- endfor %}

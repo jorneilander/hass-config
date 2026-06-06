@@ -1,0 +1,52 @@
+substitutions:
+  name: 4inch-screen
+  friendly_name: '4" Screen'
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}  
+  
+# host:
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+
+api:
+  encryption: 
+    key: !secret device_api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret device_ota_password
+
+wifi:
+  ssid: !secret home_wifi_iot_ssid
+  password: !secret home_wifi_iot_password
+  manual_ip: 
+    static_ip: 10.0.10.137
+    gateway: 10.0.10.1
+    subnet: 255.255.255.0
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${friendly_name} Fallback Hotspot"
+    password: !secret device_wifi_fallback_password
+
+captive_portal:
+
+# Example minimal configuration entry
+lvgl:
+  widgets:
+    - label:
+        align: CENTER
+        text: 'Hello World!'
+
+display:
+  - platform: sdl
+    auto_clear_enabled: false
+    update_interval: never
+    dimensions:
+      width: 480
+      height: 480

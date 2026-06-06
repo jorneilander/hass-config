@@ -1,0 +1,167 @@
+substitutions:
+  device_name: bw-shp7
+  friendly_name: BW-SHP7
+  # Higher value gives lower watt readout
+  current_res: '0.002350'
+  # Lower value gives lower voltage readout
+  voltage_div: '905'
+  # BW-SHP7, dual outlet with powermonitoring.
+  # One button for each relay, and one red led for each relay, as well as a blue status led
+  # Static IP is configured, and fast_connect is enabled, as the SSID is hidden
+  # Webserver is active and pw protected, and the OTA is password protected
+
+esphome:
+  name: '${device_name}'
+
+esp8266:
+  board: esp8285
+
+wifi:
+  ssid: !secret home_wifi_iot_ssid
+  password: !secret home_wifi_iot_password
+  ap:
+    ssid: "${friendly_name} Fallback Hotspot"
+    password: !secret device_wifi_fallback_password
+  domain: .home.cannonfodder.nl
+
+web_server:
+  port: 80
+
+# # Sets time from Homeassistant
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+logger:
+  baud_rate: 0
+
+# # Enable Home Assistant API
+api:
+  encryption:
+    key: !secret device_api_encryption_key
+
+ota:
+  - platform: esphome
+    password: "WANV5K/8R/i8HEz/daNKosSTyf0hCLyT1ONY8fu2GYQ="
+
+# Sensors for ESP version and WIFI information
+text_sensor:
+  - platform: version
+    name: "${friendly_name} ESPHome Version"
+  - platform: wifi_info
+    ip_address:
+      name: "${friendly_name} IP address"
+    ssid:
+      name: "${friendly_name} SSID"
+
+# Button configuration
+binary_sensor:
+  - platform: gpio
+    id: button1
+    name: button1
+    internal: true
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    on_press:
+      - switch.toggle: relay1
+  - platform: gpio
+    id: button2
+    name: button2
+    internal: true
+    pin:
+      number: GPIO12
+      mode: INPUT_PULLUP
+      inverted: true
+    on_press:
+      - switch.toggle: relay2
+  - platform: gpio
+    pin: GPIO15
+    id: gpio15_irq
+    internal: true
+
+# Setup of LED's used in displaying LED status
+output:
+   - platform: esp8266_pwm
+     id: led1
+     pin:
+       number: GPIO13
+       inverted: true
+   - platform: esp8266_pwm
+     id: led2
+     pin:
+       number: GPIO2
+       inverted: true
+
+# Config for switches
+switch:
+  - platform: gpio
+    pin: GPIO14
+    id: relay1
+    name: 'relay1'
+    on_turn_on:
+      - output.turn_on: led1
+    on_turn_off:
+      - output.turn_off: led1
+    restore_mode: RESTORE_DEFAULT_ON
+  - platform: gpio
+    pin: GPIO16
+    id: relay2
+    name: 'relay2'
+    on_turn_on:
+      - output.turn_on: led2
+    on_turn_off:
+      - output.turn_off: led2
+    restore_mode: RESTORE_DEFAULT_ON
+
+# Status LED for connection
+status_led:
+  pin:
+    number: GPIO01
+    inverted: true
+
+# Sensors for WIFI signal strength, Uptime, Voltage, Current, Power, Daily energy usage
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO03
+      inverted: true
+    cf_pin: GPIO04
+    cf1_pin: GPIO05
+    current_resistor: ${current_res}
+    voltage_divider: ${voltage_div}
+    current:
+      name: '${device_name} current'
+      unit_of_measurement: 'A'
+      accuracy_decimals: 3
+      icon: mdi:flash-outline
+    voltage:
+      name: '${device_name} voltage'
+      unit_of_measurement: 'V'
+      icon: mdi:flash-outline
+    power:
+      name: '${device_name} power'
+      unit_of_measurement: 'kW'
+      id: power
+      accuracy_decimals: 3
+      filters:
+        - multiply: 0.001
+      icon: mdi:flash-outline
+    energy:
+      name: "${device_name} Energy"
+      unit_of_measurement: "Wh"
+      icon: mdi:flash-outline
+    change_mode_every: 4
+    update_interval: 2s
+  - platform: wifi_signal
+    name: '${friendly_name} WiFi Signal'
+    update_interval: 60s
+    accuracy_decimals: 0
+  - platform: uptime
+    name: '${friendly_name} Uptime'
+    unit_of_measurement: days
+    update_interval: 300s
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.000011574     

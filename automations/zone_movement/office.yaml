@@ -7,13 +7,13 @@ trigger:
     entity_id:
       - person.jorn_eilander
       - person.maeike_eilander
-    zone: zone.ing_acanthus
+    zone: zone.ing
     event: enter
   - platform: zone
     entity_id:
       - person.jorn_eilander
       - person.maeike_eilander
-    zone: zone.ing_acanthus
+    zone: zone.ing
     event: leave
 action:
   - service: notify.all_devices

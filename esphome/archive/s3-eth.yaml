@@ -1,0 +1,125 @@
+---
+substitutions:
+  device_name: "s3-eth"
+  friendly_name: "S3 Eth"
+
+packages:
+  common: !include common/common.yaml
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/Yax/esphome_sd_card
+      ref: main
+    components: [ sd_mmc_card, sd_file_server ]  
+
+esp32:
+  board: esp32-s3-devkitc-1
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_FATFS_LFN_STACK: "y"    
+  variant: ESP32S3  
+
+esphome:
+
+psram:
+  mode: octal
+  speed: 80MHz  
+
+ethernet:
+  type: W5500
+  clk_pin: GPIO13
+  mosi_pin: GPIO11 
+  miso_pin: GPIO12 
+  cs_pin: GPIO14
+  interrupt_pin: GPIO10
+  reset_pin: GPIO9
+  use_address: "${device_name}.home.cannonfodder.nl"
+  
+text_sensor:
+  - platform: ethernet_info
+    ip_address:
+      name: "${device_name} - IP Address"
+    dns_address:
+      name: "${device_name} - DNS Address"
+    mac_address:
+      name: "${device_name} - MAC Address" 
+
+  - platform: sd_mmc_card
+    sd_card_type:
+      name: "SD card type"     
+
+sensor:
+  - platform: sd_mmc_card
+    type: used_space
+    unit_of_measurement: Mb
+    name: "SD card used space"
+    filters:
+      - lambda: return sd_mmc_card::convertBytes(x, sd_mmc_card::MemoryUnits::MegaByte);
+
+  - platform: sd_mmc_card
+    type: total_space
+    name: "SD card total space"
+    unit_of_measurement: Gb
+    filters:
+      - lambda: return sd_mmc_card::convertBytes(x, sd_mmc_card::MemoryUnits::GigaByte);
+
+  - platform: sd_mmc_card
+    type: free_space
+    name: "SD card free space"
+    unit_of_measurement: Gb
+    filters:
+      - lambda: return sd_mmc_card::convertBytes(x, sd_mmc_card::MemoryUnits::GigaByte);
+
+sd_mmc_card:
+  mode_1bit: true
+  clk_pin: GPIO7
+  cmd_pin: GPIO6
+  data0_pin: GPIO5
+  data3_pin: GPIO4
+
+i2c:
+  - id: camera_i2c
+    sda: GPIO48
+    scl: GPIO47
+
+esp32_camera:
+  name: Camera
+  external_clock:
+    pin: GPIO3
+    frequency: 20MHz
+  i2c_id: camera_i2c
+  data_pins: [GPIO41, GPIO45, GPIO46, GPIO42, GPIO40, GPIO38, GPIO15, GPIO18]
+  vsync_pin: GPIO1
+  href_pin: GPIO2
+  pixel_clock_pin: GPIO39
+  power_down_pin: GPIO8
+
+  resolution: 800x600
+  jpeg_quality: 10  # max. 63
+  max_framerate: 1.0fps
+  idle_framerate: 0.2fps
+  vertical_flip: true
+  horizontal_mirror: false
+  brightness: 2 # -2 to 2
+  contrast: 1 # -2 to 2
+  special_effect: none
+  # exposure settings
+  aec_mode: auto
+  aec2: false
+  ae_level: 0
+  aec_value: 300
+  # gain settings
+  agc_mode: auto
+  agc_gain_ceiling: 2x
+  agc_value: 0
+  # white balance setting
+  wb_mode: auto  
+
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream
+  - port: 8081
+    mode: snapshot  

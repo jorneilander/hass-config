@@ -6,11 +6,6 @@ trigger:
     event_data:
       command: /living_room_turn_off_media
 action:
-  - service: telegram_bot.send_message
-    data:
-      title: 🚫 Turning off Media Center 🚫
-      message:
-        "Turning off {{ state_attr('switch.living_room_receiver', 'friendly_name') }} and {{ state_attr('switch.living_room_tv', 'friendly_name') }}"
   - entity_id:
       - switch.living_room_receiver
       - switch.living_room_tv

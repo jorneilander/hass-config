@@ -148,7 +148,7 @@ cards:
               top: 58%
             type: state-label
         type: conditional
-      - entity: sensor.electricity_meter_power_consumption
+      - entity: sensor.dsmr_reader_power_consumed
         style:
           color: black
           font-size: x-small

@@ -1,0 +1,186 @@
+# packages:
+#   home: !include widgets/home/home.yaml
+#   lights_config: !include widgets/light/lights_config.yaml
+#   devices: !include widgets/devices.yaml
+#   settings: !include widgets/settings.yaml
+#   menu_controls_main: !include widgets/menu_controls_main.yaml
+#   loading_page: !include widgets/loading_page.yaml
+
+
+substitutions:
+  name: 4inch-screen
+  friendly_name: '4" Screen'
+
+# image: !include widgets/image.yaml
+# font: !include widgets/fonts.yaml
+# color: !include widgets/colors.yaml
+
+
+http_request:
+  verify_ssl: false
+
+
+esphome:
+  name: display
+  friendly_name: display
+  includes:
+    - <sstream>
+    - <algorithm>
+  platformio_options:
+    board_build.flash_mode: dio
+
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
+      CONFIG_SPIRAM_TRY_ALLOCATE_WIFI_LWIP: y
+      # CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
+      # CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
+      # CONFIG_SPIRAM_FETCH_INSTRUCTIONS: y
+      # CONFIG_SPIRAM_RODATA: y
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+
+logger:
+  level: debug
+
+
+api:
+  encryption:
+    key: !secret device_api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret device_ota_password
+
+wifi:
+  ssid: !secret home_wifi_iot_ssid
+  password: !secret home_wifi_iot_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${friendly_name} Fallback Hotspot"
+    password: !secret device_wifi_fallback_password
+
+
+lvgl:
+  color_depth: 16
+  byte_order: big_endian
+  displays: my_display
+  touchscreens:
+    - touchscreen_id: my_touchscreen
+      long_press_time: 5000ms
+      long_press_repeat_time: 400ms
+  page_wrap: false
+
+
+light:
+  # Backlight
+  - platform: monochromatic
+    output: GPIO38
+    name: Backlight
+    id: display_backlight
+    restore_mode: ALWAYS_ON
+
+
+output:
+    # Backlight LED
+  - platform: ledc
+    pin: GPIO38
+    id: GPIO38
+    frequency: 100Hz
+
+i2c:
+  - id: bus_a
+    sda: GPIO19
+    scl:
+      number: GPIO45
+      ignore_strapping_warning: true
+    frequency: 100kHz
+
+
+touchscreen:
+  platform: gt911
+  id: my_touchscreen
+  transform:
+    mirror_x: false
+    mirror_y: false
+  display: my_display
+  on_release:
+      - if:
+          condition: lvgl.is_paused
+          then:
+            - logger.log: "LVGL resuming"
+            - lvgl.resume:
+            - lvgl.widget.redraw:
+            - light.turn_on: display_backlight
+
+  # on_touch:
+  #   - lambda: |-
+  #         ESP_LOGI("cal", "x=%d, y=%d, x_raw=%d, y_raw=%0d",
+  #             touch.x,
+  #             touch.y,
+  #             touch.x_raw,
+  #             touch.y_raw
+  #             );
+
+spi:
+  - id: lcd_spi
+    clk_pin: GPIO48
+    mosi_pin: GPIO47
+
+display:
+  - platform: st7701s
+    id: my_display
+    update_interval: never
+    auto_clear_enabled: false
+    data_rate: 2MHz
+    spi_mode: MODE3
+    color_order: RGB
+    invert_colors: false
+    dimensions:
+      width: 480
+      height: 480
+    transform:
+      mirror_x: false
+      mirror_y: false
+    cs_pin: 39
+      # reset not defined
+    de_pin: 18
+    hsync_pin: 16
+    vsync_pin: 17
+    pclk_pin: 21
+    init_sequence:
+      - 1
+      - [0xFF, 0x77, 0x01, 0x00, 0x00, 0x10] # CMD2_BKSEL_BK0
+      - [0xCD, 0x00] # disable MDT flag
+    pclk_frequency: 12MHz
+    pclk_inverted: false
+    data_pins:
+      red:
+        - 11         # R1
+        - 12         # R2
+        - 13         # R3
+        - 14         # R4
+        - 0          # R5
+      green:
+        - 8          # G0
+        - 20         # G1
+        - 3          # G2
+        - 46         # G3
+        - 9          # G4
+        - 10         # G5
+      blue:
+        - 4          # B1
+        - 5          # B2
+        - 6          # B3
+        - 7          # B4
+        - 15         # B5

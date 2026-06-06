@@ -1,0 +1,53 @@
+substitutions:
+  device_name: "s3-test"
+  friendly_name: "S3 Test"
+
+packages:
+  common: !include common/common.yaml
+  wifi: !include common/wifi.yaml
+
+esp32:
+  board: esp32s3box
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+    # version: latest
+    # platform_version:  5.3.0
+  variant: ESP32S3  
+
+esphome:
+
+sensor:
+  - platform: pulse_counter
+    pin: GPIO46
+    name: "PWM Fan RPM #1"
+    id: fan_rpm_1
+    unit_of_measurement: RPM
+    filters:
+      - multiply: 0.5
+    count_mode: 
+      rising_edge: INCREMENT
+      falling_edge: DISABLE
+    update_interval: 3s
+  - platform: pulse_counter
+    pin: GPIO08
+    name: "PWM Fan RPM #2"
+    id: fan_rpm_2
+    unit_of_measurement: RPM
+    filters:
+      - multiply: 0.5
+    count_mode: 
+      rising_edge: INCREMENT
+      falling_edge: DISABLE
+    update_interval: 3s    
+
+output:
+  - platform: ledc
+    pin: GPIO07
+    frequency: 25kHz
+    id: fan_pwm_freq
+
+fan:
+  - platform: speed
+    output: fan_pwm_freq
+    name: 3DPrinter Fan

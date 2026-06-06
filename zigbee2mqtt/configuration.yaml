@@ -1,0 +1,229 @@
+homeassistant:
+  enabled: true
+  status_topic: homeassistant/status
+advanced:
+  log_level: debug
+  log_syslog:
+    app_name: Zigbee2MQTT
+    eol: /n
+    host: localhost
+    localhost: localhost
+    path: /dev/log
+    pid: process.pid
+    port: 123
+    protocol: tcp4
+    type: '5424'
+  channel: 15
+  pan_id: 51496
+  network_key:
+    - 90
+    - 253
+    - 82
+    - 22
+    - 139
+    - 57
+    - 57
+    - 215
+    - 247
+    - 28
+    - 87
+    - 184
+    - 185
+    - 22
+    - 13
+    - 109
+  last_seen: epoch
+frontend:
+  enabled: true
+  port: 8099
+devices:
+  '0x00158d000279e0b1':
+    friendly_name: Hallway - Smoke detector
+  '0x00158d0003153db7':
+    friendly_name: Shed - Smoke detector
+  '0x588e81fffe44774d':
+    friendly_name: Hallway - Light
+  '0xcc86ecfffe43913c':
+    friendly_name: Living room - Light (window corner)
+  '0x680ae2fffe47a22f':
+    friendly_name: Dining Room - Light 1
+  '0x588e81fffe4e1bd4':
+    friendly_name: Attick landing - Light
+  '0x842e14fffe40d234':
+    friendly_name: 1st floor landing - Light
+  '0xcc86ecfffe43742a':
+    friendly_name: Living room - Light (kitchen corner)
+  '0x842e14fffe14d3ab':
+    friendly_name: Front - Light
+  '0x588e81fffe4e3ff4':
+    friendly_name: Garden - Light (pantry)
+  '0x00158d00036cb1a0':
+    friendly_name: Dining room - Climate sensor
+  '0x00158d00036cb6fa':
+    friendly_name: Shed - Fridge - Climate sensor
+  '0x00158d0003152113':
+    friendly_name: Bedroom - Eline - Smoke detector
+  '0x00158d00028f6075':
+    friendly_name: Bedroom - Julien - Smoke detector
+  '0x00158d0002024699':
+    friendly_name: 1st floor landing - Smoke detector
+  '0x00158d00020b6665':
+    friendly_name: Attick landing - Smoke detector
+  '0x00158d000346b795':
+    friendly_name: Study - Climate sensor
+  '0x00158d0002b2269d':
+    friendly_name: Dining room - Smoke detector
+  '0x00158d0002cb0882':
+    friendly_name: Pantry - Smoke detector
+  '0x00158d000444c434':
+    friendly_name: Pantry - Door sensor
+  '0x00158d000428e63f':
+    friendly_name: extension_dining_room_wall_switch
+  '0x00158d000314dda1':
+    friendly_name: Living room - Smoke detector
+  '0x00158d000279e29e':
+    friendly_name: Bedroom - Master - Smoke detector
+  '0x00158d0004ab49e7':
+    friendly_name: Attick landing - Motion detector
+  '0x00158d00054b35c7':
+    friendly_name: Living room - Motion detector
+  '0x00158d00044b3e6d':
+    friendly_name: Bedroom - Julien - Window sensor
+  '0x00158d00042c03db':
+    friendly_name: Bedroom - Eline - Window sensor
+  '0x00158d00022f00b3':
+    friendly_name: Kitchen - Water sensor (sink)
+  '0x00158d00022f0084':
+    friendly_name: Pantry - Water sensor (drain)
+  '0x842e14fffe418c6e':
+    friendly_name: Shed - Light
+  '0x842e14fffefd481f':
+    friendly_name: Extension - Light switch
+    legacy: false
+  '0x842e14fffe4e5c62':
+    friendly_name: Dining Room - Light 3
+  '0x842e14fffe485dbb':
+    friendly_name: Dining Room - Light 2
+  '0x84fd27fffed0e50a':
+    friendly_name: Bedroom - Master - Zigbee repeater
+  '0x84fd27fffecdf21e':
+    friendly_name: Attick Landing - Zigbee repeater
+  '0x54ef441000281968':
+    friendly_name: Living Room - Door sensor
+  '0x00158d000287ae16':
+    friendly_name: Study - Smoke detector
+  '0x842e14fffe43cdf3':
+    friendly_name: '0x842e14fffe43cdf3'
+    occupancy_timeout: 10
+  '0x00158d0001f54d77':
+    friendly_name: Bedroom - Julien - Climate sensor
+  '0x00158d0001fa9d41':
+    friendly_name: Bedroom - Eline - Climate sensor
+  '0x54ef441000281597':
+    friendly_name: Hallway - Door sensor
+  '0x00158d00036c1829':
+    friendly_name: Kitchen - Fridge - Climate sensor
+  '0x00158d00052d33fe':
+    friendly_name: 1st floor landing - Motion detector
+    occupancy_timeout: 30
+    no_occupancy_since: []
+  '0x00158d00036c7bbd':
+    friendly_name: Bedroom - Master - Climate sensor
+  '0x00158d0005412c26':
+    friendly_name: Hallway - Motion detector
+  '0xec1bbdfffe9eabd4':
+    friendly_name: Living room - Light switch
+    legacy: false
+  '0x680ae2fffe25d5c6':
+    friendly_name: Dining room - Light switch
+    legacy: false
+  '0x00158d00033b7554':
+    friendly_name: Extension - Door sensor
+  '0xb4e3f9fffe653296':
+    friendly_name: Magical knopje of DOOM!
+  '0x00158d000444c3f6':
+    friendly_name: Shed - Door sensor
+  '0xbc33acfffe2b856a':
+    friendly_name: Extension - Downlight 3
+  '0xbc33acfffe25592b':
+    friendly_name: Extension - Downlight 1
+  '0xbc33acfffe25599f':
+    friendly_name: Extension - Downlight 2
+  '0xbc33acfffe2a4cfa':
+    friendly_name: Extension - Downlight 6
+  '0xbc33acfffe2aab6e':
+    friendly_name: Extension - Downlight 7
+  '0xbc33acfffe258879':
+    friendly_name: Extension - Downlight 4
+  '0xbc33acfffe22ff2e':
+    friendly_name: Extension - Downlight 5
+  '0xbc33acfffe27caba':
+    friendly_name: Extension - Downlight 8
+  '0x70b3d52b6009957a':
+    friendly_name: Pantry - Smart plug (dryer)
+  '0x70b3d52b6009d3ab':
+    friendly_name: Pantry - Smart plug (washer)
+  '0x70b3d52b600ae699':
+    friendly_name: Living room - Smart plug (TV - media)
+  '0x5c0272fffe2bdcdb':
+    friendly_name: Bedroom - Master - Light switch Jorn
+  '0x8c65a3fffedf213c':
+    friendly_name: Bedroom - Master - Light - Jorn
+  '0xa4c1386440fa9407':
+    friendly_name: Shed - Smart Plug (fridge)
+  '0x8c65a3fffe340b6a':
+    friendly_name: Pantry - Water sensor
+  '0xecf64cfffef245a4':
+    friendly_name: Attick - Water sensor
+  '0xa4c138def5477c9e':
+    friendly_name: Garden - Rain sensor
+  '0x0cae5ffffe76f666':
+    friendly_name: Living Room - IR Blaster
+  '0x680ae2fffe924e57':
+    friendly_name: Dining Room - Zigbee repeater
+  '0xa4c138fce22d082a':
+    friendly_name: Shed - Smart Plug - Freezer
+groups:
+  '1':
+    friendly_name: Dining room - Lights
+    retain: true
+    transition: 2
+    optimistic: true
+  '2':
+    friendly_name: Living room - Lights
+    retain: true
+    transition: 2
+    optimistic: true
+  '3':
+    friendly_name: Extension - Downlights
+    retain: true
+    transition: 2
+    optimistic: true
+  '4':
+    friendly_name: Outside - Lights
+    retain: true
+    transition: 2
+    optimistic: true
+    homeassistant:
+      name: Outside - Lights
+  '5':
+    friendly_name: Downstairs - Inside - Lights
+    retain: true
+    transition: 2
+    optimistic: true
+    homeassistant:
+      name: Downstairs - Inside - Lights
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: addons
+  password: wangai2exohcaeboofeeTeeNgei3taGhoo0Ouyi1esagh8eh5mievogh3aa4ooGh
+serial:
+  port: /dev/ttyUSB0
+availability:
+  enabled: true
+  active:
+    timeout: 10
+  passive:
+    timeout: 1500
+device_options: {}
+version: 5

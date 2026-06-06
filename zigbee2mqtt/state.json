@@ -1,0 +1,753 @@
+{
+    "1": {
+        "state": "ON",
+        "brightness": 254
+    },
+    "2": {
+        "state": "OFF",
+        "brightness": 254
+    },
+    "3": {
+        "state": "OFF",
+        "brightness": 127
+    },
+    "4": {
+        "state": "OFF",
+        "brightness": 64
+    },
+    "5": {
+        "state": "ON",
+        "brightness": 254
+    },
+    "0xbc33acfffe25592b": {
+        "state": "OFF",
+        "linkquality": 87,
+        "brightness": 127,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766801361,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0xbc33acfffe25599f": {
+        "state": "OFF",
+        "linkquality": 91,
+        "brightness": 127,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766850747,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0xbc33acfffe2aab6e": {
+        "state": "OFF",
+        "linkquality": 76,
+        "brightness": 127,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766895406,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0xbc33acfffe2a4cfa": {
+        "state": "OFF",
+        "linkquality": 61,
+        "brightness": 127,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766887295,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0xbc33acfffe258879": {
+        "state": "OFF",
+        "linkquality": 76,
+        "brightness": 127,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766838272,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x842e14fffe4e5c62": {
+        "state": "ON",
+        "linkquality": 94,
+        "brightness": 254,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780767035935,
+        "update": {
+            "state": "idle",
+            "installed_version": 16842756,
+            "latest_version": 16842756,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/zingo-lds-bulb-hwpwm-ww_release_prod_v16842756_529d7965-cee3-4c32-bd28-e5dd17ddc256.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x842e14fffe485dbb": {
+        "state": "ON",
+        "linkquality": 87,
+        "brightness": 254,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766949142,
+        "update": {
+            "state": "idle",
+            "installed_version": 16842756,
+            "latest_version": 16842756,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/zingo-lds-bulb-hwpwm-ww_release_prod_v16842756_529d7965-cee3-4c32-bd28-e5dd17ddc256.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x588e81fffe44774d": {
+        "state": "OFF",
+        "linkquality": 174,
+        "brightness": 102,
+        "last_seen": 1780766914751,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x680ae2fffe47a22f": {
+        "state": "ON",
+        "linkquality": 69,
+        "brightness": 254,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766659831,
+        "update": {
+            "state": "idle",
+            "installed_version": 16842756,
+            "latest_version": 16842756,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/zingo-lds-bulb-hwpwm-ww_release_prod_v16842756_529d7965-cee3-4c32-bd28-e5dd17ddc256.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x588e81fffe4e3ff4": {
+        "state": "OFF",
+        "brightness": 64,
+        "linkquality": 58,
+        "last_seen": 1780767019537,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        },
+        "level_config": {
+            "on_level": "previous"
+        }
+    },
+    "0x588e81fffe4e1bd4": {
+        "state": "OFF",
+        "linkquality": 32,
+        "brightness": 254,
+        "last_seen": 1780767225330,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x84fd27fffed0e50a": {
+        "linkquality": 105,
+        "last_seen": 1780766744491,
+        "update": {
+            "state": "idle",
+            "installed_version": 587753009,
+            "latest_version": 587753009,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-signal-repeater_release_prod_v587753009_3ce8f096-bd12-4b2c-b66e-51dc9f2637dc.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x84fd27fffecdf21e": {
+        "linkquality": 102,
+        "last_seen": 1780766793469,
+        "update": {
+            "state": "idle",
+            "installed_version": 587753009,
+            "latest_version": 587753009,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-signal-repeater_release_prod_v587753009_3ce8f096-bd12-4b2c-b66e-51dc9f2637dc.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x00158d000279e29e": {
+        "voltage": 2955,
+        "battery": 70,
+        "device_temperature": 26,
+        "power_outage_count": 19,
+        "smoke_density": 22,
+        "linkquality": 105,
+        "smoke": false,
+        "tamper": false,
+        "battery_low": false,
+        "supervision_reports": false,
+        "restore_reports": false,
+        "trouble": false,
+        "ac_status": false,
+        "test": false,
+        "battery_defect": false,
+        "last_seen": 1780766112414
+    },
+    "0x842e14fffe418c6e": {
+        "state": "ON",
+        "linkquality": 116,
+        "brightness": 254,
+        "last_seen": 1779813280055,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0xbc33acfffe27caba": {
+        "state": "OFF",
+        "linkquality": 87,
+        "brightness": 127,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766803458,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0xbc33acfffe2b856a": {
+        "state": "OFF",
+        "linkquality": 65,
+        "brightness": 127,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766840765,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0xbc33acfffe22ff2e": {
+        "state": "OFF",
+        "linkquality": 83,
+        "brightness": 127,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "last_seen": 1780766836088,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x00158d0004ab49e7": {
+        "voltage": 3015,
+        "battery": 100,
+        "device_temperature": 32,
+        "power_outage_count": 314,
+        "illuminance": 6,
+        "linkquality": 61,
+        "occupancy": false,
+        "last_seen": 1780766925626
+    },
+    "0x54ef441000281968": {
+        "voltage": 2986,
+        "battery": 91,
+        "power_outage_count": 0,
+        "contact": true,
+        "linkquality": 160,
+        "tamper": false,
+        "battery_low": false,
+        "last_seen": 1780766655685
+    },
+    "0x00158d000444c3f6": {
+        "voltage": 3005,
+        "battery": 100,
+        "device_temperature": 22,
+        "power_outage_count": 6665,
+        "trigger_count": 2,
+        "contact": true,
+        "linkquality": 47,
+        "last_seen": 1780766604192
+    },
+    "0x00158d00036c7bbd": {
+        "voltage": 3025,
+        "battery": 100,
+        "power_outage_count": 1181,
+        "temperature": 22.17,
+        "humidity": 57.46,
+        "pressure": 1008.4,
+        "linkquality": 98,
+        "last_seen": 1780765901781
+    },
+    "0x00158d000346b795": {
+        "voltage": 3025,
+        "battery": 100,
+        "power_outage_count": 4,
+        "temperature": 24.28,
+        "humidity": 50.5,
+        "pressure": 1008.5,
+        "linkquality": 80,
+        "last_seen": 1780766753406
+    },
+    "0x00158d00028f6075": {
+        "voltage": 3025,
+        "battery": 100,
+        "device_temperature": 25,
+        "power_outage_count": 18,
+        "smoke_density": 20,
+        "linkquality": 105,
+        "smoke": false,
+        "tamper": false,
+        "battery_low": false,
+        "supervision_reports": false,
+        "restore_reports": false,
+        "trouble": false,
+        "ac_status": false,
+        "test": false,
+        "battery_defect": false,
+        "last_seen": 1780765724127
+    },
+    "0x00158d0001f54d77": {
+        "voltage": 3025,
+        "battery": 100,
+        "power_outage_count": 1182,
+        "temperature": 23.68,
+        "humidity": 51.62,
+        "pressure": 1008.5,
+        "linkquality": 72,
+        "last_seen": 1780765286447
+    },
+    "0x00158d0002024699": {
+        "voltage": 3015,
+        "battery": 100,
+        "device_temperature": 27,
+        "power_outage_count": 14,
+        "smoke_density": 1,
+        "linkquality": 105,
+        "smoke": false,
+        "tamper": false,
+        "battery_low": false,
+        "supervision_reports": false,
+        "restore_reports": false,
+        "trouble": false,
+        "ac_status": false,
+        "test": false,
+        "battery_defect": false,
+        "last_seen": 1780764407653
+    },
+    "0x00158d00020b6665": {
+        "voltage": 3075,
+        "battery": 100,
+        "device_temperature": 28,
+        "power_outage_count": 39,
+        "smoke_density": 1,
+        "linkquality": 61,
+        "last_seen": 1780765512345,
+        "smoke": false,
+        "tamper": false,
+        "battery_low": false,
+        "supervision_reports": false,
+        "restore_reports": false,
+        "trouble": false,
+        "ac_status": false,
+        "test": false,
+        "battery_defect": false
+    },
+    "0x00158d0001fa9d41": {
+        "temperature": 23.49,
+        "humidity": 52.3,
+        "pressure": 1007.9,
+        "voltage": 2985,
+        "battery": 90,
+        "power_outage_count": 1,
+        "linkquality": 105,
+        "last_seen": 1780765494421
+    },
+    "0x8c65a3fffedf213c": {
+        "color_mode": "xy",
+        "brightness": 1,
+        "state": "OFF",
+        "color": {
+            "x": 0.62,
+            "y": 0.34,
+            "hue": 7,
+            "h": 7,
+            "saturation": 97,
+            "s": 97
+        },
+        "color_temp": 414,
+        "linkquality": 72,
+        "last_seen": 1780767124381,
+        "update": {
+            "state": "idle",
+            "installed_version": 16777284,
+            "latest_version": 16777284,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/zingo_cws-0x2805-1.0.44-prod.ota.ota.signed",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0xa4c138def5477c9e": {
+        "rain": true,
+        "battery": 97,
+        "illuminance": 3387,
+        "illuminance_average_20min": 5148,
+        "illuminance_maximum_today": 5853,
+        "cleaning_reminder": true,
+        "rain_intensity": 3143,
+        "last_seen": 1780767229546,
+        "linkquality": 54,
+        "illuminance_raw": 4924
+    },
+    "0x00158d000287ae16": {
+        "voltage": 3075,
+        "battery": 100,
+        "device_temperature": 26,
+        "power_outage_count": 38,
+        "smoke_density": 0,
+        "smoke": false,
+        "tamper": false,
+        "battery_low": false,
+        "supervision_reports": false,
+        "restore_reports": false,
+        "trouble": false,
+        "ac_status": false,
+        "test": false,
+        "battery_defect": false,
+        "last_seen": 1780766878217,
+        "linkquality": 102
+    },
+    "0x680ae2fffe924e57": {
+        "linkquality": 102,
+        "update": {
+            "state": "idle",
+            "installed_version": 587753009,
+            "latest_version": 587753009,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-signal-repeater_release_prod_v587753009_3ce8f096-bd12-4b2c-b66e-51dc9f2637dc.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        },
+        "last_seen": 1780766767231
+    },
+    "0x5c0272fffe2bdcdb": {
+        "last_seen": 1780689080545,
+        "linkquality": 54,
+        "update": {
+            "state": "idle",
+            "installed_version": 604241925,
+            "latest_version": 604241925,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-controller_release_prod_v604241925_abef4451-762a-4ef9-8c11-dfd88c3e98f7.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x00158d00052d33fe": {
+        "last_seen": 1780765656107,
+        "linkquality": 105,
+        "occupancy": false,
+        "illuminance": 0,
+        "voltage": 3025,
+        "battery": 100,
+        "device_temperature": 28,
+        "power_outage_count": 2166
+    },
+    "0x70b3d52b6009d3ab": {
+        "state": "ON",
+        "child_lock": "UNLOCK",
+        "indicator_mode": "off/on",
+        "power_outage_memory": "on",
+        "countdown": 0,
+        "voltage": 227,
+        "power": 0,
+        "energy": 32.04,
+        "current": 0,
+        "last_seen": 1780767129786,
+        "linkquality": 47
+    },
+    "0x70b3d52b6009957a": {
+        "voltage": 231,
+        "state": "ON",
+        "power": 0,
+        "current": 0.02,
+        "energy": 16.77,
+        "last_seen": 1780767092494,
+        "linkquality": 25,
+        "countdown": 0,
+        "power_outage_memory": "restore",
+        "indicator_mode": "off/on",
+        "child_lock": "UNLOCK"
+    },
+    "0x00158d0005412c26": {
+        "occupancy": false,
+        "illuminance": 14,
+        "last_seen": 1780766659097,
+        "linkquality": 94,
+        "voltage": 3115,
+        "battery": 100,
+        "device_temperature": 32,
+        "power_outage_count": 6
+    },
+    "0x00158d00054b35c7": {
+        "occupancy": false,
+        "illuminance": 148,
+        "last_seen": 1780766243428,
+        "linkquality": 116,
+        "voltage": 3025,
+        "battery": 100,
+        "device_temperature": 30,
+        "power_outage_count": 76
+    },
+    "0x842e14fffe14d3ab": {
+        "last_seen": 1780766807559,
+        "linkquality": 32,
+        "update": {
+            "state": "idle",
+            "installed_version": 587806257,
+            "latest_version": 587806257,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/tradfri-light-unified-w_release_prod_v587806257_147c8812-e7f3-4999-b7eb-3da91009ab65.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        },
+        "state": "OFF",
+        "brightness": 64,
+        "level_config": {
+            "on_level": "previous"
+        }
+    },
+    "0x8c65a3fffe340b6a": {
+        "water_leak": false,
+        "battery": 67,
+        "voltage": 1200,
+        "update": {
+            "state": "idle",
+            "installed_version": 16777223,
+            "latest_version": 16777223,
+            "latest_source": null,
+            "latest_release_notes": null
+        },
+        "last_seen": 1780757173346,
+        "linkquality": 43
+    },
+    "0xecf64cfffef245a4": {
+        "water_leak": false,
+        "battery": 76,
+        "voltage": 1200,
+        "update": {
+            "state": "idle",
+            "installed_version": 16777223,
+            "latest_version": 16777223,
+            "latest_source": null,
+            "latest_release_notes": null
+        },
+        "last_seen": 1780698288595,
+        "linkquality": 105
+    },
+    "0x70b3d52b600ae699": {
+        "state": "OFF",
+        "child_lock": "LOCK",
+        "indicator_mode": "off/on",
+        "power_outage_memory": "on",
+        "countdown": 0,
+        "voltage": 234,
+        "power": 0,
+        "current": 0.29,
+        "energy": 31.1,
+        "last_seen": 1780767203227,
+        "linkquality": 94
+    },
+    "0xa4c138fce22d082a": {
+        "state": "ON",
+        "countdown": 0,
+        "power_outage_memory": "on",
+        "indicator_mode": "off/on",
+        "child_lock": "UNLOCK",
+        "switch_type_button": "release",
+        "voltage": 229,
+        "power": 0,
+        "energy": 15.51,
+        "current": 0,
+        "last_seen": 1780767238195,
+        "linkquality": 10
+    },
+    "0x00158d0003153db7": {
+        "smoke": false,
+        "tamper": false,
+        "battery_low": false,
+        "supervision_reports": false,
+        "restore_reports": false,
+        "trouble": false,
+        "ac_status": false,
+        "test": false,
+        "battery_defect": false,
+        "voltage": 3075,
+        "battery": 100,
+        "device_temperature": 39,
+        "power_outage_count": 34,
+        "smoke_density": 0,
+        "last_seen": 1779631763107,
+        "linkquality": 32
+    },
+    "0xa4c1386440fa9407": {
+        "voltage": 231,
+        "state": "ON",
+        "countdown": 0,
+        "power_outage_memory": "on",
+        "indicator_mode": "off/on",
+        "child_lock": "UNLOCK",
+        "switch_type_button": "release",
+        "current": 0.38,
+        "power": 50,
+        "energy": 11.85,
+        "last_seen": 1780767144466,
+        "linkquality": 54
+    },
+    "0x00158d00036cb1a0": {
+        "temperature": 22.85,
+        "humidity": 59.66,
+        "pressure": 1008.9,
+        "last_seen": 1780765731593,
+        "linkquality": 83,
+        "voltage": 3035,
+        "battery": 100,
+        "power_outage_count": 13
+    },
+    "0xcc86ecfffe43913c": {
+        "state": "OFF",
+        "update": {
+            "state": "idle",
+            "installed_version": 16842756,
+            "latest_version": 16842756,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/zingo-lds-bulb-hwpwm-ww_release_prod_v16842756_529d7965-cee3-4c32-bd28-e5dd17ddc256.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        },
+        "last_seen": 1780766828056,
+        "linkquality": 120,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "brightness": 254
+    },
+    "0xcc86ecfffe43742a": {
+        "last_seen": 1780767170050,
+        "linkquality": 105,
+        "level_config": {
+            "on_level": "previous"
+        },
+        "brightness": 254,
+        "state": "OFF",
+        "update": {
+            "state": "idle",
+            "installed_version": 16842756,
+            "latest_version": 16842756,
+            "latest_source": "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/images/IKEA/zingo-lds-bulb-hwpwm-ww_release_prod_v16842756_529d7965-cee3-4c32-bd28-e5dd17ddc256.ota",
+            "latest_release_notes": "https://ww8.ikea.com/ikeahomesmart/releasenotes/releasenotes.html"
+        }
+    },
+    "0x00158d0003152113": {
+        "smoke": false,
+        "tamper": false,
+        "battery_low": false,
+        "supervision_reports": false,
+        "restore_reports": false,
+        "trouble": false,
+        "ac_status": false,
+        "test": false,
+        "battery_defect": false,
+        "voltage": 3085,
+        "battery": 100,
+        "device_temperature": 28,
+        "power_outage_count": 24,
+        "smoke_density": 8,
+        "last_seen": 1780765517386,
+        "linkquality": 109
+    },
+    "0x00158d00044b3e6d": {
+        "last_seen": 1780765875257,
+        "linkquality": 105,
+        "voltage": 2985,
+        "battery": 90,
+        "device_temperature": 32,
+        "power_outage_count": 335,
+        "trigger_count": 0,
+        "contact": true
+    },
+    "0x00158d000314dda1": {
+        "voltage": 3095,
+        "battery": 100,
+        "device_temperature": 25,
+        "power_outage_count": 16,
+        "smoke_density": 6,
+        "last_seen": 1780764024101,
+        "linkquality": 153
+    },
+    "0x00158d0002cb0882": {
+        "voltage": 3065,
+        "battery": 100,
+        "device_temperature": 30,
+        "power_outage_count": 22,
+        "smoke_density": 2,
+        "last_seen": 1780766133281,
+        "linkquality": 76
+    },
+    "0x00158d0002b2269d": {
+        "voltage": 3025,
+        "battery": 100,
+        "device_temperature": 32,
+        "power_outage_count": 17,
+        "smoke_density": 7,
+        "last_seen": 1780767019391,
+        "linkquality": 80
+    },
+    "0x0cae5ffffe76f666": {
+        "battery": 32,
+        "last_seen": 1780766910947,
+        "linkquality": 120
+    }
+}

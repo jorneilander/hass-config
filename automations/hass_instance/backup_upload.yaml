@@ -9,4 +9,4 @@ trigger:
 action:
   - service: hassio.addon_start
     data:
-      addon: f51ab629_borg_backup
+      addon: d2668721_borg_backup

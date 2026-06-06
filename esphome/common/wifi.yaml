@@ -1,0 +1,22 @@
+---
+wifi:
+  ssid: !secret home_wifi_iot_ssid
+  password: !secret home_wifi_iot_password
+  ap:
+    ssid: "${friendly_name} Fallback Hotspot"
+    password: !secret device_wifi_fallback_password
+  domain: .home.cannonfodder.nl
+  
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "${friendly_name} IP address"
+    ssid:
+      name: "${friendly_name} SSID"  
+  
+sensor:
+  - platform: wifi_signal
+    name: '${friendly_name} WiFi Signal'
+    update_interval: 60s
+    accuracy_decimals: 0
+    

@@ -1,0 +1,48 @@
+---
+esphome:
+  name: "${device_name}"
+  friendly_name: "${friendly_name}"
+
+# # Enable Home Assistant API
+api:
+  encryption:
+    key: !secret device_api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret device_ota_password
+    
+# # Sets time from Homeassistant
+time:
+  - platform: homeassistant
+    id: homeassistant_time      
+    
+logger:
+  level: DEBUG
+  
+web_server:
+  port: 80
+
+# Sensors for ESP version and WIFI information
+text_sensor:
+  - platform: version
+    name: "${friendly_name} ESPHome Version"
+#   - platform: wifi_info
+#     ip_address:
+#       name: "${friendly_name} IP address"
+#     ssid:
+#       name: "${friendly_name} SSID"
+      
+sensor:
+#   - platform: wifi_signal
+#     name: '${friendly_name} WiFi Signal'
+#     update_interval: 60s
+#     accuracy_decimals: 0
+  - platform: uptime
+    name: '${friendly_name} Uptime'
+    unit_of_measurement: days
+    update_interval: 300s
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.000011574      
+

@@ -1,0 +1,162 @@
+- id: smoke_sensor_triggered
+  alias: "\U0001F525 Smoke Alarm TESTING \U0001F525"
+  description: ''
+  triggers:
+  - trigger: template
+    value_template: "{%- for sensor in states.binary_sensor if (sensor.entity_id).endswith('smoke')
+      -%}\n  {{ is_state(sensor.entity_id, 'on') }}\n{% endfor %}"
+  actions:
+  - action: notify.all_devices
+    data:
+      message: "\U0001F525 Smoke Alarm \U0001F525\n{{ trigger.event.data.new_state.attributes.friendly_name
+        | replace('_','\\_') }} has changed state to: {{ trigger.event.data.new_state.state
+        }}"
+      data:
+        sticky: true
+  mode: restart
+- id: smoke_sensor_triggered
+  alias: 1 - Smoke alarm...
+  description: ''
+  triggers:
+  - trigger: template
+    value_template: "{%- for sensor in states.binary_sensor if (sensor.entity_id).endswith('smoke')
+      -%}\n  {{ is_state(sensor.entity_id, 'on') }}\n{% endfor %}"
+  actions:
+  - action: notify.all_devices
+    data:
+      message: "\U0001F525 Smoke Alarm \U0001F525\n{{ trigger.event.data.new_state.attributes.friendly_name
+        | replace('_','\\_') }} has changed state to: {{ trigger.event.data.new_state.state
+        }}"
+      data:
+        sticky: true
+  mode: restart
+- id: '1759126049147'
+  alias: Living Room - Open Curtains - Sunrise
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: 0
+  conditions: []
+  actions:
+  - device_id: d54f83d6bc76947bd56bf45ed3078b5b
+    domain: cover
+    entity_id: 014cd6c3bac429581d6a9490f5de12cd
+    type: open
+  - device_id: 6b5d9162e70aebf2fba5074eaaa93aa8
+    domain: cover
+    entity_id: e8741aee2351d1e0eeb62ed1a018c5d5
+    type: open
+  mode: single
+- id: '1778345543262'
+  alias: Living Room - TV backlight
+  description: ''
+  triggers:
+  - device_id: 91f2f6f41134f9e8c17aad5cb3ff4a8e
+    domain: media_player
+    entity_id: 6e368d88c43720f4da7e8262df5ac6c8
+    type: turned_on
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: d59276902d2fe7b121449db89d99e50a
+    entity_id: 2d362184e915ce4addc04049d0b2289f
+    domain: light
+  mode: single
+- id: '1778345721166'
+  alias: New automation
+  description: ''
+  triggers:
+  - device_id: 91f2f6f41134f9e8c17aad5cb3ff4a8e
+    domain: media_player
+    entity_id: 6e368d88c43720f4da7e8262df5ac6c8
+    type: turned_on
+    trigger: device
+  conditions: []
+  actions: []
+  mode: single
+- id: '1778410404539'
+  alias: New automation
+  description: ''
+  triggers:
+  - device_id: 8eab41eecd35764905833c2a1389fd37
+    domain: media_player
+    entity_id: 56ad6c42df4da7d85cb28d4b0e9ff5ac
+    type: turned_on
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: d59276902d2fe7b121449db89d99e50a
+    entity_id: 2d362184e915ce4addc04049d0b2289f
+    domain: light
+    brightness_pct: 100
+  mode: single
+- id: '1780732841442'
+  alias: LetsEncrypt - Renew certificate
+  description: ''
+  triggers:
+  - trigger: time
+    at: 05:00:00
+  conditions: []
+  actions:
+  - action: hassio.app_start
+    metadata: {}
+    data:
+      app: core_letsencrypt
+  mode: single
+- id: '1780734376731'
+  alias: LetsEncrypt - Restart Home Assistant
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - event.folder_watcher_ssl
+    attribute: event_type
+    to:
+    - modified
+    - created
+  conditions: []
+  actions:
+  - delay:
+      hours: 0
+      minutes: 15
+      seconds: 0
+      milliseconds: 0
+    enabled: true
+  - action: notify.send_message
+    metadata: {}
+    target:
+      entity_id: notify.jorns_iphone
+    data:
+      message: Certificate renewed, restarting Home Assistant
+      title: Certificate renewd
+  - action: homeassistant.restart
+    metadata: {}
+    data: {}
+    enabled: true
+  mode: restart
+- id: '1780749524283'
+  alias: Certificates - - External - Expiring
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.certificates_expiring
+    to:
+    - 'on'
+    from:
+  conditions: []
+  actions:
+  - action: notify.send_message
+    metadata: {}
+    target:
+      entity_id: notify.jorns_iphone
+    data:
+      message: Your certs need updating!
+  - action: notify.persistent_notification
+    metadata: {}
+    data:
+      title: External certificates need updating
+  mode: single

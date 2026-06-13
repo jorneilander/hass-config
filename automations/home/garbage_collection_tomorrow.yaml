@@ -1,0 +1,43 @@
+---
+alias: Garbage alert - Tomorrow
+id: 679dab38-961f-440e-bf80-c6c7e7839831
+mode: single
+triggers:
+  - platform: time_pattern
+    hours: "18"
+conditions:
+  - alias: "Garbage collection tomorrow"
+    condition: template
+    value_template: >-
+      {%- if
+        state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') == 1 or
+        state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') == 1 or
+        state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') == 1
+      -%}
+      true
+      {%- endif -%}
+
+actions:
+  - action: notify.mobile_jorn_maeike_priority_high
+    data:
+      title: 🚮 Tomorrow is garbage day! 🚮
+      message: >-
+        {%- if state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') == 1 %}
+          {{ state_attr('sensor.afvalinfo_home_pbd', 'friendly_name') }}
+        {% endif %}
+        {%- if state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') == 1 %}
+          {{ state_attr('sensor.afvalinfo_home_gft', 'friendly_name') }}
+        {% endif %}
+                {%- if state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') == 1 %}
+          {{ state_attr('sensor.afvalinfo_home_papier', 'friendly_name') }}
+        {% endif %}
+  - action: persistent_notification.create
+    data:
+      title: 🚮 Tomorrow is garbage day! 🚮
+      message: |
+        Tomorrow is garbage day!
+
+        Upcoming garbage collections
+        Zwart (PMD)   {{ states('sensor.afvalinfo_home_pbd') }} - {{ state_attr('sensor.afvalinfo_home_pbd', 'days_until_collection_date') }} day(s)
+        Groen (GFT)   {{ states('sensor.afvalinfo_home_gft') }} - {{ state_attr('sensor.afvalinfo_home_gft', 'days_until_collection_date') }} day(s)
+        Blauw (PAP)   {{ states('sensor.afvalinfo_home_papier') }} - {{ state_attr('sensor.afvalinfo_home_papier', 'days_until_collection_date') }} day(s)

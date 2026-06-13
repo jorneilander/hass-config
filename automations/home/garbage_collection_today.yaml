@@ -1,6 +1,6 @@
 ---
-alias: Garbage alert
-id: "garbage_collection_alert"
+alias: Garbage alert - Today
+id: 0ec50d69-654f-4f98-8368-1bf32e88b5a4
 mode: single
 triggers:
   - trigger: state

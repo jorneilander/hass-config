@@ -4,5 +4,7 @@
   },
   "files.watcherExclude": {
     "**/target": true
-  }
+  },
+  "mistral-vibe-code.telemetry.enabled": false,
+  "mistral-vibe-code.extraDeepFileParsing": true
 }

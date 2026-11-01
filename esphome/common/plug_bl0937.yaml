@@ -1,0 +1,66 @@
+---
+# Shared config for the BL0937 metering smart plugs that used to run Tasmota:
+#   - "SP111 v1.1"       (BlitzWolf-style, 1MB flash)
+#   - "Gosund SP111 2"   (1MB flash)
+#   - "Athom PG01EU16A"  (2MB flash)
+# Pin numbers are per-device substitutions (button_pin, relay_pin, sel_pin,
+# cf_pin, cf1_pin), taken from each device's own Tasmota template.
+# Tasmota power calibration is deliberately NOT carried over; the hlw8012
+# platform defaults (current_resistor 0.001, voltage_divider 2351) are used.
+
+binary_sensor:
+  - platform: gpio
+    id: button1
+    internal: true
+    pin:
+      number: ${button_pin}
+      mode: INPUT_PULLUP
+      inverted: true
+    on_press:
+      - switch.toggle: relay1
+
+switch:
+  - platform: gpio
+    id: relay1
+    name: "${friendly_name}"
+    pin: ${relay_pin}
+    # Tasmota PowerOnState 3 = restore last state
+    restore_mode: RESTORE_DEFAULT_ON
+
+sensor:
+  - platform: hlw8012
+    model: BL0937
+    sel_pin:
+      number: ${sel_pin}
+      # BL0937 SEL is inverted compared to HLW8012 (Tasmota used SEL_i)
+      inverted: true
+    cf_pin: ${cf_pin}
+    cf1_pin: ${cf1_pin}
+    change_mode_every: 4
+    update_interval: 10s
+    current:
+      name: "${friendly_name} ENERGY Current"
+      unit_of_measurement: A
+      accuracy_decimals: 3
+      device_class: current
+      state_class: measurement
+    voltage:
+      name: "${friendly_name} ENERGY Voltage"
+      unit_of_measurement: V
+      accuracy_decimals: 1
+      device_class: voltage
+      state_class: measurement
+    power:
+      name: "${friendly_name} ENERGY Power"
+      unit_of_measurement: W
+      accuracy_decimals: 1
+      device_class: power
+      state_class: measurement
+    energy:
+      name: "${friendly_name} ENERGY Total"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      device_class: energy
+      state_class: total_increasing
+      filters:
+        - multiply: 0.001

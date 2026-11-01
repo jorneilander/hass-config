@@ -1,0 +1,24 @@
+---
+# Tasmota "Athom PG01EU16A" plug (10.0.10.144), migrated to ESPHome.
+# Pin mapping read from the device's own Tasmota template (cmnd=Template).
+substitutions:
+  device_name: study-smart-plug-jorn
+  friendly_name: "Study - Smart plug (Jorn)"
+  relay_pin: GPIO10
+  button_pin: GPIO3
+  sel_pin: GPIO8
+  cf_pin: GPIO4
+  cf1_pin: GPIO5
+
+packages:
+  common: !include common/common.yaml
+  wifi: !include common/wifi.yaml
+  plug: !include common/plug_bl0937.yaml
+
+esp8266:
+  board: esp8285
+  flash_size: 2MB
+
+status_led:
+  pin:
+    number: GPIO9

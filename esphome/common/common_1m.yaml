@@ -1,0 +1,37 @@
+---
+# Slim variant of common.yaml for the 1MB-flash ESP8285 plugs
+# (SP111 v1.1, Gosund SP111 2): no web_server and a quiet logger so the
+# ESPHome image fits the OTA slot when migrating from Tasmota.
+esphome:
+  name: "${device_name}"
+  friendly_name: "${friendly_name}"
+
+# # Enable Home Assistant API
+api:
+  encryption:
+    key: !secret device_api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret device_ota_password
+
+# # Sets time from Homeassistant
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+logger:
+  baud_rate: 0
+
+text_sensor:
+  - platform: version
+    name: "${friendly_name} ESPHome Version"
+
+sensor:
+  - platform: uptime
+    name: '${friendly_name} Uptime'
+    unit_of_measurement: days
+    update_interval: 300s
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.000011574

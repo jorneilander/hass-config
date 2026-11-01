@@ -1,0 +1,36 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        # HA custom tags (!secret, !include, ...) are not safe-loadable;
+        # --unsafe makes this a syntax-only parse
+        args: [--unsafe]
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-symlinks
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-executables-have-shebangs
+        exclude: ^(custom_components|ui_lovelace_minimalist|www/community)/
+      - id: check-shebang-scripts-are-executable
+        exclude: ^(custom_components|ui_lovelace_minimalist|www/community)/
+      - id: no-commit-to-branch
+        args: [--branch, main]
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+        args: [-c, .yamllint]
+        # HACS-managed, synced-from-live and archived files are third-party
+        exclude: ^(custom_components|ui_lovelace_minimalist|esphome/archive)/
+  - repo: local
+    hooks:
+      - id: block-secrets-file
+        name: "block secrets.yaml (hard rule: never commit secrets)"
+        entry: "bash -c 'echo secrets.yaml must never be committed >&2; exit 1'"
+        language: system
+        files: (^|/)secrets\.yaml$

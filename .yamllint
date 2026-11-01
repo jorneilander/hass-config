@@ -1,0 +1,17 @@
+---
+extends: default
+
+rules:
+  # HA configs have no use for a leading '---' document marker
+  document-start: disable
+  # entity ids, templates and URLs routinely exceed 80/120 cols
+  line-length: disable
+  # HA and ESPHome use on/off alongside true/false
+  truthy:
+    allowed-values: ['true', 'false', 'on', 'off']
+  indentation:
+    spaces: consistent
+    indent-sequences: consistent
+    check-multi-line-strings: false
+  comments:
+    min-spaces-from-content: 1

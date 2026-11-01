@@ -1,0 +1,97 @@
+default_agent = "smart-approve"
+models = [
+    { name = "mistral-medium-latest", provider = "mistral", alias = "classifier" },
+]
+applied_migrations = [
+    "bash_read_only_defaults_v1",
+]
+
+[tools.connector_web_search_search]
+permission = "always"
+
+[tools.connector_web_search_fetch]
+permission = "always"
+
+[tools.bash]
+permission = "ask"
+# Run every command with the project venv (.venv) activated.
+shell = "/Users/jorn/Developer/git/hass-config/.vibe/shell.sh"
+allowlist = [
+    "awk",
+    "basename",
+    "bash scripts/",
+    "bash scripts/sync-commit.sh",
+    "cat",
+    "comm",
+    "cut",
+    "date",
+    "diff",
+    "dirname",
+    "du",
+    "file",
+    "find",
+    "fmt",
+    "fold",
+    "git diff",
+    "git log",
+    "git ls-files",
+    "git show",
+    "git status",
+    "grep",
+    "head",
+    "join",
+    "less",
+    "ls",
+    "md5sum",
+    "more",
+    "nl",
+    "od",
+    "paste",
+    "pwd",
+    "python -c",
+    "readlink",
+    "rg",
+    "sed -n",
+    "sha1sum",
+    "sha256sum",
+    "shasum",
+    "sort",
+    "sqlite3 /Volumes/CONFIG",
+    "stat",
+    "sum",
+    "tac",
+    "tail",
+    "tr",
+    "uname",
+    "uniq",
+    "wc",
+    "which",
+    "yq",
+    # Home Assistant advisor additions (literal command prefixes, not globs)
+    "ha",
+    "curl -s",
+    "curl -sL",
+    "curl -sSL",
+    "curl -G",
+    "curl --get",
+    "wget",
+    "sqlite3 -readonly",
+    "cp",
+    "vibe-path:directory_recursive:/Volumes",
+    "vibe-path:directory_recursive:/tmp/hass-db",
+]
+denylist = [
+    "rm -rf",
+    "sudo",
+    "chmod -R",
+    "chown",
+    "git push --force",
+    "git reset --hard",
+]
+
+[utility_models]
+smart_approve = "classifier"
+
+[tools.read_file]
+permission = "always"
+allowlist = ["/Volumes/CONFIG/**", "/Volumes/Config/**", "/Volumes/config/**", "/tmp/hass-db/**", "/Users/jorn/Developer/git/hass-config/**"]

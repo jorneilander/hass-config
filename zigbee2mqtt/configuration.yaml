@@ -2,7 +2,7 @@ homeassistant:
   enabled: true
   status_topic: homeassistant/status
 advanced:
-  log_level: debug
+  log_level: info
   log_syslog:
     app_name: Zigbee2MQTT
     eol: /n
@@ -15,24 +15,9 @@ advanced:
     type: '5424'
   channel: 15
   pan_id: 51496
-  network_key:
-    - 90
-    - 253
-    - 82
-    - 22
-    - 139
-    - 57
-    - 57
-    - 215
-    - 247
-    - 28
-    - 87
-    - 184
-    - 185
-    - 22
-    - 13
-    - 109
+  network_key: '!/config/secrets.yaml SECRET_Z2M_NETWORK_KEY'
   last_seen: epoch
+  transmit_power: 20
 frontend:
   enabled: true
   port: 8099
@@ -95,8 +80,6 @@ devices:
     friendly_name: Kitchen - Water sensor (sink)
   '0x00158d00022f0084':
     friendly_name: Pantry - Water sensor (drain)
-  '0x842e14fffe418c6e':
-    friendly_name: Shed - Light
   '0x842e14fffefd481f':
     friendly_name: Extension - Light switch
     legacy: false
@@ -216,9 +199,11 @@ groups:
 mqtt:
   server: mqtt://core-mosquitto:1883
   user: addons
-  password: wangai2exohcaeboofeeTeeNgei3taGhoo0Ouyi1esagh8eh5mievogh3aa4ooGh
+  password: '!/config/secrets.yaml SECRET_Z2M_MQTT_PASSWORD'
 serial:
-  port: /dev/ttyUSB0
+  port: tcp://10.0.1.203:7638
+  adapter: zstack
+  baudrate: 115200
 availability:
   enabled: true
   active:

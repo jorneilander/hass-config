@@ -1,0 +1,12 @@
+# Example scenes.yaml entry
+- id: movie_night_on # <-- Required for editor to work.
+  name: Movie Night - On
+  entities:
+    light.extension_downlights:
+      state: off
+    light.dining_room_lights:
+      state: on
+      brightness: 128
+    light.living_room_lights:
+      state: on
+      brightness: 128

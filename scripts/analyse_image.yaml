@@ -1,0 +1,19 @@
+analyse_image:
+  sequence:
+  - action: llmvision.image_analyzer
+    metadata: {}
+    data:
+      remember: false
+      use_memory: false
+      include_filename: false
+      target_width: 1280
+      max_tokens: 100
+      generate_title: true
+      expose_images: true
+      provider: 01JBQG431XRBV7W83GE3EACG24
+      message: Describe this image
+      image_entity:
+      - camera.s3_eth_camera
+    response_variable: response
+  alias: Analyse Image
+  description: ''

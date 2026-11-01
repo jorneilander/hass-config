@@ -49,7 +49,7 @@
     type: open
   mode: single
 - id: '1778345543262'
-  alias: Living Room - TV backlight
+  alias: Living Room - TV backlight on when TV on
   description: ''
   triggers:
   - device_id: 91f2f6f41134f9e8c17aad5cb3ff4a8e
@@ -75,23 +75,6 @@
     trigger: device
   conditions: []
   actions: []
-  mode: single
-- id: '1778410404539'
-  alias: New automation
-  description: ''
-  triggers:
-  - device_id: 8eab41eecd35764905833c2a1389fd37
-    domain: media_player
-    entity_id: 56ad6c42df4da7d85cb28d4b0e9ff5ac
-    type: turned_on
-    trigger: device
-  conditions: []
-  actions:
-  - type: turn_on
-    device_id: d59276902d2fe7b121449db89d99e50a
-    entity_id: 2d362184e915ce4addc04049d0b2289f
-    domain: light
-    brightness_pct: 100
   mode: single
 - id: '1780732841442'
   alias: LetsEncrypt - Renew certificate
@@ -159,4 +142,43 @@
     metadata: {}
     data:
       title: External certificates need updating
+  mode: single
+- id: '1781107923352'
+  alias: Living Room - TV Backlight off when TV off
+  description: ''
+  triggers:
+  - device_id: 91f2f6f41134f9e8c17aad5cb3ff4a8e
+    domain: media_player
+    entity_id: 6e368d88c43720f4da7e8262df5ac6c8
+    type: turned_off
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: d59276902d2fe7b121449db89d99e50a
+    entity_id: 2d362184e915ce4addc04049d0b2289f
+    domain: light
+  mode: single
+- id: '1793127629181'
+  alias: Front Yard - Chime disconnected
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - switch.reolink_chime_led
+    from:
+    to:
+    - unknown
+    - unavailable
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  conditions: []
+  actions:
+  - action: notify.notify
+    metadata: {}
+    data:
+      title: 'Chime stoek '
+      message: Go fix!
   mode: single

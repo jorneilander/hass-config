@@ -121,19 +121,23 @@ def _async_remove_old_device_identifiers(
     all_api_ids = set(appliances.appliances) if appliances else set()
 
     if all_api_ids:  # only complete if we got the device list from the api
-        device_list = list(device_registry.devices.values())  # <-- make a list copy
+        device_list = list(device_registry.devices)  # Make a copy before removals
         for device in device_list:
             # Only check devices for this domain
-            try:
-                for domain, deviceid in device.identifiers:
-                    if domain != DOMAIN:
-                        continue
+            for identifier in device.identifiers:
+                # Identifiers from other integrations (homekit, rfxtrx, etc.)
+                # may have more than 2 elements — only unpack what we need.
+                if len(identifier) < 2:
+                    continue
+                domain = identifier[0]
+                deviceid = identifier[1]
 
-                    if deviceid not in all_api_ids:
-                        _LOGGER.debug("Removing old device idendifier: %s", deviceid)
-                        device_registry.async_remove_device(device.id)
-            except Exception as e:
-                _LOGGER.error("Unable to remove old device idendifier, please report: %s %s", device.identifiers, e)
+                if domain != DOMAIN:
+                    continue
+
+                if deviceid not in all_api_ids:
+                    _LOGGER.debug("Removing old device identifier: %s", deviceid)
+                    device_registry.async_remove_device(device.id)
 
 
 async def async_remove_config_entry_device(

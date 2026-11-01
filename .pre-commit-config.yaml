@@ -10,7 +10,7 @@ repos:
         args: [--unsafe]
       - id: check-added-large-files
         # binary assets (integration icons, card bundles) are legitimately large
-        exclude: \.(png|jpe?g|gif|webp|ico|gz)$
+        exclude: \.(png|jpe?g|gif|webp|ico|gz|js)$
       - id: check-merge-conflict
       - id: detect-private-key
       - id: check-symlinks

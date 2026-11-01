@@ -51,11 +51,11 @@ class ElectroluxNumber(ElectroluxEntity, NumberEntity):
         else:
             value = self.extract_value()
 
-        if not value:
+        if value is None:
             value = self.capability.get("default", None)
             if value == "INVALID_OR_NOT_SET_TIME":
                 value = self.capability.get("min", None)
-        if not value:
+        if value is None:
             return self._cached_value
         if isinstance(self.unit, UnitOfTemperature):
             value = round(value, 2)
@@ -86,8 +86,6 @@ class ElectroluxNumber(ElectroluxEntity, NumberEntity):
         """Return the max value."""
         if self.unit == UnitOfTime.SECONDS:
             return time_seconds_to_minutes(self.capability.get("step", 1))
-        if self.unit == UnitOfTemperature.CELSIUS:
-            return self.capability.get("max", 5)
         return self.capability.get("step", 1)
 
     async def async_set_native_value(self, value: float) -> None:

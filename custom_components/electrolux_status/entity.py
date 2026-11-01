@@ -1,6 +1,7 @@
 """Entity platform for Electrolux Status."""
 
 import logging
+import re
 from typing import Any, cast
 
 from pyelectroluxocp import OneAppApi
@@ -80,7 +81,18 @@ class ElectroluxEntity(CoordinatorEntity):
         self.pnc_id = pnc_id
         self.unit = unit
         self.capability = capability
-        self.entity_id = f"{self.entity_domain}.{self.get_appliance.brand}_{self.get_appliance.name}_{self.entity_source}_{self.entity_attr}"
+        _raw_entity_id = (
+            f"{self.entity_domain}."
+            f"{self.get_appliance.brand}_{self.get_appliance.name}_"
+            f"{self.entity_source}_{self.entity_attr}"
+        )
+        # HA entity IDs must be lowercase [a-z0-9_.] with no consecutive underscores.
+        # The appliance brand/name/attr values may contain uppercase, camelCase, spaces,
+        # and hyphens. entity_source can also be empty, causing double underscores.
+        _domain, _object = _raw_entity_id.split(".", 1)
+        _object = re.sub(r"[^a-z0-9_]", "_", _object.lower())  # lowercase + replace invalid chars
+        _object = re.sub(r"_+", "_", _object).strip("_")        # collapse consecutive underscores
+        self.entity_id = f"{_domain}.{_object}"
         if catalog_entry:
             self.entity_registry_enabled_default = catalog_entry.entity_registry_enabled_default
         _LOGGER.debug("Electrolux new entity %s for appliance %s", name, pnc_id)

@@ -41,6 +41,8 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
         BrowserModEntity.__init__(self, coordinator, browserID, None)
         MediaPlayerEntity.__init__(self)
         self.browser = browser
+        self._position_seen = None
+        self._position_valid_at = None
 
     @property
     def unique_id(self):
@@ -62,7 +64,7 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             "off": STATE_OFF,
             "idle": STATE_IDLE,
         }.get(state, STATE_UNKNOWN)
-    
+
     @property
     def extra_state_attributes(self):
         """Return the device state attributes."""
@@ -112,7 +114,22 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
 
     @property
     def media_position_updated_at(self):
-        return dt.utcnow()
+        # Only stamp when the reported position actually changes.
+        # Returning dt.utcnow() unconditionally makes every coordinator
+        # update a brand-new state (the timestamp is a state attribute), so
+        # each connected browser floods the state machine and recorder with
+        # no-op state updates. It also breaks paused/idle position
+        # extrapolation, which relies on this being the time the position
+        # was last VALID.
+        position = self.media_position
+        if position is None:
+            self._position_seen = None
+            self._position_valid_at = None
+            return None
+        if position != self._position_seen:
+            self._position_seen = position
+            self._position_valid_at = dt.utcnow()
+        return self._position_valid_at
 
     @property
     def media_content_id(self):
@@ -155,7 +172,7 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
                 _LOGGER.warning(
                     f"Playing audio in browser: {self.browserID}. Interaction may be required."
                 )
-        # We cant't alter kwargs as this will end up altering the default value in the 
+        # We cant't alter kwargs as this will end up altering the default value in the
         # core media_player schema. Hence we deepcopy before altering.
         kwargs = copy.deepcopy(kwargs)
         kwargs["extra"]["media_content_id"] = media_id

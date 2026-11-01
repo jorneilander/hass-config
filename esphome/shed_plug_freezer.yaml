@@ -1,0 +1,27 @@
+---
+# Tasmota "SP111 v1.1" plug (10.0.10.133), migrated to ESPHome.
+# Device was unreachable during migration, so the pin mapping is taken from
+# the SP111 v1.1 template (same model as the other SP111 plugs) - verify
+# against cmnd=Template on the device before flashing.
+substitutions:
+  device_name: shed-smart-plug-freezer
+  friendly_name: "Shed - Smart plug (freezer)"
+  relay_pin: GPIO11
+  button_pin: GPIO9
+  sel_pin: GPIO8
+  cf_pin: GPIO5
+  cf1_pin: GPIO4
+
+packages:
+  common: !include common/common_1m.yaml
+  wifi: !include common/wifi.yaml
+  plug: !include common/plug_bl0937.yaml
+
+esp8266:
+  board: esp8285
+  flash_size: 1MB
+
+status_led:
+  pin:
+    number: GPIO2
+    inverted: true

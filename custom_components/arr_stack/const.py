@@ -1,0 +1,95 @@
+DOMAIN = "arr_stack"
+
+CONF_QBIT_URL  = "qbittorrent_url"
+CONF_QBIT_USER = "qbittorrent_user"
+CONF_QBIT_PASS = "qbittorrent_password"
+
+CONF_SAB_URL = "sabnzbd_url"
+CONF_SAB_KEY = "sabnzbd_api_key"
+
+CONF_NZBGET_URL  = "nzbget_url"
+CONF_NZBGET_USER = "nzbget_user"
+CONF_NZBGET_PASS = "nzbget_password"
+
+CONF_DELUGE_URL  = "deluge_url"
+CONF_DELUGE_PASS = "deluge_password"
+
+CONF_GLUETUN_URL = "gluetun_url"
+CONF_GLUETUN_KEY = "gluetun_api_key"
+
+CONF_RTORRENT_URL  = "rtorrent_url"
+CONF_RTORRENT_USER = "rtorrent_user"
+CONF_RTORRENT_PASS = "rtorrent_password"
+
+CONF_RADARR_URL = "radarr_url"
+CONF_RADARR_KEY = "radarr_api_key"
+
+CONF_RADARR2_URL = "radarr2_url"
+CONF_RADARR2_KEY = "radarr2_api_key"
+
+CONF_SONARR_URL = "sonarr_url"
+CONF_SONARR_KEY = "sonarr_api_key"
+
+CONF_SONARR2_URL = "sonarr2_url"
+CONF_SONARR2_KEY = "sonarr2_api_key"
+
+CONF_SEERR_URL          = "seerr_url"
+CONF_SEERR_KEY          = "seerr_api_key"
+CONF_SEERR_FAMILY_EMAIL = "seerr_family_email"
+CONF_SEERR_FAMILY_PASS  = "seerr_family_password"
+CONF_SEERR_GUEST_EMAIL  = "seerr_guest_email"
+CONF_SEERR_GUEST_PASS   = "seerr_guest_password"
+
+CONF_BAZARR_URL = "bazarr_url"
+CONF_BAZARR_KEY = "bazarr_api_key"
+
+CONF_PLEX_TOKEN = "plex_token"
+CONF_PLEX_URL   = "plex_url"
+
+CONF_EMBY_URL = "emby_url"
+CONF_EMBY_KEY = "emby_api_key"
+
+CONF_TAUTULLI_URL = "tautulli_url"
+CONF_TAUTULLI_KEY = "tautulli_api_key"
+
+CONF_JELLYSTAT_URL = "jellystat_url"
+CONF_JELLYSTAT_KEY = "jellystat_api_key"
+
+CONF_TRACEARR_URL           = "tracearr_url"
+CONF_TRACEARR_KEY           = "tracearr_api_key"
+CONF_TRACEARR_REFRESH_TOKEN = "tracearr_refresh_token"
+CONF_TRACEARR_SESSION_COOKIE = "tracearr_session_cookie"
+
+CONF_TRAKT_CLIENT_ID     = "trakt_client_id"
+CONF_TRAKT_CLIENT_SECRET = "trakt_client_secret"
+CONF_TRAKT_ACCESS_TOKEN  = "trakt_access_token"
+CONF_TRAKT_REFRESH_TOKEN = "trakt_refresh_token"
+CONF_TRAKT_EXPIRES_AT    = "trakt_expires_at"
+
+# SuggestArr — self-hosted recommendations from actual watch history.
+# Credentials are optional: installs running AUTH_MODE=local_bypass need none.
+CONF_SUGGESTARR_URL      = "suggestarr_url"
+CONF_SUGGESTARR_USER     = "suggestarr_user"
+CONF_SUGGESTARR_PASS     = "suggestarr_password"
+
+TRAKT_API_BASE   = "https://api.trakt.tv"
+TRAKT_API_VER    = "2"
+
+PLEX_CLIENT_ID  = "arr-stack-card"
+
+CONF_PROWLARR_URL = "prowlarr_url"
+CONF_PROWLARR_KEY = "prowlarr_api_key"
+
+CONF_MAINTAINERR_URL = "maintainerr_url"
+
+CONF_SKIP_SSL_VERIFY = "skip_ssl_verify"
+CONF_DEBUG_LOGGING   = "debug_logging"
+
+CONF_TMDB_KEY = "tmdb_api_key"
+
+# Anonymous usage ping — opt-out, surfaced only when reconfiguring
+CONF_METRICS_OPT_OUT = "metrics_opt_out"
+
+# Fallback for entries created before the key became configurable
+TMDB_API_KEY = "da641d34100bf2ab90904ca84d424ef6"
+TMDB_BASE    = "https://api.themoviedb.org/3"

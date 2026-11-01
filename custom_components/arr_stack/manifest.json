@@ -1,0 +1,18 @@
+{
+  "domain": "arr_stack",
+  "name": "Arr Stack Integration",
+  "after_dependencies": [
+    "http"
+  ],
+  "codeowners": [
+    "@martinargalas"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/martinargalas/arr-stack-integration",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/martinargalas/arr-stack-integration/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "1.8.0"
+}

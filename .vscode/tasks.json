@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "pre-commit: run all files",
+      "type": "shell",
+      "command": "${workspaceFolder:hass-config}/.venv/bin/pre-commit run --all-files",
+      "options": {
+        "cwd": "${workspaceFolder:hass-config}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "yamllint",
+      "type": "shell",
+      "command": "${workspaceFolder:hass-config}/.venv/bin/yamllint -c .yamllint .",
+      "options": {
+        "cwd": "${workspaceFolder:hass-config}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

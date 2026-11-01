@@ -46,6 +46,7 @@ ozw_log.txt
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+!hass-config.code-workspace
 
 # Local History for Visual Studio Code
 .history/

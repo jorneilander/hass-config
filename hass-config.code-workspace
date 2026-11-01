@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "name": "hass-config",
+      "path": "."
+    },
+    {
+      "name": "hass-live (read-only mount)",
+      "path": "/Volumes/CONFIG"
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "**/*.y*ml": "home-assistant"
+    },
+    "files.exclude": {
+      "**/home-assistant_v2.db*": true,
+      "**/backup.db": true
+    },
+    "files.watcherExclude": {
+      "**/.git": true,
+      "**/.venv": true,
+      "**/target": true,
+      "**/home-assistant_v2.db*": true
+    },
+    "search.exclude": {
+      "**/.venv": true,
+      "**/target": true,
+      "**/node_modules": true,
+      "**/home-assistant_v2.db*": true
+    },
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "python.defaultInterpreterPath": "${workspaceFolder:hass-config}/.venv/bin/python",
+    "yaml.validate": true,
+    "mistral-vibe-code.telemetry.enabled": false,
+    "mistral-vibe-code.extraDeepFileParsing": true
+  }
+}

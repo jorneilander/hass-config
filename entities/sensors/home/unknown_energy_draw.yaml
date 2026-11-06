@@ -1,0 +1,10 @@
+---
+# kWh integral of the residual (unknown) power draw, so it can be tracked over
+# time in the Energy dashboard and via long-term statistics.
+platform: integral
+name: Unknown energy draw
+unique_id: E976BC66-BD43-450D-8A08-9E054382E00C
+source: sensor.unknown_power_draw
+unit_prefix: k
+method: left
+round: 3

@@ -331,3 +331,11 @@ cards:
             type: custom:button-card
         type: horizontal-stack
     type: vertical-stack
+  - type: statistics-graph
+    title: Unknown energy draw (kWh per hour)
+    entities:
+      - sensor.unknown_energy_draw
+    days_to_show: 7
+    chart_type: bar
+    stat_types:
+      - sum

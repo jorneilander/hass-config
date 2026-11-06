@@ -23,3 +23,15 @@ monthly_gas:
   source: sensor.gas_meter_gas_consumption
   name: Monthly Gas
   cycle: monthly
+hourly_unknown_energy:
+  source: sensor.unknown_energy_draw
+  name: Hourly Unknown Energy
+  cycle: hourly
+daily_unknown_energy:
+  source: sensor.unknown_energy_draw
+  name: Daily Unknown Energy
+  cycle: daily
+monthly_unknown_energy:
+  source: sensor.unknown_energy_draw
+  name: Monthly Unknown Energy
+  cycle: monthly

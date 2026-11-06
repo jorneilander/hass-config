@@ -1,0 +1,43 @@
+---
+# Residual grid power: DSMR total consumption minus all individually metered
+# plugs. Keep plug_sensors in sync with the individual devices configured under
+# Settings > Energy (the "known" users shown in Energy > Now).
+name: Unknown power draw
+default_entity_id: sensor.unknown_power_draw
+unique_id: D8D87FBE-5A64-4CC9-8E41-B88BC3158C65
+device_class: power
+state_class: measurement
+unit_of_measurement: W
+icon: mdi:eye
+variables:
+  plug_sensors:
+    - sensor.living_room_smart_plug_tv_energy_power
+    - sensor.living_room_smart_plug_tv_media_power
+    - sensor.utility_closet_smart_plug_energy_power
+    - sensor.dining_room_smart_plug_table_energy_power
+    - sensor.server_room_smart_plug_energy_power
+    - sensor.study_smart_plug_jorn_energy_power
+    - sensor.kitchen_smart_plug_fridge_energy_power
+    - sensor.pantry_smart_plug_freezer_energy_power
+    - sensor.shed_smart_plug_freezer_energy_power
+    - sensor.pantry_smart_plug_dryer_power
+    - sensor.pantry_smart_plug_washer_power
+    - sensor.shed_smart_plug_fridge_power
+  known_power: >
+    {%- set ns = namespace(total=0) -%}
+    {%- for plug_sensor in plug_sensors -%}
+      {%- if has_value(plug_sensor) -%}
+        {%- set ns.total = ns.total + states(plug_sensor)|float(0) -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {{ ns.total }}
+availability: >
+  {%- set ns = namespace(all_available = has_value('sensor.dsmr_reader_power_consumed')) -%}
+  {%- for plug_sensor in plug_sensors -%}
+    {%- if not has_value(plug_sensor) -%}
+      {%- set ns.all_available = false -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {{ ns.all_available }}
+state: >
+  {{ [states('sensor.dsmr_reader_power_consumed')|float(0) - known_power|float(0), 0]|max|round(1) }}

@@ -58,7 +58,22 @@ ozw_log.txt
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,homeassistant
 
-.storage
+# Track UI-managed state in .storage, but never auth, config entries
+# (may hold integration credentials), or restore-state data
+.storage/*
+!.storage/automation
+!.storage/scene
+!.storage/script
+!.storage/lovelace.*
+!.storage/lovelace_resources
+!.storage/core.area_registry
+!.storage/core.device_registry
+!.storage/core.entity_registry
+!.storage/core.floor_registry
+!.storage/energy
+!.storage/input_*
+!.storage/tag
+!.storage/zone
 
 # Generic ignores
 *.log

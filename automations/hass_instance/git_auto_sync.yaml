@@ -1,0 +1,11 @@
+---
+alias: Hass instance - auto-sync git repo
+id: git_auto_sync
+trigger:
+  - platform: time_pattern
+    minutes: "/15"
+  - platform: homeassistant
+    event: start
+action:
+  - service: shell_command.git_auto_sync
+mode: single

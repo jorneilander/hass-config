@@ -1,0 +1,13 @@
+---
+# Runs on the HA host; requires git to be installed there
+# (e.g. via the Terminal & SSH add-on). Commits and pushes only when
+# the working tree has changes, so it is safe to run on a schedule.
+git_auto_sync: |
+  cd /config
+  git add -A
+  if git diff --cached --quiet; then
+    exit 0
+  fi
+  git -c user.name="Home Assistant" -c user.email="hass@localhost" \
+    commit -m "chore(sync): auto-sync from live instance"
+  git push origin HEAD

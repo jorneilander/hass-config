@@ -1,9 +1,11 @@
 ---
-# Devices that dropped off (every entity unavailable/unknown, e.g. dead
-# battery) or whose last_seen is older than the per-device threshold. Covers
-# all integrations: last_seen is read from any attribute key ending in
-# 'last_seen' and from Z2M sensor.<device>_last_seen entity states. Entities
-# are grouped per device via device_id() (there is no devices() function).
+# Devices that dropped off (no available entity anymore, e.g. dead battery or
+# unplugged) or whose last_seen is older than the per-device threshold.
+# last_seen is read from any attribute key ending in 'last_seen' and from Z2M
+# sensor.<device>_last_seen entity states. Entities are grouped per device via
+# device_id() (there is no devices() function). Presence/media devices
+# (device_tracker, media_player) are excluded from the offline list: BLE
+# beacons, keys and AirPlay targets being out of range is normal, not a fault.
 name: Devices offline or stale
 default_entity_id: sensor.last_seen_stale_entities
 unique_id: last_seen_stale_entities
@@ -16,6 +18,8 @@ state: >
       (max gap 1.9h), water sensors every ~3h (max gap 22h). -#}
   {%- set stale_threshold_hours_default = 24 -%}
   {%- set stale_threshold_hours_by_pattern = {'smoke': 12, 'water': 48} -%}
+  {%- set presence_domains = ['device_tracker', 'media_player'] -%}
+  {%- set device_domains = ['binary_sensor', 'camera', 'climate', 'cover', 'fan', 'light', 'lock', 'sensor', 'switch', 'vacuum', 'water_heater'] -%}
   {%- set ns = namespace(pairs=[], offline=[], stale=[], stale_names=[], output_lines=[]) -%}
   {%- for s in states -%}
     {%- set did = device_id(s.entity_id) -%}
@@ -23,31 +27,35 @@ state: >
       {%- set ns.pairs = ns.pairs + [[did, s.entity_id]] -%}
     {%- endif -%}
   {%- endfor -%}
-  {%- set device_ids = ns.pairs | map(attribute=0) | unique | sort | list -%}
-  {%- for did in device_ids -%}
-    {%- set device_entity_ids = ns.pairs | selectattr(0, 'eq', did) | map(attribute=1) | list -%}
+  {%- for did, group in ns.pairs | sort(attribute=0) | groupby(0) -%}
+    {%- set device_entity_ids = group | map(attribute=1) | list -%}
     {%- set name_text = device_name(did) -%}
     {%- set search_text = (name_text ~ ' ' ~ device_entity_ids | join(' ')) | lower -%}
-    {%- set device_ns = namespace(last_seen=none, available_detected=false) -%}
+    {%- set device_ns = namespace(last_seen=none, available_detected=false, has_last_seen_source=false, has_device_entity=false, is_presence=false) -%}
     {%- for entity_id in device_entity_ids -%}
       {%- set entity_state = states[entity_id] -%}
+      {%- set domain = entity_id.split('.')[0] -%}
+      {%- if domain in presence_domains -%}{%- set device_ns.is_presence = true -%}{%- endif -%}
+      {%- if domain in device_domains -%}{%- set device_ns.has_device_entity = true -%}{%- endif -%}
       {%- if entity_state.state not in ['unavailable', 'unknown'] -%}
         {%- set device_ns.available_detected = true -%}
       {%- endif -%}
       {%- for attribute_key, raw_value in entity_state.attributes | dictsort if attribute_key.endswith('last_seen') -%}
+        {%- set device_ns.has_last_seen_source = true -%}
         {%- set parsed_last_seen = as_datetime(raw_value, default=none) -%}
         {%- if parsed_last_seen and (device_ns.last_seen is none or parsed_last_seen > device_ns.last_seen) -%}
           {%- set device_ns.last_seen = parsed_last_seen -%}
         {%- endif -%}
       {%- endfor -%}
       {%- if entity_id.endswith('_last_seen') -%}
+        {%- set device_ns.has_last_seen_source = true -%}
         {%- set parsed_last_seen = as_datetime(entity_state.state, default=none) -%}
         {%- if parsed_last_seen and (device_ns.last_seen is none or parsed_last_seen > device_ns.last_seen) -%}
           {%- set device_ns.last_seen = parsed_last_seen -%}
         {%- endif -%}
       {%- endif -%}
     {%- endfor -%}
-    {%- if not device_ns.available_detected -%}
+    {%- if not device_ns.available_detected and not device_ns.is_presence and (device_ns.has_last_seen_source or device_ns.has_device_entity) -%}
       {%- if name_text not in ns.offline -%}
         {%- set ns.offline = ns.offline + [name_text] -%}
       {%- endif -%}

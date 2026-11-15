@@ -1,6 +1,8 @@
 homeassistant:
   enabled: true
   status_topic: homeassistant/status
+  last_seen:
+    enabled_by_default: true
 advanced:
   log_level: info
   log_syslog:

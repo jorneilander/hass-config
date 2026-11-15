@@ -1,0 +1,17 @@
+template:
+  - sensor:
+      - name: "Last seen stale entities"
+        unique_id: last_seen_stale_entities
+        state: >-
+          {% set hours = 24 %}
+          {% set cutoff = now() - timedelta(hours=hours) %}
+          {% set ns = namespace(items=[]) %}
+          {% for s in states %}
+            {% for key, raw in s.attributes | dictsort if key.endswith('last_seen') %}
+              {% set seen = as_datetime(raw, default=None) %}
+              {% if seen and seen < cutoff and s.name not in ns.items %}
+                {% set ns.items = ns.items + [s.name] %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+          {{ ns.items | sort | join('\n') }}

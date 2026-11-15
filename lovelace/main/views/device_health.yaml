@@ -1,0 +1,42 @@
+---
+title: Devices
+badges: []
+cards:
+  - type: markdown
+    content: |
+      ## Offline or stale devices
+      {{ states('sensor.last_seen_stale_entities') | replace('\n', '  \n') }}
+  - type: entities
+    title: Battery levels
+    show_header_toggle: false
+    entities:
+      - entity: sensor.living_room_ir_blaster_battery
+      - entity: sensor.curtain_3_68c7_battery
+      - entity: sensor.bedroom_master_smoke_detector_battery
+      - entity: sensor.bedroom_eline_climate_sensor_battery
+      - entity: sensor.curtain_living_room_left_battery
+      - entity: sensor.attick_water_sensor_battery
+      - entity: sensor.bedroom_julien_window_sensor_battery
+      - entity: sensor.living_room_door_sensor_battery
+      - entity: sensor.pantry_water_sensor_battery
+      - entity: sensor.shed_myggbett_door_window_sensor_battery
+      - entity: sensor.bedroom_julien_smoke_detector_battery
+      - entity: sensor.bedroom_master_climate_sensor_battery
+      - entity: sensor.study_climate_sensor_battery
+      - entity: sensor.garden_rain_sensor_battery
+      - entity: sensor.1st_floor_landing_smoke_detector_battery
+      - entity: sensor.attick_landing_motion_detector_battery
+      - entity: sensor.attick_landing_smoke_detector_battery
+      - entity: sensor.bedroom_eline_smoke_detector_battery
+      - entity: sensor.dining_room_climate_sensor_battery
+      - entity: sensor.dining_room_smoke_detector_battery
+      - entity: sensor.hallway_motion_detector_battery
+      - entity: sensor.living_room_motion_detector_battery
+      - entity: sensor.living_room_smoke_detector_battery
+      - entity: sensor.pantry_smoke_detector_battery
+      - entity: sensor.study_smoke_detector_battery
+      - entity: sensor.bedroom_master_light_switch_jorn_battery
+      - entity: sensor.1st_floor_landing_motion_detector_battery
+      - entity: sensor.bedroom_julien_climate_sensor_battery
+      - entity: sensor.shed_door_sensor_battery
+      - entity: sensor.shed_smoke_detector_battery

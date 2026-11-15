@@ -1,3 +1,4 @@
 ---
 views:
   - !include ../views/main.yaml
+  - !include ../views/device_health.yaml

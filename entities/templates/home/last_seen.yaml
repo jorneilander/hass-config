@@ -1,0 +1,56 @@
+---
+# Devices that dropped off the network (every entity unavailable/unknown, e.g.
+# dead battery or unplugged) or whose last_seen is older than the per-device
+# threshold. Covers all integrations, not just Zigbee2MQTT: last_seen is read
+# from any attribute whose key ends in 'last_seen' and from the state of Z2M's
+# sensor.<device>_last_seen diagnostic entities. Devices that are offline
+# right now have no last_seen yet and are listed under 'Offline now'.
+name: Devices offline or stale
+default_entity_id: sensor.last_seen_stale_entities
+unique_id: last_seen_stale_entities
+icon: mdi:lan-disconnect
+variables:
+  default_hours: 24
+  # Per-device staleness thresholds in hours, matched as a substring of the
+  # device name or any of its entity IDs. Slow reporters like smoke sensors
+  # need a much longer window.
+  overrides:
+    smoke: 168
+state: >-
+  {% set state_ids = states | map(attribute='entity_id') | list %}
+  {% set ns = namespace(offline=[], stale=[], lines=[]) %}
+  {% for d in devices() %}
+    {% set ents = device_entities(d.id) | select('in', state_ids) | list %}
+    {% if ents %}
+      {% set name = d.name_by_user or d.name %}
+      {% set hay = (name ~ ' ' ~ ents | join(' ')) | lower %}
+      {% set seen = none %}
+      {% set has_available = false %}
+      {% for e in ents %}
+        {% set st = states[e] %}
+        {% if st.state not in ['unavailable', 'unknown'] %}{% set has_available = true %}{% endif %}
+        {% for key, raw in st.attributes | dictsort if key.endswith('last_seen') %}
+          {% set parsed = as_datetime(raw, default=none) %}
+          {% if parsed and (seen is none or parsed > seen) %}{% set seen = parsed %}{% endif %}
+        {% endfor %}
+        {% if e.endswith('_last_seen') %}
+          {% set parsed = as_datetime(st.state, default=none) %}
+          {% if parsed and (seen is none or parsed > seen) %}{% set seen = parsed %}{% endif %}
+        {% endif %}
+      {% endfor %}
+      {% if not has_available %}
+        {% set ns.offline = ns.offline + [name] %}
+      {% elif seen %}
+        {% set hours = default_hours %}
+        {% for key, h in overrides | dictsort %}
+          {% if key in hay %}{% set hours = h %}{% endif %}
+        {% endfor %}
+        {% if seen < now() - timedelta(hours=hours) %}
+          {% set ns.stale = ns.stale + [name ~ ' (last seen ' ~ (seen | as_local | timestamp_custom('%Y-%m-%d %H:%M')) ~ ')'] %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% if ns.offline %}{% set ns.lines = ns.lines + ['Offline now:'] + (ns.offline | sort | list) %}{% endif %}
+  {% if ns.stale %}{% set ns.lines = ns.lines + ['Stale (last seen too old):'] + (ns.stale | sort | list) %}{% endif %}
+  {{ ns.lines | join('\n') if ns.lines else 'All devices reporting' }}

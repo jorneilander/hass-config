@@ -1,31 +1,33 @@
 ---
-# Devices that dropped off (no available entity anymore, e.g. dead battery or
-# unplugged) or whose last_seen is older than the per-device threshold.
-# last_seen is read from any attribute key ending in 'last_seen' and from Z2M
-# sensor.<device>_last_seen entity states. Entities are grouped per device via
-# device_id() (there is no devices() function). Presence/media devices
-# (device_tracker, media_player) are excluded from the offline list: BLE
-# beacons, keys and AirPlay targets being out of range is normal, not a fault.
+# Device health sensor: lists devices that dropped off (no available entity
+# anymore, e.g. dead battery or unplugged) and devices whose last_seen is
+# older than the per-device threshold. Presence/media devices (BLE beacons,
+# AirPlay targets, ...) are excluded from the offline list: out of range is
+# normal for them, not a fault.
 name: Devices offline or stale
 default_entity_id: sensor.last_seen_stale_entities
 unique_id: last_seen_stale_entities
 icon: mdi:lan-disconnect
-# Re-evaluate on a timer instead of on every state change: the template reads
-# the global `states` object, so without a trigger it re-renders (with a
-# device_id() registry lookup per entity) on every state change of every entity.
+# Timer trigger on purpose: the template reads the global `states` object, so
+# without one it re-renders (with a device_id() registry lookup per entity) on
+# every state change of every entity.
 trigger:
   - platform: time_pattern
     minutes: "/5"
 state: >
-  {#- Thresholds inline (not in `variables:`) so the template also renders in
-      Developer Tools > Template, where variables: are not available. Hours per
-      device, matched as substring of device name or entity IDs. Measured from
-      recorder history (2026-11-01..15): smoke detectors report every ~0.5-1h
-      (max gap 1.9h), water sensors every ~3h (max gap 22h). -#}
+  {#- Staleness thresholds in hours, per device, matched as substring of device
+      name or entity IDs. Inline (not `variables:`) so the template also renders
+      in Developer Tools > Template, where variables: are unavailable. Values
+      measured from recorder history (2026-11-01..15): smoke detectors report
+      every ~0.5-1h (max gap 1.9h), water sensors every ~3h (max gap 22h). -#}
   {%- set stale_threshold_hours_default = 24 -%}
   {%- set stale_threshold_hours_by_pattern = {'smoke': 12, 'water': 48} -%}
+  {#- Domains used to tell presence/media devices apart from real ones. -#}
   {%- set presence_domains = ['device_tracker', 'media_player'] -%}
   {%- set device_domains = ['binary_sensor', 'camera', 'climate', 'cover', 'fan', 'light', 'lock', 'sensor', 'switch', 'vacuum', 'water_heater'] -%}
+  {#- Pass 1: group all entities by device id. HA has device_id()/device_name()
+      but no devices() function, so build [device_id, entity_id] pairs and
+      group them with sort+groupby in one pass. -#}
   {%- set ns = namespace(pairs=[], offline=[], stale=[], stale_names=[], output_lines=[]) -%}
   {%- for s in states -%}
     {%- set did = device_id(s.entity_id) -%}
@@ -33,51 +35,54 @@ state: >
       {%- set ns.pairs = ns.pairs + [[did, s.entity_id]] -%}
     {%- endif -%}
   {%- endfor -%}
+  {#- Pass 2: per device, collect availability, domains and last_seen values. -#}
   {%- for did, group in ns.pairs | sort(attribute=0) | groupby(0) -%}
     {%- set device_entity_ids = group | map(attribute=1) | list -%}
     {%- set name_text = device_name(did) -%}
     {%- set search_text = (name_text ~ ' ' ~ device_entity_ids | join(' ')) | lower -%}
-    {%- set device_ns = namespace(last_seen=none, available_detected=false, has_last_seen_source=false, has_device_entity=false, is_presence=false) -%}
+    {%- set device_ns = namespace(last_seen_values=[], has_last_seen_source=false, available_detected=false, has_device_entity=false, is_presence=false) -%}
     {%- for entity_id in device_entity_ids -%}
       {%- set entity_state = states[entity_id] -%}
       {%- set domain = entity_id.split('.')[0] -%}
       {%- if domain in presence_domains -%}{%- set device_ns.is_presence = true -%}{%- endif -%}
       {%- if domain in device_domains -%}{%- set device_ns.has_device_entity = true -%}{%- endif -%}
-      {%- if entity_state.state not in ['unavailable', 'unknown'] -%}
-        {%- set device_ns.available_detected = true -%}
-      {%- endif -%}
+      {%- if entity_state.state not in ['unavailable', 'unknown'] -%}{%- set device_ns.available_detected = true -%}{%- endif -%}
+      {#- last_seen sources: any attribute key ending in 'last_seen', plus the
+          state of Z2M's dedicated sensor.<device>_last_seen entity. -#}
       {%- for attribute_key, raw_value in entity_state.attributes | dictsort if attribute_key.endswith('last_seen') -%}
         {%- set device_ns.has_last_seen_source = true -%}
-        {%- set parsed_last_seen = as_datetime(raw_value, default=none) -%}
-        {%- if parsed_last_seen and (device_ns.last_seen is none or parsed_last_seen > device_ns.last_seen) -%}
-          {%- set device_ns.last_seen = parsed_last_seen -%}
-        {%- endif -%}
+        {%- set parsed = as_datetime(raw_value, default=none) -%}
+        {%- if parsed -%}{%- set device_ns.last_seen_values = device_ns.last_seen_values + [parsed] -%}{%- endif -%}
       {%- endfor -%}
       {%- if entity_id.endswith('_last_seen') -%}
         {%- set device_ns.has_last_seen_source = true -%}
-        {%- set parsed_last_seen = as_datetime(entity_state.state, default=none) -%}
-        {%- if parsed_last_seen and (device_ns.last_seen is none or parsed_last_seen > device_ns.last_seen) -%}
-          {%- set device_ns.last_seen = parsed_last_seen -%}
-        {%- endif -%}
+        {%- set parsed = as_datetime(entity_state.state, default=none) -%}
+        {%- if parsed -%}{%- set device_ns.last_seen_values = device_ns.last_seen_values + [parsed] -%}{%- endif -%}
       {%- endif -%}
     {%- endfor -%}
+    {%- set last_seen = device_ns.last_seen_values | max if device_ns.last_seen_values else none -%}
+    {#- Classify: offline = nothing available, not presence/media, and the
+        device has a last_seen source or real device entities. Otherwise stale
+        = newest last_seen older than the (possibly overridden) threshold. -#}
     {%- if not device_ns.available_detected and not device_ns.is_presence and (device_ns.has_last_seen_source or device_ns.has_device_entity) -%}
       {%- if name_text not in ns.offline -%}
         {%- set ns.offline = ns.offline + [name_text] -%}
       {%- endif -%}
-    {%- elif device_ns.last_seen -%}
+    {%- elif last_seen -%}
       {%- set threshold_ns = namespace(hours=stale_threshold_hours_default) -%}
       {%- for pattern, hours in stale_threshold_hours_by_pattern | dictsort -%}
         {%- if pattern in search_text -%}{%- set threshold_ns.hours = hours -%}{%- endif -%}
       {%- endfor -%}
-      {%- if device_ns.last_seen < now() - timedelta(hours=threshold_ns.hours) and name_text not in ns.stale_names -%}
-        {%- set ns.stale = ns.stale + [name_text ~ ' (last seen ' ~ (device_ns.last_seen | as_local | timestamp_custom('%Y-%m-%d %H:%M')) ~ ')'] -%}
+      {%- if last_seen < now() - timedelta(hours=threshold_ns.hours) and name_text not in ns.stale_names -%}
+        {%- set ns.stale = ns.stale + [name_text ~ ' (last seen ' ~ (last_seen | as_local | timestamp_custom('%Y-%m-%d %H:%M')) ~ ')'] -%}
         {%- set ns.stale_names = ns.stale_names + [name_text] -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
+  {#- Render the two sorted sections (names deduped above in case several
+      device ids resolve to the same name). -#}
   {%- if ns.offline -%}
-    {%- set ns.output_lines = ns.output_lines + ['Offline now:'] + (ns.offline | sort | list) -%}
+    {%- set ns.output_lines = ns.output_lines + ['Offline now:'] + (ns.offline | unique | sort | list) -%}
   {%- endif -%}
   {%- if ns.stale -%}
     {%- set ns.output_lines = ns.output_lines + ['Stale (last seen too old):'] + (ns.stale | sort | list) -%}

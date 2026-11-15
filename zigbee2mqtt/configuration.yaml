@@ -18,8 +18,9 @@ advanced:
   channel: 15
   pan_id: 51496
   network_key: '!/config/secrets.yaml SECRET_Z2M_NETWORK_KEY'
-  last_seen: epoch
+  last_seen: ISO_8601_local
   transmit_power: 20
+  elapsed: true
 frontend:
   enabled: true
   port: 8099

@@ -37,7 +37,7 @@ automation: !include_dir_list ./automations/
 automation manual: !include automations.yaml
 device_tracker: !include_dir_list ./integrations/device_tracker/
 environment_variable: !include ./integrations/environment_variable.yaml
-http: !include ./integrations/http.yaml
+# http: !include ./integrations/http.yaml
 # influxdb: !include ./integrations/influxdb.yaml
 lovelace: !include ./integrations/lovelace.yaml
 prometheus: !include ./integrations/prometheus.yaml

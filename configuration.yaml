@@ -37,6 +37,8 @@ automation: !include_dir_list ./automations/
 automation manual: !include automations.yaml
 device_tracker: !include_dir_list ./integrations/device_tracker/
 environment_variable: !include ./integrations/environment_variable.yaml
+# http is configured via the UI since 2026.8 (Settings > System > Network);
+# the YAML key is deprecated and will be removed in 2027.2
 # http: !include ./integrations/http.yaml
 # influxdb: !include ./integrations/influxdb.yaml
 lovelace: !include ./integrations/lovelace.yaml

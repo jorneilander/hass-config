@@ -1,0 +1,16 @@
+---
+# Number of lights currently on (plus their names) for the wall panel.
+# Timer trigger on purpose: the template reads the global `states` object, so
+# without a trigger it would re-render on every state change of every entity.
+- name: Lights on
+  default_entity_id: sensor.lights_on
+  unique_id: lights_on
+  icon: mdi:lightbulb-on-outline
+  trigger:
+    - platform: time_pattern
+      minutes: "/1"
+    - platform: homeassistant
+      event: start
+  state: "{{ states.light | selectattr('state', 'eq', 'on') | list | count }}"
+  attributes:
+    names: "{{ states.light | selectattr('state', 'eq', 'on') | map(attribute='name') | list | sort | join(', ') }}"

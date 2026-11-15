@@ -16,3 +16,10 @@ dashboards:
     icon: mdi:numeric-1-box-multiple-outline
     show_in_sidebar: true
     require_admin: false
+  wall-panel:
+    mode: yaml
+    filename: lovelace/main/dashboards/wall_panel.yaml
+    title: Wall Panel
+    icon: mdi:monitor-dashboard
+    show_in_sidebar: true
+    require_admin: false

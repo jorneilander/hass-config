@@ -1,0 +1,97 @@
+---
+path: details
+title: Details
+badges: []
+cards:
+  # Row 1: daily energy + gas statistics over 14 days
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: statistics-graph
+        title: Energie per dag (14 dagen)
+        entities:
+          - sensor.daily_energy_peak
+          - sensor.daily_energy_offpeak
+        days_to_show: 14
+        stat_type: sum
+        period: day
+        chart_type: bar
+      - type: statistics-graph
+        title: Gas per dag (14 dagen)
+        entities:
+          - sensor.daily_gas
+        days_to_show: 14
+        stat_type: sum
+        period: day
+        chart_type: bar
+  # Row 2: week of grid power | daily weather forecast
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mini-graph-card
+        name: Stroom afgelopen 7 dagen
+        icon: mdi:flash
+        entities:
+          - entity: sensor.dsmr_reader_power_consumed
+            name: Verbruik
+          - entity: sensor.dsmr_reader_power_returned
+            name: Teruglevering
+        hours_to_show: 168
+        group_by: hour
+        aggregate: mean
+        line_width: 2
+        show:
+          icon: true
+          name: true
+          state: true
+          legend: true
+          fill: false
+        animate: true
+      - type: weather-forecast
+        entity: weather.openweathermap
+        name: Verwachting komende dagen
+        forecast_type: daily
+        number_of_forecasts: 5
+  # Row 3: garbage detail | unknown draw | monthly totals
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      - type: entities
+        title: Afval ophalen
+        show_header_toggle: false
+        entities:
+          - entity: sensor.afvalinfo_home_next_trash_type_and_date
+            name: Eerst weg
+          - entity: sensor.afvalinfo_home_trash_type_today
+            name: Vandaag
+          - entity: sensor.afvalinfo_home_trash_type_tomorrow
+            name: Morgen
+          - entity: sensor.afvalinfo_home_pbd
+            name: PMD
+          - entity: sensor.afvalinfo_home_gft
+            name: GFT
+          - entity: sensor.afvalinfo_home_papier
+            name: Papier
+      - type: entities
+        title: Onbekend verbruik
+        show_header_toggle: false
+        entities:
+          - entity: sensor.unknown_power_draw
+            name: Nu (W)
+          - entity: sensor.daily_unknown_energy
+            name: Vandaag (kWh)
+          - entity: sensor.monthly_unknown_energy
+            name: Deze maand (kWh)
+      - type: entities
+        title: Maandtotalen
+        show_header_toggle: false
+        entities:
+          - entity: sensor.monthly_energy_peak
+            name: Energie piek
+          - entity: sensor.monthly_energy_offpeak
+            name: Energie dal
+          - entity: sensor.monthly_gas
+            name: Gas

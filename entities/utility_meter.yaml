@@ -1,26 +1,29 @@
 ---
+# Sources are the ESPHome DSMR reader entities (the older
+# sensor.energy_consumption_tarif_* / sensor.gas_meter_gas_consumption
+# entities no longer exist, which left these meters stuck at 0).
 daily_energy_offpeak:
-  source: sensor.energy_consumption_tarif_1
+  source: sensor.dsmr_reader_energy_delivered_tariff_1
   name: Daily Energy (Offpeak)
   cycle: daily
 daily_energy_peak:
-  source: sensor.energy_consumption_tarif_2
+  source: sensor.dsmr_reader_energy_delivered_tariff_2
   name: Daily Energy (Peak)
   cycle: daily
 daily_gas:
-  source: sensor.gas_meter_gas_consumption
+  source: sensor.dsmr_reader_gas_delivered
   name: Daily Gas
   cycle: daily
 monthly_energy_offpeak:
-  source: sensor.energy_consumption_tarif_1
+  source: sensor.dsmr_reader_energy_delivered_tariff_1
   name: Monthly Energy (Offpeak)
   cycle: monthly
 monthly_energy_peak:
-  source: sensor.energy_consumption_tarif_2
+  source: sensor.dsmr_reader_energy_delivered_tariff_2
   name: Monthly Energy (Peak)
   cycle: monthly
 monthly_gas:
-  source: sensor.gas_meter_gas_consumption
+  source: sensor.dsmr_reader_gas_delivered
   name: Monthly Gas
   cycle: monthly
 hourly_unknown_energy:

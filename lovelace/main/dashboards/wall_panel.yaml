@@ -1,0 +1,4 @@
+---
+views:
+  - !include ../views/wall_panel_overview.yaml
+  - !include ../views/wall_panel_details.yaml

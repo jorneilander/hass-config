@@ -1,0 +1,63 @@
+---
+# Tomorrow's weather split into dayparts (morning 06-12, afternoon 12-18,
+# evening 18-24), built from the OpenWeatherMap hourly forecast. Shown on the
+# wall panel dashboard. Refreshed every 30 minutes and on startup.
+- name: Weather tomorrow dayparts
+  default_entity_id: sensor.weather_tomorrow_dayparts
+  unique_id: weather_tomorrow_dayparts
+  icon: mdi:weather-partly-cloudy
+  trigger:
+    - platform: time_pattern
+      minutes: "/30"
+    - platform: homeassistant
+      event: start
+  action:
+    - action: weather.get_forecasts
+      target:
+        entity_id: weather.openweathermap
+      data:
+        type: hourly
+      response_variable: hourly_forecast
+  variables:
+    tomorrow: "{{ (now() + timedelta(days=1)).strftime('%Y-%m-%d') }}"
+    forecasts: "{{ hourly_forecast['weather.openweathermap'].forecast }}"
+    labels: >-
+      {{ {'clear-night': 'heldere nacht', 'cloudy': 'bewolkt', 'exceptional': 'uitzonderlijk',
+        'fog': 'mist', 'hail': 'hagel', 'lightning': 'onweer', 'lightning-rainy': 'onweer met regen',
+        'partlycloudy': 'halfbewolkt', 'pouring': 'stortbui', 'rainy': 'regen', 'snowy': 'sneeuw',
+        'snowy-rainy': 'natte sneeuw', 'sunny': 'zonnig', 'windy': 'winderig', 'windy-variant': 'winderig'} }}
+    parts: >-
+      {%- set ns = namespace(morning=[], afternoon=[], evening=[]) -%}
+      {%- for forecast in forecasts -%}
+        {%- if forecast.datetime[:10] == tomorrow -%}
+          {%- set hour = forecast.datetime[11:13] | int -%}
+          {%- if 6 <= hour < 12 -%}
+            {%- set ns.morning = ns.morning + [forecast] -%}
+          {%- elif 12 <= hour < 18 -%}
+            {%- set ns.afternoon = ns.afternoon + [forecast] -%}
+          {%- else -%}
+            {%- set ns.evening = ns.evening + [forecast] -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ {'morning': ns.morning, 'afternoon': ns.afternoon, 'evening': ns.evening} }}
+    summary: >-
+      {%- set ns = namespace(result={}) -%}
+      {%- for part_name, part_forecasts in parts.items() -%}
+        {%- if part_forecasts | length == 0 -%}
+          {%- set ns.result = ns.result | combine({part_name: 'Onbekend'}) -%}
+        {%- else -%}
+          {%- set mid = part_forecasts[part_forecasts | length // 2] -%}
+          {%- set condition = labels[mid.condition] | default(mid.condition) -%}
+          {%- set temp_min = part_forecasts | map(attribute='temperature') | min | round(1) -%}
+          {%- set temp_max = part_forecasts | map(attribute='temperature') | max | round(1) -%}
+          {%- set rain = (part_forecasts | map(attribute='precipitation_probability') | select('number') | list | max | default(0)) | int -%}
+          {%- set ns.result = ns.result | combine({part_name: condition ~ ', ' ~ temp_min ~ '–' ~ temp_max ~ ' °C, regen ' ~ rain ~ '%'}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ ns.result }}
+  state: "{{ now().strftime('%H:%M') }}"
+  attributes:
+    morning: "{{ summary.morning }}"
+    afternoon: "{{ summary.afternoon }}"
+    evening: "{{ summary.evening }}"

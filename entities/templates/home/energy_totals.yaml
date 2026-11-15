@@ -1,0 +1,20 @@
+---
+# Derived energy figures for the wall panel dashboard. Plain state templates:
+# they re-render whenever one of the referenced source entities changes.
+- name: Daily energy total
+  default_entity_id: sensor.daily_energy_total
+  unique_id: daily_energy_total
+  device_class: energy
+  state_class: total
+  unit_of_measurement: kWh
+  icon: mdi:counter
+  state: "{{ states('sensor.daily_energy_offpeak') | float(0) + states('sensor.daily_energy_peak') | float(0) }}"
+- name: Grid power net
+  default_entity_id: sensor.grid_power_net
+  unique_id: grid_power_net
+  device_class: power
+  state_class: measurement
+  unit_of_measurement: W
+  icon: mdi:transmission-tower
+  # DSMR reports kW, the plug sensors report W; net = consumed - returned.
+  state: "{{ ((states('sensor.dsmr_reader_power_consumed') | float(0) - states('sensor.dsmr_reader_power_returned') | float(0)) * 1000) | round(0) }}"

@@ -1,0 +1,27 @@
+---
+# Clock for the wall panel dashboard. Time-pattern / time triggers are needed
+# so the state advances without another entity changing.
+- name: Panel time
+  default_entity_id: sensor.panel_time
+  unique_id: panel_time
+  icon: mdi:clock-outline
+  trigger:
+    - platform: time_pattern
+      minutes: "/1"
+  state: "{{ now().strftime('%H:%M') }}"
+- name: Panel date
+  default_entity_id: sensor.panel_date
+  unique_id: panel_date
+  icon: mdi:calendar
+  trigger:
+    - platform: time
+      at: "00:00:00"
+    - platform: homeassistant
+      event: start
+  state: >-
+    {%- set weekdays = {'Monday': 'maandag', 'Tuesday': 'dinsdag', 'Wednesday': 'woensdag',
+      'Thursday': 'donderdag', 'Friday': 'vrijdag', 'Saturday': 'zaterdag', 'Sunday': 'zondag'} -%}
+    {%- set months = {'January': 'januari', 'February': 'februari', 'March': 'maart', 'April': 'april',
+      'May': 'mei', 'June': 'juni', 'July': 'juli', 'August': 'augustus', 'September': 'september',
+      'October': 'oktober', 'November': 'november', 'December': 'december'} -%}
+    {{ weekdays[now().strftime('%A')] }} {{ now().strftime('%d') }} {{ months[now().strftime('%B')] }} {{ now().strftime('%Y') }}

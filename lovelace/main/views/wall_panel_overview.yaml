@@ -1,0 +1,321 @@
+---
+path: overzicht
+title: Overzicht
+badges: []
+cards:
+  # Row 1: clock + who's home | current weather | garbage
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:button-card
+            entity: sensor.panel_time
+            show_name: false
+            show_icon: true
+            icon: mdi:clock-outline
+            tap_action:
+              action: more-info
+            styles:
+              state:
+                - font-size: 44px
+                - font-weight: 200
+                - line-height: 1.1
+          - type: custom:button-card
+            entity: sensor.panel_date
+            show_name: false
+            show_icon: false
+            tap_action:
+              action: more-info
+            styles:
+              state:
+                - font-size: 15px
+                - color: var(--secondary-text-color)
+          - type: horizontal-stack
+            cards:
+              - type: tile
+                entity: person.jorn_eilander
+                name: Jorn
+                show_entity_picture: true
+                tap_action:
+                  action: more-info
+              - type: tile
+                entity: person.eline_eilander
+                name: Eline
+                show_entity_picture: true
+                tap_action:
+                  action: more-info
+      - type: custom:simple-weather-card
+        entity: weather.openweathermap
+        details: true
+        forecast: true
+        number_of_forecasts: 3
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Afval
+            show_header_toggle: false
+            entities:
+              - entity: sensor.afvalinfo_home_next_trash_type_and_date
+                name: Eerst weg
+          - type: custom:button-card
+            entity: sensor.afvalinfo_home_pbd
+            name: |
+              [[[
+                var days = entity.attributes.days_until_collection_date;
+                if (days === 0) return 'PMD<br><b>vandaag</b>';
+                if (days === 1) return 'PMD<br>morgen';
+                return 'PMD<br>over ' + days + ' dagen';
+              ]]]
+            icon: mdi:bottle-soda
+            tap_action:
+              action: more-info
+            styles:
+              icon:
+                - color: |
+                    [[[
+                      var days = entity.attributes.days_until_collection_date;
+                      if (days <= 1) return 'var(--error-color)';
+                      if (days <= 3) return 'orange';
+                      return 'var(--state-icon-color)';
+                    ]]]
+          - type: custom:button-card
+            entity: sensor.afvalinfo_home_gft
+            name: |
+              [[[
+                var days = entity.attributes.days_until_collection_date;
+                if (days === 0) return 'GFT<br><b>vandaag</b>';
+                if (days === 1) return 'GFT<br>morgen';
+                return 'GFT<br>over ' + days + ' dagen';
+              ]]]
+            icon: mdi:leaf
+            tap_action:
+              action: more-info
+            styles:
+              icon:
+                - color: |
+                    [[[
+                      var days = entity.attributes.days_until_collection_date;
+                      if (days <= 1) return 'var(--error-color)';
+                      if (days <= 3) return 'orange';
+                      return 'var(--state-icon-color)';
+                    ]]]
+          - type: custom:button-card
+            entity: sensor.afvalinfo_home_papier
+            name: |
+              [[[
+                var days = entity.attributes.days_until_collection_date;
+                if (days === 0) return 'Papier<br><b>vandaag</b>';
+                if (days === 1) return 'Papier<br>morgen';
+                return 'Papier<br>over ' + days + ' dagen';
+              ]]]
+            icon: mdi:file-document-outline
+            tap_action:
+              action: more-info
+            styles:
+              icon:
+                - color: |
+                    [[[
+                      var days = entity.attributes.days_until_collection_date;
+                      if (days <= 1) return 'var(--error-color)';
+                      if (days <= 3) return 'orange';
+                      return 'var(--state-icon-color)';
+                    ]]]
+  # Row 2: hourly forecast | tomorrow dayparts | current power + today
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      - type: custom:hourly-weather
+        entity: weather.openweathermap
+        name: Komende 12 uur
+        number_of_forecasts: 12
+      - type: custom:entity-attributes-card
+        entity: sensor.weather_tomorrow_dayparts
+        title: Morgen per dagdeel
+        attributes:
+          - morning: Ochtend (06-12)
+          - afternoon: Middag (12-18)
+          - evening: Avond (18-24)
+      - type: vertical-stack
+        cards:
+          - type: gauge
+            entity: sensor.grid_power_net
+            name: Stroom nu
+            unit: W
+            min: 0
+            max: 4000
+            severity:
+              green: 0
+              yellow: 1500
+              red: 3000
+          - type: entities
+            title: Verbruik vandaag
+            show_header_toggle: false
+            entities:
+              - entity: sensor.daily_energy_total
+                name: Energie
+              - entity: sensor.daily_gas
+                name: Gas
+              - entity: sensor.daily_unknown_energy
+                name: Onbekend
+  # Row 3: grid power graph | biggest drains graph
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mini-graph-card
+        name: Stroom afgelopen 24 uur
+        icon: mdi:flash
+        entities:
+          - entity: sensor.dsmr_reader_power_consumed
+            name: Verbruik
+            color: var(--energy-grid-consumption-color, #ff9800)
+          - entity: sensor.dsmr_reader_power_returned
+            name: Teruglevering
+            color: var(--energy-grid-return-color, #00bcd4)
+        hours_to_show: 24
+        line_width: 3
+        show:
+          icon: true
+          name: true
+          state: true
+          legend: true
+          fill: true
+        animate: true
+      - type: custom:mini-graph-card
+        name: Grootste verbruikers afgelopen 24 uur
+        icon: mdi:power-plug
+        entities:
+          - entity: sensor.kitchen_water_heater_power
+            name: Boiler
+          - entity: sensor.pantry_smart_plug_washer_power
+            name: Wasmachine
+          - entity: sensor.pantry_smart_plug_dryer_power
+            name: Droger
+          - entity: sensor.living_room_smart_plug_tv_energy_power
+            name: TV
+          - entity: sensor.shed_smart_plug_fridge_power
+            name: Koelkast
+          - entity: sensor.server_room_smart_plug_energy_power
+            name: Server
+        hours_to_show: 24
+        line_width: 2
+        show:
+          icon: true
+          name: true
+          state: false
+          legend: true
+          fill: false
+        animate: true
+  # Row 4: room temperatures graph | current temperatures
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mini-graph-card
+        name: Temperaturen afgelopen 24 uur
+        icon: mdi:thermometer
+        entities:
+          - entity: sensor.dining_room_climate_sensor_temperature
+            name: Eetkamer
+          - entity: sensor.study_climate_sensor_temperature
+            name: Studie
+          - entity: sensor.bedroom_master_climate_sensor_temperature
+            name: Slaapkamer
+          - entity: sensor.bedroom_julien_climate_sensor_temperature
+            name: Julien
+          - entity: sensor.bedroom_eline_climate_sensor_temperature
+            name: Eline
+          - entity: sensor.openweathermap_temperature
+            name: Buiten
+        hours_to_show: 24
+        line_width: 2
+        show:
+          icon: true
+          name: true
+          state: false
+          legend: true
+          fill: false
+        animate: true
+      - type: glance
+        title: Temperaturen nu
+        columns: 7
+        entities:
+          - entity: sensor.dining_room_climate_sensor_temperature
+            name: Eetkamer
+          - entity: sensor.study_climate_sensor_temperature
+            name: Studie
+          - entity: sensor.bedroom_master_climate_sensor_temperature
+            name: Slaapkamer
+          - entity: sensor.bedroom_julien_climate_sensor_temperature
+            name: Julien
+          - entity: sensor.bedroom_eline_climate_sensor_temperature
+            name: Eline
+          - entity: sensor.openweathermap_temperature
+            name: Buiten
+          - entity: sensor.openweathermap_feels_like_temperature
+            name: Gevoel
+  # Row 5: lights
+  - type: grid
+    columns: 9
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: sensor.lights_on
+        name: Lampen aan
+        icon: mdi:lightbulb-on
+        tap_action:
+          action: more-info
+        styles:
+          name:
+            - font-size: 12px
+      - type: custom:button-card
+        entity: light.living_room_lights
+        name: Woonkamer
+        icon: mdi:sofa
+        tap_action:
+          action: toggle
+      - type: custom:button-card
+        entity: light.dining_room_lights
+        name: Eetkamer
+        icon: mdi:lightbulb
+        tap_action:
+          action: toggle
+      - type: custom:button-card
+        entity: light.extension_downlights
+        name: Uitbouw
+        icon: mdi:lightbulb
+        tap_action:
+          action: toggle
+      - type: custom:button-card
+        entity: light.downstairs_inside_lights
+        name: Beneden
+        icon: mdi:lightbulb
+        tap_action:
+          action: toggle
+      - type: custom:button-card
+        entity: light.outside_lights
+        name: Buiten
+        icon: mdi:coach-lamp
+        tap_action:
+          action: toggle
+      - type: custom:button-card
+        entity: light.hallway_light
+        name: Hal
+        icon: mdi:lightbulb
+        tap_action:
+          action: toggle
+      - type: custom:button-card
+        entity: light.front_light
+        name: Voordeur
+        icon: mdi:door
+        tap_action:
+          action: toggle
+      - type: custom:button-card
+        entity: light.garden_light_pantry
+        name: Tuin
+        icon: mdi:flower
+        tap_action:
+          action: toggle

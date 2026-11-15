@@ -10,8 +10,11 @@ icon: mdi:lan-disconnect
 variables:
   stale_threshold_hours_default: 24
   # Hours per device, matched as substring of device name or entity IDs.
+  # Measured from recorder history (2026-11-01..15): smoke detectors report
+  # every ~0.5-1h (max gap 1.9h), water sensors every ~3h (max gap 22h).
   stale_threshold_hours_by_pattern:
-    smoke: 168
+    smoke: 12
+    water: 48
 state: >
   {%- set known_entity_ids = states | map(attribute='entity_id') | list -%}
   {%- set ns = namespace(offline=[], stale=[], output_lines=[]) -%}

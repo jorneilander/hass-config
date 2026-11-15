@@ -137,7 +137,7 @@ cards:
         attributes:
           - morning: Ochtend (06-12)
           - afternoon: Middag (12-18)
-          - evening: Avond (18-24)
+          - evening: Avond/nacht (18-06)
       - type: vertical-stack
         cards:
           - type: gauge

@@ -10,6 +10,12 @@ name: Devices offline or stale
 default_entity_id: sensor.last_seen_stale_entities
 unique_id: last_seen_stale_entities
 icon: mdi:lan-disconnect
+# Re-evaluate on a timer instead of on every state change: the template reads
+# the global `states` object, so without a trigger it re-renders (with a
+# device_id() registry lookup per entity) on every state change of every entity.
+trigger:
+  - platform: time_pattern
+    minutes: "/5"
 state: >
   {#- Thresholds inline (not in `variables:`) so the template also renders in
       Developer Tools > Template, where variables: are not available. Hours per

@@ -2,7 +2,8 @@
 # Devices that dropped off (every entity unavailable/unknown, e.g. dead
 # battery) or whose last_seen is older than the per-device threshold. Covers
 # all integrations: last_seen is read from any attribute key ending in
-# 'last_seen' and from Z2M sensor.<device>_last_seen entity states.
+# 'last_seen' and from Z2M sensor.<device>_last_seen entity states. Entities
+# are grouped per device via device_id() (there is no devices() function).
 name: Devices offline or stale
 default_entity_id: sensor.last_seen_stale_entities
 unique_id: last_seen_stale_entities
@@ -16,42 +17,46 @@ variables:
     smoke: 12
     water: 48
 state: >
-  {%- set known_entity_ids = states | map(attribute='entity_id') | list -%}
-  {%- set ns = namespace(offline=[], stale=[], output_lines=[]) -%}
-  {%- for device in devices() -%}
-    {%- set device_entity_ids = device_entities(device.id) | select('in', known_entity_ids) | list -%}
-    {%- if device_entity_ids -%}
-      {%- set device_name = device.name_by_user or device.name -%}
-      {%- set search_text = (device_name ~ ' ' ~ device_entity_ids | join(' ')) | lower -%}
-      {%- set device_ns = namespace(last_seen=none, available_detected=false) -%}
-      {%- for entity_id in device_entity_ids -%}
-        {%- set entity_state = states[entity_id] -%}
-        {%- if entity_state.state not in ['unavailable', 'unknown'] -%}
-          {%- set device_ns.available_detected = true -%}
-        {%- endif -%}
-        {%- for attribute_key, raw_value in entity_state.attributes | dictsort if attribute_key.endswith('last_seen') -%}
-          {%- set parsed_last_seen = as_datetime(raw_value, default=none) -%}
-          {%- if parsed_last_seen and (device_ns.last_seen is none or parsed_last_seen > device_ns.last_seen) -%}
-            {%- set device_ns.last_seen = parsed_last_seen -%}
-          {%- endif -%}
-        {%- endfor -%}
-        {%- if entity_id.endswith('_last_seen') -%}
-          {%- set parsed_last_seen = as_datetime(entity_state.state, default=none) -%}
-          {%- if parsed_last_seen and (device_ns.last_seen is none or parsed_last_seen > device_ns.last_seen) -%}
-            {%- set device_ns.last_seen = parsed_last_seen -%}
-          {%- endif -%}
+  {%- set ns = namespace(pairs=[], offline=[], stale=[], output_lines=[]) -%}
+  {%- for s in states -%}
+    {%- set did = device_id(s.entity_id) -%}
+    {%- if did -%}
+      {%- set ns.pairs = ns.pairs + [[did, s.entity_id]] -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- set device_ids = ns.pairs | map(attribute=0) | unique | sort | list -%}
+  {%- for did in device_ids -%}
+    {%- set device_entity_ids = ns.pairs | selectattr(0, 'eq', did) | map(attribute=1) | list -%}
+    {%- set name_text = device_name(did) -%}
+    {%- set search_text = (name_text ~ ' ' ~ device_entity_ids | join(' ')) | lower -%}
+    {%- set device_ns = namespace(last_seen=none, available_detected=false) -%}
+    {%- for entity_id in device_entity_ids -%}
+      {%- set entity_state = states[entity_id] -%}
+      {%- if entity_state.state not in ['unavailable', 'unknown'] -%}
+        {%- set device_ns.available_detected = true -%}
+      {%- endif -%}
+      {%- for attribute_key, raw_value in entity_state.attributes | dictsort if attribute_key.endswith('last_seen') -%}
+        {%- set parsed_last_seen = as_datetime(raw_value, default=none) -%}
+        {%- if parsed_last_seen and (device_ns.last_seen is none or parsed_last_seen > device_ns.last_seen) -%}
+          {%- set device_ns.last_seen = parsed_last_seen -%}
         {%- endif -%}
       {%- endfor -%}
-      {%- if not device_ns.available_detected -%}
-        {%- set ns.offline = ns.offline + [device_name] -%}
-      {%- elif device_ns.last_seen -%}
-        {%- set threshold_ns = namespace(hours=stale_threshold_hours_default) -%}
-        {%- for pattern, hours in stale_threshold_hours_by_pattern | dictsort -%}
-          {%- if pattern in search_text -%}{%- set threshold_ns.hours = hours -%}{%- endif -%}
-        {%- endfor -%}
-        {%- if device_ns.last_seen < now() - timedelta(hours=threshold_ns.hours) -%}
-          {%- set ns.stale = ns.stale + [device_name ~ ' (last seen ' ~ (device_ns.last_seen | as_local | timestamp_custom('%Y-%m-%d %H:%M')) ~ ')'] -%}
+      {%- if entity_id.endswith('_last_seen') -%}
+        {%- set parsed_last_seen = as_datetime(entity_state.state, default=none) -%}
+        {%- if parsed_last_seen and (device_ns.last_seen is none or parsed_last_seen > device_ns.last_seen) -%}
+          {%- set device_ns.last_seen = parsed_last_seen -%}
         {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if not device_ns.available_detected -%}
+      {%- set ns.offline = ns.offline + [name_text] -%}
+    {%- elif device_ns.last_seen -%}
+      {%- set threshold_ns = namespace(hours=stale_threshold_hours_default) -%}
+      {%- for pattern, hours in stale_threshold_hours_by_pattern | dictsort -%}
+        {%- if pattern in search_text -%}{%- set threshold_ns.hours = hours -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if device_ns.last_seen < now() - timedelta(hours=threshold_ns.hours) -%}
+        {%- set ns.stale = ns.stale + [name_text ~ ' (last seen ' ~ (device_ns.last_seen | as_local | timestamp_custom('%Y-%m-%d %H:%M')) ~ ')'] -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}

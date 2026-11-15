@@ -1,0 +1,31 @@
+---
+alias: Notify when devices go offline or stale
+id: "device_offline_or_stale"
+description: >-
+  Watches the device health sensor and notifies when any device is offline
+  (all entities unavailable, e.g. dead battery) or its last_seen is older
+  than the per-device threshold.
+mode: single
+triggers:
+  - trigger: state
+    entity_id:
+      - sensor.last_seen_stale_entities
+actions:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state != 'All devices reporting' }}"
+        sequence:
+          - action: notify.mobile_jorn_maeike_priority_high
+            data:
+              title: Devices offline or stale
+              message: "{{ trigger.to_state.state }}"
+          - action: persistent_notification.create
+            data:
+              title: Devices offline or stale
+              message: "{{ trigger.to_state.state }}"
+    default:
+      - action: notify.mobile_jorn_maeike_priority_high
+        data:
+          title: Devices back online
+          message: All devices reporting again.

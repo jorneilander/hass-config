@@ -11,5 +11,15 @@ use_blueprint:
         message: |
           The following sensors are running low on battery:
           {{sensors}}
-
-
+    # Phone/watch batteries only update while the app is in the foreground
+    # (recorder history: ~2 value changes in 14 days), so they false-trigger.
+    exclude:
+      entity_id:
+      - sensor.eir_internal_battery_level
+      - sensor.ipad_battery_level
+      - sensor.iphone_battery_level
+      - sensor.iphone_van_eline_battery_level
+      - sensor.jorns_ipad_battery_level
+      - sensor.jorns_iphone_535_battery_level
+      - sensor.jorns_iphone_watch_battery
+      - sensor.maeikes_iphone_battery_level

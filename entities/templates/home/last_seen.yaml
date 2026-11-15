@@ -16,7 +16,7 @@ state: >
       (max gap 1.9h), water sensors every ~3h (max gap 22h). -#}
   {%- set stale_threshold_hours_default = 24 -%}
   {%- set stale_threshold_hours_by_pattern = {'smoke': 12, 'water': 48} -%}
-  {%- set ns = namespace(pairs=[], offline=[], stale=[], output_lines=[]) -%}
+  {%- set ns = namespace(pairs=[], offline=[], stale=[], stale_names=[], output_lines=[]) -%}
   {%- for s in states -%}
     {%- set did = device_id(s.entity_id) -%}
     {%- if did -%}
@@ -48,14 +48,17 @@ state: >
       {%- endif -%}
     {%- endfor -%}
     {%- if not device_ns.available_detected -%}
-      {%- set ns.offline = ns.offline + [name_text] -%}
+      {%- if name_text not in ns.offline -%}
+        {%- set ns.offline = ns.offline + [name_text] -%}
+      {%- endif -%}
     {%- elif device_ns.last_seen -%}
       {%- set threshold_ns = namespace(hours=stale_threshold_hours_default) -%}
       {%- for pattern, hours in stale_threshold_hours_by_pattern | dictsort -%}
         {%- if pattern in search_text -%}{%- set threshold_ns.hours = hours -%}{%- endif -%}
       {%- endfor -%}
-      {%- if device_ns.last_seen < now() - timedelta(hours=threshold_ns.hours) -%}
+      {%- if device_ns.last_seen < now() - timedelta(hours=threshold_ns.hours) and name_text not in ns.stale_names -%}
         {%- set ns.stale = ns.stale + [name_text ~ ' (last seen ' ~ (device_ns.last_seen | as_local | timestamp_custom('%Y-%m-%d %H:%M')) ~ ')'] -%}
+        {%- set ns.stale_names = ns.stale_names + [name_text] -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}

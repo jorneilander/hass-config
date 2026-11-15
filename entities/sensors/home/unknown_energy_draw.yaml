@@ -1,10 +1,13 @@
 ---
 # kWh integral of the residual (unknown) power draw, so it can be tracked over
 # time in the Energy dashboard and via long-term statistics.
-platform: integral
+# platform: integration (Riemann sum); the old `integral` platform was removed
+# in HA 2026.x. unit_time h + unit_prefix k turns W into kWh.
+platform: integration
 name: Unknown energy draw
 unique_id: E976BC66-BD43-450D-8A08-9E054382E00C
 source: sensor.unknown_power_draw
+unit_time: h
 unit_prefix: k
 method: left
 round: 3

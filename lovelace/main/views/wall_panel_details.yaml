@@ -48,7 +48,7 @@ cards:
           state: true
           legend: true
           fill: false
-        animate: true
+        animate: false
       - type: weather-forecast
         entity: weather.openweathermap
         name: Verwachting komende dagen

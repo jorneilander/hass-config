@@ -183,7 +183,7 @@ cards:
           state: true
           legend: true
           fill: true
-        animate: true
+        animate: false
       - type: custom:mini-graph-card
         name: Grootste verbruikers afgelopen 24 uur
         icon: mdi:power-plug
@@ -208,7 +208,7 @@ cards:
           state: false
           legend: true
           fill: false
-        animate: true
+        animate: false
   # Row 4: room temperatures graph | current temperatures
   - type: grid
     columns: 2
@@ -238,7 +238,7 @@ cards:
           state: false
           legend: true
           fill: false
-        animate: true
+        animate: false
       - type: glance
         title: Temperaturen nu
         columns: 7
